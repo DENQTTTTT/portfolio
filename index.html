@@ -46,7 +46,11 @@
       transition: background-color var(--transition-speed) ease;
       overflow-x: hidden;
     }
-    
+    #graphics .photo-item img {
+    object-fit: contain;
+    max-height: 100%;
+    border-radius: 10px;
+     }
     .loader-wrapper {
       position: fixed;
       top: 0;
@@ -918,6 +922,42 @@
       </div>
     </div>
   </section>
+
+  <section id="graphics" class="section">
+  <div class="container">
+    <h2 class="section-title" data-aos="fade-up">Graphics Portfolio</h2>
+    <p class="text-center" data-aos="fade-up" data-aos-delay="100">
+      These graphic design works are primarily in portrait or letter size. Click to view in full.
+    </p>
+    <div class="photo-gallery">
+      <div class="photo-item" data-aos="fade-up" data-aos-delay="100">
+        <a href="assets/graphics/graphic1.jpg" target="_blank">
+          <img src="assets/graphics/graphic1.jpg" alt="Graphic Design 1">
+        </a>
+      </div>
+      <div class="photo-item" data-aos="fade-up" data-aos-delay="200">
+        <a href="assets/graphics/graphic2.jpg" target="_blank">
+          <img src="assets/graphics/graphic2.jpg" alt="Graphic Design 2">
+        </a>
+      </div>
+      <div class="photo-item" data-aos="fade-up" data-aos-delay="300">
+        <a href="assets/graphics/graphic3.jpg" target="_blank">
+          <img src="assets/graphics/graphic3.jpg" alt="Graphic Design 3">
+        </a>
+      </div>
+      <div class="photo-item" data-aos="fade-up" data-aos-delay="400">
+        <a href="assets/graphics/graphic4.jpg" target="_blank">
+          <img src="assets/graphics/graphic4.jpg" alt="Graphic Design 4">
+        </a>
+      </div>
+      <div class="photo-item" data-aos="fade-up" data-aos-delay="500">
+        <a href="assets/graphics/graphic5.jpg" target="_blank">
+          <img src="assets/graphics/graphic5.jpg" alt="Graphic Design 5">
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
 
   <section id="personal" class="section">
     <div class="container">
