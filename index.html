@@ -32,7 +32,6 @@
       font-family: 'Syne', sans-serif;
       overflow-x: hidden;
     }
-    /* Hide cursor on touch, show custom on pointer:fine */
     @media (pointer: fine) { body { cursor: none; } }
 
     /* ── Custom Cursor ── */
@@ -171,7 +170,7 @@
     .nav-links a:hover { color: var(--white); }
     .nav-links a:hover::after { width: 100%; }
 
-    /* Hamburger button */
+    /* Hamburger */
     .hamburger {
       display: none;
       flex-direction: column;
@@ -279,17 +278,17 @@
       line-height: 1.8;
       max-width: 440px;
     }
+    /* Typewriter — JS-driven, CSS only handles cursor blink */
     .hero-subtitle .typewriter {
       color: var(--white);
       border-right: 2px solid var(--red);
       white-space: nowrap;
       overflow: hidden;
       display: inline-block;
-      animation: typing 2.8s steps(28) 2s forwards, blink 0.75s step-end infinite 2s;
-      width: 0;
+      animation: blink 0.75s step-end infinite;
     }
-    @keyframes typing { to { width: 26ch; } }
     @keyframes blink { 50% { border-color: transparent; } }
+
     .hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; }
     .btn-primary {
       background: var(--red);
@@ -478,14 +477,9 @@
       color: var(--red);
       font-family: 'Space Mono', monospace;
     }
-    .skill-bar-track {
-      height: 2px;
-      background: var(--grey-light);
-      overflow: hidden;
-    }
+    .skill-bar-track { height: 2px; background: var(--grey-light); overflow: hidden; }
     .skill-bar-fill {
-      height: 100%;
-      background: var(--red);
+      height: 100%; background: var(--red);
       width: 0;
       transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
     }
@@ -500,11 +494,7 @@
       color: var(--grey-text);
       transition: var(--transition);
     }
-    .skill-tag:hover {
-      border-color: var(--red);
-      color: var(--white);
-      background: rgba(230,48,34,0.08);
-    }
+    .skill-tag:hover { border-color: var(--red); color: var(--white); background: rgba(230,48,34,0.08); }
 
     /* ── Programming ── */
     #programming { background: var(--grey-dark); padding-top: 0; }
@@ -728,8 +718,120 @@
     .lightbox-prev { left: clamp(8px,2vw,24px); }
     .lightbox-next { right: clamp(8px,2vw,24px); }
 
+    /* ── Projects ── */
+    #projects { background: var(--grey-dark); }
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(12px, 2vw, 20px);
+    }
+    .project-card {
+      background: var(--grey-mid);
+      border: 1px solid var(--glass-border);
+      padding: clamp(24px,3vw,36px);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: border-color var(--transition), background var(--transition), transform var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px; height: 0;
+      background: var(--red);
+      transition: height 0.4s cubic-bezier(0.4,0,0.2,1);
+    }
+    .project-card:hover::before { height: 100%; }
+    .project-card:hover {
+      border-color: rgba(230,48,34,0.3);
+      background: var(--grey-light);
+      transform: translateY(-4px);
+    }
+    .project-icon {
+      width: 44px; height: 44px;
+      border: 1px solid var(--glass-border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--red); font-size: 1.1rem;
+      flex-shrink: 0;
+      transition: var(--transition);
+    }
+    .project-card:hover .project-icon {
+      background: var(--red);
+      border-color: var(--red);
+      color: var(--white);
+    }
+    .project-badge {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--red);
+      border: 1px solid rgba(230,48,34,0.3);
+      padding: 4px 10px;
+      width: fit-content;
+    }
+    .project-title {
+      font-size: clamp(1rem,2vw,1.2rem);
+      font-weight: 700;
+      line-height: 1.3;
+    }
+    .project-desc {
+      color: var(--grey-text);
+      font-size: clamp(0.8rem,1.3vw,0.875rem);
+      line-height: 1.8;
+      flex: 1;
+    }
+    .project-features {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-top: 12px;
+      border-top: 1px solid var(--glass-border);
+    }
+    .project-feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: clamp(0.75rem,1.2vw,0.82rem);
+      color: var(--grey-text);
+      line-height: 1.5;
+    }
+    .project-feature i {
+      color: var(--red);
+      font-size: 0.5rem;
+      margin-top: 5px;
+      flex-shrink: 0;
+    }
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .project-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey-text);
+      border: 1px solid var(--glass-border);
+      padding: 4px 10px;
+      transition: var(--transition);
+    }
+    .project-card:hover .project-tag {
+      border-color: rgba(230,48,34,0.2);
+      color: var(--white);
+    }
+    .project-placeholder {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
     /* ── Personal ── */
-    #personal { background: var(--grey-dark); }
+    #personal { background: var(--black); }
     .personal-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -738,7 +840,7 @@
       border: 1px solid var(--glass-border);
     }
     .detail-card {
-      background: var(--grey-dark);
+      background: var(--black);
       padding: clamp(20px,3vw,32px) clamp(20px,4vw,36px);
       display: flex;
       align-items: flex-start;
@@ -771,7 +873,7 @@
     .detail-text p { font-size: clamp(0.82rem,1.4vw,0.95rem); font-weight: 600; color: var(--white); }
 
     /* ── Contact ── */
-    #contact { background: var(--black); }
+    #contact { background: var(--grey-dark); }
     .contact-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -805,7 +907,7 @@
     .form-field input,
     .form-field textarea {
       width: 100%;
-      background: var(--grey-dark);
+      background: var(--grey-mid);
       border: 1px solid var(--glass-border);
       color: var(--white);
       padding: 16px 20px;
@@ -859,7 +961,7 @@
 
     /* ── Footer ── */
     footer {
-      background: var(--grey-dark);
+      background: var(--black);
       padding: clamp(36px,6vw,60px) var(--pad) clamp(24px,4vw,40px);
       border-top: 1px solid var(--glass-border);
       display: flex;
@@ -905,6 +1007,7 @@
     @media (max-width: 1100px) {
       .lang-grid { grid-template-columns: repeat(4,1fr); }
       .graphics-grid { grid-template-columns: repeat(2,1fr); }
+      .projects-grid { grid-template-columns: repeat(2,1fr); }
     }
     @media (max-width: 900px) {
       .nav-links { display: none; }
@@ -923,6 +1026,7 @@
       .photo-grid .wide { grid-column: span 1; }
       .lang-grid { grid-template-columns: repeat(4,1fr); }
       .personal-grid { grid-template-columns: 1fr; }
+      .projects-grid { grid-template-columns: 1fr; }
       footer { justify-content: center; text-align: center; flex-direction: column; }
       .stats-row { grid-template-columns: repeat(3,1fr); }
     }
@@ -991,6 +1095,7 @@
     <li><a href="#timeline">Experience</a></li>
     <li><a href="#photography">Photography</a></li>
     <li><a href="#graphics">Graphics</a></li>
+    <li><a href="#projects">Projects</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
 </nav>
@@ -1003,6 +1108,7 @@
   <a href="#timeline">Experience</a>
   <a href="#photography">Photography</a>
   <a href="#graphics">Graphics</a>
+  <a href="#projects">Projects</a>
   <a href="#contact">Contact</a>
 </div>
 
@@ -1016,7 +1122,7 @@
       <span class="line"><span>Lopez.</span></span>
     </h1>
     <p class="hero-subtitle">
-      <span class="typewriter">Front End Developer / UI·UX</span><br><br>
+      <span class="typewriter"></span><br><br>
       Capturing moments, designing graphics, and building experiences at the intersection of technology and creativity.
     </p>
     <div class="hero-cta">
@@ -1026,7 +1132,7 @@
   </div>
   <div class="hero-img-wrap">
     <div class="hero-img-frame">
-      <img src="reden.jpg" alt="Reden Lopez">
+      <img src="reden.jfif" alt="Reden Lopez">
       <div class="hero-img-tag">STI Lipa · Ocularis</div>
     </div>
   </div>
@@ -1220,6 +1326,60 @@
   </div>
 </section>
 
+<!-- Projects -->
+<section id="projects">
+  <div class="section-tag reveal">What I've Built</div>
+  <h2 class="section-title reveal reveal-delay-1">Programming <em>Projects</em></h2>
+  <div class="projects-grid">
+
+    <!-- LipaAlertHub -->
+    <div class="project-card reveal reveal-delay-1">
+      <div class="project-icon"><i class="fas fa-bell"></i></div>
+      <div class="project-badge">Capstone Project</div>
+      <div class="project-title">LipaAlertHub</div>
+      <p class="project-desc">A real-time alert and incident reporting system designed to improve communication and public safety within the community. Users can quickly report incidents and receive timely notifications, while administrators monitor, verify, and manage reports through a centralized dashboard.</p>
+      <div class="project-features">
+        <div class="project-feature"><i class="fas fa-circle"></i> Real-time incident reporting with image uploads</div>
+        <div class="project-feature"><i class="fas fa-circle"></i> Admin dashboard for managing and verifying reports</div>
+        <div class="project-feature"><i class="fas fa-circle"></i> Instant notifications and alert distribution</div>
+        <div class="project-feature"><i class="fas fa-circle"></i> Secure user authentication and role-based access</div>
+        <div class="project-feature"><i class="fas fa-circle"></i> Cloud-based storage and scalable backend infrastructure</div>
+      </div>
+      <div class="project-tags">
+        <span class="project-tag">Firebase</span>
+        <span class="project-tag">Dart</span>
+        <span class="project-tag">Flutter</span>
+        <span class="project-tag">Real-time DB</span>
+        <span class="project-tag">Cloud Functions</span>
+        <span class="project-tag">Full Stack</span>
+      </div>
+    </div>
+
+    <!-- Placeholder 2 -->
+    <div class="project-card project-placeholder reveal reveal-delay-2">
+      <div class="project-icon"><i class="fas fa-code"></i></div>
+      <div class="project-badge">Coming Soon</div>
+      <div class="project-title">Next Project</div>
+      <p class="project-desc">More projects coming soon. Stay tuned.</p>
+      <div class="project-tags">
+        <span class="project-tag">TBA</span>
+      </div>
+    </div>
+
+    <!-- Placeholder 3 -->
+    <div class="project-card project-placeholder reveal reveal-delay-3">
+      <div class="project-icon"><i class="fas fa-laptop-code"></i></div>
+      <div class="project-badge">Coming Soon</div>
+      <div class="project-title">Next Project</div>
+      <p class="project-desc">More projects coming soon. Stay tuned.</p>
+      <div class="project-tags">
+        <span class="project-tag">TBA</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
 <!-- Personal -->
 <section id="personal">
   <div class="section-tag reveal">The Details</div>
@@ -1325,6 +1485,38 @@
 <button class="scroll-top" id="scrollTop"><i class="fas fa-arrow-up"></i></button>
 
 <script>
+  /* ── Typewriter — cycles through titles ── */
+  (function () {
+    const el = document.querySelector('.typewriter');
+    const titles = [
+      'Front End Developer',
+      'UI / UX Designer',
+      'Photographer',
+      'Graphic Designer',
+      'Technical Director'
+    ];
+    let ti = 0, ci = 0, deleting = false;
+    function type() {
+      const current = titles[ti];
+      if (!deleting) {
+        el.textContent = current.slice(0, ++ci);
+        if (ci === current.length) {
+          deleting = true;
+          setTimeout(type, 1800);
+          return;
+        }
+      } else {
+        el.textContent = current.slice(0, --ci);
+        if (ci === 0) {
+          deleting = false;
+          ti = (ti + 1) % titles.length;
+        }
+      }
+      setTimeout(type, deleting ? 45 : 80);
+    }
+    setTimeout(type, 1800);
+  })();
+
   /* ── Cursor ── */
   const dot = document.getElementById('cursorDot');
   const ring = document.getElementById('cursorRing');
