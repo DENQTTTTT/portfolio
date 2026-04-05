@@ -7,7 +7,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- FontAwesome deferred -->
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
   <style>
     :root {
       --black: #0a0a0a; --white: #f5f5f0; --red: #e63022; --red-dim: #9e1f14;
@@ -40,6 +42,14 @@
     .loader-bar { width: min(200px,60vw); height: 2px; background: var(--grey-light); border-radius: 2px; overflow: hidden; }
     .loader-bar-fill { height: 100%; background: var(--red); animation: loadFill 1.6s ease forwards; }
     @keyframes loadFill { from{width:0}to{width:100%} }
+
+    /* ── Skeleton ── */
+    .skeleton { background: linear-gradient(90deg, var(--grey-mid) 25%, var(--grey-light) 50%, var(--grey-mid) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    .skeleton-img { width: 100%; height: 100%; position: absolute; inset: 0; z-index: 1; transition: opacity .4s; }
+    .img-wrap { position: relative; overflow: hidden; background: var(--grey-mid); }
+    .img-wrap img { position: relative; z-index: 2; display: block; width: 100%; height: auto; }
+    .img-wrap img.loaded + .skeleton-img, .img-wrap img.loaded ~ .skeleton-img { opacity: 0; pointer-events: none; }
 
     /* ── Noise ── */
     body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E"); opacity: .025; pointer-events: none; z-index: 9997; }
@@ -166,14 +176,12 @@
     .project-tags { display: flex; flex-wrap: wrap; gap: 8px; }
     .project-tag { font-family: 'Space Mono', monospace; font-size: .58rem; letter-spacing: .1em; text-transform: uppercase; color: var(--grey-text); border: 1px solid var(--glass-border); padding: 4px 10px; transition: var(--transition); }
     .project-card:hover .project-tag { border-color: rgba(230,48,34,.2); color: var(--white); }
-
-    /* Project Screenshots Strip */
     .project-screenshots { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
     .project-screenshots::-webkit-scrollbar { display: none; }
     .project-screenshot { width: 72px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid var(--glass-border); cursor: pointer; transition: var(--transition); filter: grayscale(20%); }
     .project-screenshot:hover { border-color: var(--red); filter: grayscale(0%); transform: scale(1.05); }
 
-    /* ── Experience / Timeline ── */
+    /* ── Timeline ── */
     #timeline { background: var(--black); }
     .timeline-list { position: relative; padding-left: clamp(28px,5vw,48px); }
     .timeline-list::before { content: ''; position: absolute; left: 0; top: 6px; bottom: 6px; width: 1px; background: var(--glass-border); }
@@ -191,8 +199,10 @@
     .films-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(16px,3vw,28px); }
     .film-card { background: var(--grey-mid); border: 1px solid var(--glass-border); overflow: hidden; position: relative; transition: border-color var(--transition), transform var(--transition); }
     .film-card:hover { border-color: rgba(230,48,34,.3); transform: translateY(-4px); }
+    /* Video thumbnail - no video loads until clicked */
     .film-thumb { position: relative; width: 100%; aspect-ratio: 16/9; background: var(--grey-light); overflow: hidden; cursor: pointer; }
-    .film-thumb video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .film-thumb-placeholder { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(30%); transition: filter .4s; }
+    .film-thumb:hover .film-thumb-placeholder { filter: grayscale(0%); }
     .film-play-btn { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,.45); transition: background var(--transition); }
     .film-thumb:hover .film-play-btn { background: rgba(0,0,0,.6); }
     .film-play-icon { width: 60px; height: 60px; border: 2px solid var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: var(--white); transition: var(--transition); background: rgba(230,48,34,.2); }
@@ -206,7 +216,7 @@
     /* ── Photography ── */
     #photography { background: var(--black); }
     .photo-events { display: flex; flex-direction: column; gap: clamp(48px,8vw,80px); }
-    .event-block { }
+    .event-block {}
     .event-header { display: flex; align-items: baseline; gap: 20px; margin-bottom: clamp(16px,3vw,28px); padding-bottom: 16px; border-bottom: 1px solid var(--glass-border); flex-wrap: wrap; }
     .event-title { font-size: clamp(1.1rem,2.5vw,1.6rem); font-weight: 800; letter-spacing: -.01em; }
     .event-tag { font-family: 'Space Mono', monospace; font-size: .6rem; letter-spacing: .15em; text-transform: uppercase; color: var(--red); border: 1px solid rgba(230,48,34,.3); padding: 3px 10px; }
@@ -222,6 +232,11 @@
     .masonry-zoom { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; background: rgba(0,0,0,.6); border: 1px solid rgba(255,255,255,.2); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: .75rem; opacity: 0; transition: opacity var(--transition), background var(--transition); cursor: pointer; }
     .masonry-card:hover .masonry-zoom { opacity: 1; }
     .masonry-zoom:hover { background: var(--red); border-color: var(--red); }
+    /* Hidden cards for load more */
+    .masonry-card.hidden-card { display: none; }
+    .load-more-btn { display: flex; align-items: center; justify-content: center; gap: 10px; margin: clamp(16px,3vw,28px) auto 0; background: transparent; color: var(--white); border: 1px solid var(--glass-border); padding: 12px 28px; font-family: 'Space Mono', monospace; font-size: .72rem; letter-spacing: .15em; text-transform: uppercase; cursor: pointer; transition: var(--transition); }
+    .load-more-btn:hover { border-color: var(--red); color: var(--red); }
+    .load-more-btn.hidden { display: none; }
 
     /* ── Graphics ── */
     #graphics { background: var(--grey-dark); }
@@ -362,26 +377,24 @@
 <!-- Lightbox -->
 <div class="lightbox" id="lightbox">
   <button class="lightbox-nav lightbox-prev" id="lbPrev"><i class="fas fa-chevron-left"></i></button>
-  <div class="lightbox-inner"><img src="" id="lightboxImg" alt=""><div class="lightbox-caption" id="lightboxCaption"></div></div>
+  <div class="lightbox-inner"><img src="" id="lightboxImg" alt="" decoding="async"><div class="lightbox-caption" id="lightboxCaption"></div></div>
   <button class="lightbox-nav lightbox-next" id="lbNext"><i class="fas fa-chevron-right"></i></button>
   <button class="lightbox-close" id="lightboxClose"><i class="fas fa-times"></i></button>
 </div>
 
-<!-- Video Modal -->
+<!-- Video Modal — video injected dynamically on open -->
 <div class="video-modal" id="videoModal">
-  <div class="video-modal-inner">
-    <video id="modalVideo" autoplay loop muted playsinline></video>
-    <button class="video-modal-unmute" id="unmuteBtn"><i class="fas fa-volume-mute" id="muteIcon"></i> <span id="muteLabel">Unmute</span></button>
+  <div class="video-modal-inner" id="videoModalInner">
     <div class="video-modal-title" id="videoModalTitle"></div>
   </div>
   <button class="video-modal-close" id="videoModalClose"><i class="fas fa-times"></i></button>
 </div>
 
 <div class="social-bar">
-  <a href="https://www.facebook.com/rdnlopez1/" target="_blank"><i class="fab fa-facebook-f"></i></a>
-  <a href="https://www.instagram.com/rdn_lopez/" target="_blank"><i class="fab fa-instagram"></i></a>
-  <a href="https://x.com/rdn_lopez" target="_blank"><i class="fab fa-twitter"></i></a>
-  <a href="https://www.linkedin.com/in/reden-lopez-43a9b52ba/" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+  <a href="https://www.facebook.com/rdnlopez1/" target="_blank" rel="noopener"><i class="fab fa-facebook-f"></i></a>
+  <a href="https://www.instagram.com/rdn_lopez/" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+  <a href="https://x.com/rdn_lopez" target="_blank" rel="noopener"><i class="fab fa-twitter"></i></a>
+  <a href="https://www.linkedin.com/in/reden-lopez-43a9b52ba/" target="_blank" rel="noopener"><i class="fab fa-linkedin-in"></i></a>
 </div>
 
 <nav id="navbar">
@@ -427,7 +440,8 @@
   </div>
   <div class="hero-img-wrap">
     <div class="hero-img-frame">
-      <img src="reden.jfif" alt="Reden Lopez">
+      <!-- Hero image is above the fold — NO lazy loading here -->
+      <img src="reden.jfif" alt="Reden Lopez" width="420" height="560" decoding="async">
       <div class="hero-img-tag">STI Lipa · Ocularis</div>
     </div>
   </div>
@@ -470,14 +484,14 @@
       <div class="skill-list-item"><span class="skill-num">02</span><span class="skill-name">Graphic Design</span><span class="skill-dot"></span></div>
       <div class="skill-list-item"><span class="skill-num">03</span><span class="skill-name">Front End Development</span><span class="skill-dot"></span></div>
       <div class="skill-list-item"><span class="skill-num">04</span><span class="skill-name">UI / UX Design</span><span class="skill-dot"></span></div>
-      <div class="skill-list-item"><span class="skill-num">05</span><span class="skill-name">Videography & Editing</span><span class="skill-dot"></span></div>
+      <div class="skill-list-item"><span class="skill-num">05</span><span class="skill-name">Videography &amp; Editing</span><span class="skill-dot"></span></div>
       <div class="skill-list-item"><span class="skill-num">06</span><span class="skill-name">Technical Directing</span><span class="skill-dot"></span></div>
       <div class="skill-list-item"><span class="skill-num">07</span><span class="skill-name">Social Media Management</span><span class="skill-dot"></span></div>
       <div class="skill-list-item"><span class="skill-num">08</span><span class="skill-name">Photo Editing</span><span class="skill-dot"></span></div>
     </div>
     <div class="skills-right reveal reveal-delay-2">
       <div>
-        <div class="section-tag" style="margin-bottom:16px;">Tools & Platforms</div>
+        <div class="section-tag" style="margin-bottom:16px;">Tools &amp; Platforms</div>
         <div class="skills-tags">
           <div class="skill-tag">Adobe Lightroom</div><div class="skill-tag">Adobe Photoshop</div>
           <div class="skill-tag">Canva</div><div class="skill-tag">VS Code</div>
@@ -509,7 +523,6 @@
   <h2 class="section-title reveal reveal-delay-1">Programming &amp; Design <em>Projects</em></h2>
   <div class="projects-grid">
 
-    <!-- LipaAlertHub -->
     <div class="project-card reveal reveal-delay-1">
       <div class="project-icon"><i class="fas fa-bell"></i></div>
       <div class="project-badge">Capstone Project</div>
@@ -517,10 +530,10 @@
       <p class="project-desc">A real-time alert and incident reporting system designed to improve public safety and emergency communication in Lipa City. Built as a mobile app for the public and a web-based admin dashboard for authorized responders.</p>
       <div class="project-role-row"><i class="fas fa-user-shield"></i><span>Lead Programmer · Group Leader · Lead Documenter</span></div>
       <div class="project-screenshots">
-        <img class="project-screenshot" src="LIPA1.png" alt="LipaAlertHub screen 1" data-src="LIPA1.png" data-caption="LipaAlertHub — Screen 1">
-        <img class="project-screenshot" src="LIPA2.png" alt="LipaAlertHub screen 2" data-src="LIPA2.png" data-caption="LipaAlertHub — Screen 2">
-        <img class="project-screenshot" src="LIPA3.png" alt="LipaAlertHub screen 3" data-src="LIPA3.png" data-caption="LipaAlertHub — Screen 3">
-        <img class="project-screenshot" src="LIPA4.png" alt="LipaAlertHub screen 4" data-src="LIPA4.png" data-caption="LipaAlertHub — Screen 4">
+        <img class="project-screenshot" src="LIPA1.png" alt="LipaAlertHub screen 1" data-src="LIPA1.png" data-caption="LipaAlertHub — Screen 1" loading="lazy" decoding="async" width="72" height="52">
+        <img class="project-screenshot" src="LIPA2.png" alt="LipaAlertHub screen 2" data-src="LIPA2.png" data-caption="LipaAlertHub — Screen 2" loading="lazy" decoding="async" width="72" height="52">
+        <img class="project-screenshot" src="LIPA3.png" alt="LipaAlertHub screen 3" data-src="LIPA3.png" data-caption="LipaAlertHub — Screen 3" loading="lazy" decoding="async" width="72" height="52">
+        <img class="project-screenshot" src="LIPA4.png" alt="LipaAlertHub screen 4" data-src="LIPA4.png" data-caption="LipaAlertHub — Screen 4" loading="lazy" decoding="async" width="72" height="52">
       </div>
       <div class="project-features">
         <div class="project-feature"><i class="fas fa-circle"></i> React Native mobile app for community incident reporting</div>
@@ -542,7 +555,6 @@
       </div>
     </div>
 
-    <!-- MINT -->
     <div class="project-card reveal reveal-delay-2">
       <div class="project-icon"><i class="fas fa-wallet"></i></div>
       <div class="project-badge">Mobile App</div>
@@ -550,7 +562,7 @@
       <p class="project-desc">A personal finance tracker mobile application designed to help users manage budgets, track expenses, and gain insights into their spending habits through a clean, intuitive interface.</p>
       <div class="project-role-row"><i class="fas fa-user-shield"></i><span>Developer</span></div>
       <div class="project-screenshots">
-        <img class="project-screenshot" src="mint.png" alt="MINT app" data-src="mint.png" data-caption="MINT — Personal Finance Tracker">
+        <img class="project-screenshot" src="mint.png" alt="MINT app" data-src="mint.png" data-caption="MINT — Personal Finance Tracker" loading="lazy" decoding="async" width="72" height="52">
       </div>
       <div class="project-features">
         <div class="project-feature"><i class="fas fa-circle"></i> Budget tracking and expense categorization</div>
@@ -562,17 +574,16 @@
       </div>
     </div>
 
-    <!-- KosekiLink -->
     <div class="project-card reveal reveal-delay-3">
       <div class="project-icon"><i class="fas fa-globe"></i></div>
       <div class="project-badge">Website · DA SAAD</div>
       <div class="project-title">KosekiLink</div>
-      <p class="project-desc">A mockup redesign and UI/UX improvement of a document tracker website for the Department of Agriculture SAAD IV-A. Focused on improving usability, visual hierarchy, and overall user experience of the platform.</p>
+      <p class="project-desc">A mockup redesign and UI/UX improvement of a document tracker website for the Department of Agriculture SAAD IV-A.</p>
       <div class="project-role-row"><i class="fas fa-user-shield"></i><span>Website Designer · UI/UX Mockup</span></div>
       <div class="project-screenshots">
-        <img class="project-screenshot" src="KOSEKI1.png" alt="KosekiLink screen 1" data-src="KOSEKI1.png" data-caption="KosekiLink — Screen 1">
-        <img class="project-screenshot" src="KOSEKI2.png" alt="KosekiLink screen 2" data-src="KOSEKI2.png" data-caption="KosekiLink — Screen 2">
-        <img class="project-screenshot" src="KOSEKI3.png" alt="KosekiLink screen 3" data-src="KOSEKI3.png" data-caption="KosekiLink — Screen 3">
+        <img class="project-screenshot" src="KOSEKI1.png" alt="KosekiLink screen 1" data-src="KOSEKI1.png" data-caption="KosekiLink — Screen 1" loading="lazy" decoding="async" width="72" height="52">
+        <img class="project-screenshot" src="KOSEKI2.png" alt="KosekiLink screen 2" data-src="KOSEKI2.png" data-caption="KosekiLink — Screen 2" loading="lazy" decoding="async" width="72" height="52">
+        <img class="project-screenshot" src="KOSEKI3.png" alt="KosekiLink screen 3" data-src="KOSEKI3.png" data-caption="KosekiLink — Screen 3" loading="lazy" decoding="async" width="72" height="52">
       </div>
       <div class="project-features">
         <div class="project-feature"><i class="fas fa-circle"></i> Redesigned UI for document tracking workflow</div>
@@ -584,7 +595,6 @@
       </div>
     </div>
 
-    <!-- SAAD Profiling App -->
     <div class="project-card reveal reveal-delay-1">
       <div class="project-icon"><i class="fas fa-id-card"></i></div>
       <div class="project-badge">Mobile App · DA SAAD</div>
@@ -592,7 +602,7 @@
       <p class="project-desc">A profiling mobile application for the Department of Agriculture SAAD CALABARZON, enabling efficient data collection and beneficiary profiling for government agricultural programs.</p>
       <div class="project-role-row"><i class="fas fa-user-shield"></i><span>UI/UX Designer · Frontend Developer</span></div>
       <div class="project-screenshots">
-        <img class="project-screenshot" src="SAAD2.png" alt="SAAD Profiling app" data-src="SAAD2.png" data-caption="SAAD Profiling App">
+        <img class="project-screenshot" src="SAAD2.png" alt="SAAD Profiling app" data-src="SAAD2.png" data-caption="SAAD Profiling App" loading="lazy" decoding="async" width="72" height="52">
       </div>
       <div class="project-features">
         <div class="project-feature"><i class="fas fa-circle"></i> Beneficiary profiling and data management</div>
@@ -604,7 +614,6 @@
       </div>
     </div>
 
-    <!-- AgriTrack -->
     <div class="project-card reveal reveal-delay-2">
       <div class="project-icon"><i class="fas fa-seedling"></i></div>
       <div class="project-badge">Mobile App · DA SAAD</div>
@@ -612,7 +621,7 @@
       <p class="project-desc">A monitoring mobile application for the Department of Agriculture SAAD CALABARZON, built to track agricultural program progress, beneficiary status, and field operations in real time.</p>
       <div class="project-role-row"><i class="fas fa-user-shield"></i><span>UI/UX Designer · Frontend Developer</span></div>
       <div class="project-screenshots">
-        <img class="project-screenshot" src="SAAD1.png" alt="AgriTrack app" data-src="SAAD1.png" data-caption="AgriTrack — DA SAAD Monitoring App">
+        <img class="project-screenshot" src="SAAD1.png" alt="AgriTrack app" data-src="SAAD1.png" data-caption="AgriTrack — DA SAAD Monitoring App" loading="lazy" decoding="async" width="72" height="52">
       </div>
       <div class="project-features">
         <div class="project-feature"><i class="fas fa-circle"></i> Real-time agricultural program monitoring</div>
@@ -624,16 +633,15 @@
       </div>
     </div>
 
-    <!-- Electro Gadgets -->
     <div class="project-card reveal reveal-delay-3">
       <div class="project-icon"><i class="fas fa-laptop"></i></div>
       <div class="project-badge">UI/UX · Web Design</div>
       <div class="project-title">Electro Gadgets</div>
-      <p class="project-desc">A UI/UX design project for an e-commerce website dedicated to gadget shopping. Focused on creating a clean, modern shopping experience with intuitive product browsing, cart flow, and checkout design.</p>
+      <p class="project-desc">A UI/UX design project for an e-commerce website dedicated to gadget shopping. Clean, modern shopping experience with intuitive product browsing, cart flow, and checkout design.</p>
       <div class="project-role-row"><i class="fas fa-user-shield"></i><span>UI/UX Designer</span></div>
       <div class="project-screenshots">
-        <img class="project-screenshot" src="ELECTRO1.png" alt="Electro Gadgets screen 1" data-src="ELECTOR1.png" data-caption="Electro Gadgets — Screen 1">
-        <img class="project-screenshot" src="ELECTRO2.png" alt="Electro Gadgets screen 2" data-src="ELECTOR2.png" data-caption="Electro Gadgets — Screen 2">
+        <img class="project-screenshot" src="ELECTRO1.png" alt="Electro Gadgets screen 1" data-src="ELECTRO1.png" data-caption="Electro Gadgets — Screen 1" loading="lazy" decoding="async" width="72" height="52">
+        <img class="project-screenshot" src="ELECTRO2.png" alt="Electro Gadgets screen 2" data-src="ELECTRO2.png" data-caption="Electro Gadgets — Screen 2" loading="lazy" decoding="async" width="72" height="52">
       </div>
       <div class="project-features">
         <div class="project-feature"><i class="fas fa-circle"></i> E-commerce UI for gadget shopping</div>
@@ -661,40 +669,39 @@
     </div>
     <div class="timeline-item reveal reveal-delay-1">
       <div class="timeline-year">2025 — 2026</div>
-      <div class="timeline-role">Social Media Manager / Graphic Designer & Lead Photographer</div>
+      <div class="timeline-role">Social Media Manager / Graphic Designer &amp; Lead Photographer</div>
       <div class="timeline-org">Ocularis — STI Lipa Official Media Team</div>
-      <div class="timeline-desc">Expanded role to oversee all social media channels, lead graphic design output, and head photo coverage across all major campus events. Responsible for the team's overall visual identity and digital presence.</div>
+      <div class="timeline-desc">Expanded role to oversee all social media channels, lead graphic design output, and head photo coverage across all major campus events.</div>
     </div>
     <div class="timeline-item reveal reveal-delay-2">
       <div class="timeline-year">2024 — 2025</div>
       <div class="timeline-role">Executive Project Manager</div>
       <div class="timeline-org">Supreme Student Council · STI College Lipa</div>
-      <div class="timeline-desc">Led the planning, coordination, and execution of major campus-wide events and student initiatives. Managed cross-functional teams and ensured alignment between project goals and organizational vision.</div>
+      <div class="timeline-desc">Led the planning, coordination, and execution of major campus-wide events and student initiatives.</div>
     </div>
     <div class="timeline-item reveal reveal-delay-3">
       <div class="timeline-year">2023 — 2025</div>
-      <div class="timeline-role">Technical Director & Photographer</div>
+      <div class="timeline-role">Technical Director &amp; Photographer</div>
       <div class="timeline-org">Ocularis — STI Lipa Official Media Team</div>
-      <div class="timeline-desc">Oversaw all technical operations for media production including live events, promotional shoots, and digital content creation. Responsible for photo coverage of 30+ events and overall visual direction of the team.</div>
+      <div class="timeline-desc">Oversaw all technical operations for media production including live events, promotional shoots, and digital content creation. Responsible for photo coverage of 30+ events.</div>
     </div>
     <div class="timeline-item reveal reveal-delay-4">
       <div class="timeline-year">2020 — 2022</div>
       <div class="timeline-role">MAWD Student</div>
-      <div class="timeline-org">Mobile App & Web Development · STI College Lipa</div>
-      <div class="timeline-desc">This is where it all started — learning the foundations of programming, web development, and mobile application development. Built the core technical skills that drive everything I do today.</div>
+      <div class="timeline-org">Mobile App &amp; Web Development · STI College Lipa</div>
+      <div class="timeline-desc">This is where it all started — learning the foundations of programming, web development, and mobile application development.</div>
     </div>
   </div>
 </section>
 
-<!-- 6. FILMS -->
+<!-- 6. FILMS — thumbnails only, video loads on click -->
 <section id="films">
   <div class="section-tag reveal">Behind the Lens</div>
   <h2 class="section-title reveal reveal-delay-1">Films &amp; <em>Videos</em></h2>
   <div class="films-grid">
 
     <div class="film-card reveal reveal-delay-1">
-      <div class="film-thumb" onclick="openVideo('STILIPASPORTSFEST.mp4', 'Sportsfest 2025 Teaser')">
-        <video src="STILIPASPORTSFEST.mp4" muted playsinline preload="metadata"></video>
+      <div class="film-thumb" data-video="STILIPASPORTSFEST.mp4" data-title="Sportsfest 2025 Teaser">
         <div class="film-play-btn"><div class="film-play-icon"><i class="fas fa-play"></i></div></div>
       </div>
       <div class="film-info">
@@ -705,8 +712,7 @@
     </div>
 
     <div class="film-card reveal reveal-delay-2">
-      <div class="film-thumb" onclick="openVideo('SAMSUNGGALAXYS24.mp4', 'Samsung Galaxy S24')">
-        <video src="SAMSUNGGALAXYS24.mp4" muted playsinline preload="metadata"></video>
+      <div class="film-thumb" data-video="SAMSUNGGALAXYS24.mp4" data-title="Samsung Galaxy S24">
         <div class="film-play-btn"><div class="film-play-icon"><i class="fas fa-play"></i></div></div>
       </div>
       <div class="film-info">
@@ -717,8 +723,7 @@
     </div>
 
     <div class="film-card reveal reveal-delay-3">
-      <div class="film-thumb" onclick="openVideo('OUTREACHPROGRAM.mp4', 'STI Christmas Outreach Program 2024')">
-        <video src="OUTREACHPROGRAM.mp4" muted playsinline preload="metadata"></video>
+      <div class="film-thumb" data-video="OUTREACHPROGRAM.mp4" data-title="STI Christmas Outreach Program 2024">
         <div class="film-play-btn"><div class="film-play-icon"><i class="fas fa-play"></i></div></div>
       </div>
       <div class="film-info">
@@ -729,8 +734,7 @@
     </div>
 
     <div class="film-card reveal reveal-delay-4">
-      <div class="film-thumb" onclick="openVideo('STILIPATOURISM.mp4', 'STI Lipa Lifesaving Skills Seminar for BSTM Students')">
-        <video src="STILIPATOURISM.mp4" muted playsinline preload="metadata"></video>
+      <div class="film-thumb" data-video="STILIPATOURISM.mp4" data-title="STI Lipa Lifesaving Skills Seminar for BSTM Students">
         <div class="film-play-btn"><div class="film-play-icon"><i class="fas fa-play"></i></div></div>
       </div>
       <div class="film-info">
@@ -743,131 +747,164 @@
   </div>
 </section>
 
-<!-- 7. PHOTOGRAPHY -->
+<!-- 7. PHOTOGRAPHY — Load More per gallery -->
 <section id="photography">
   <div class="section-tag reveal">Visual Stories</div>
   <h2 class="section-title reveal reveal-delay-1">Photography <em>Portfolio</em></h2>
   <div class="photo-events">
 
-    <!-- Sportsfest 2025 -->
     <div class="event-block reveal">
-      <div class="event-header">
-        <div class="event-title">Sportsfest 2025</div>
-        <div class="event-tag">Official Photographer</div>
-        <div class="event-count">4 photos</div>
-      </div>
-      <div class="masonry-grid" data-gallery="sf2025">
-        <div class="masonry-card" data-src="ateno.2.jpg" data-caption="Sportsfest 2025"><img src="ateno.2.jpg" alt="Sportsfest 2025"><div class="masonry-info"><h4>Sportsfest 2025</h4><span>Portrait</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="MJ.jpg" data-caption="Sportsfest 2025"><img src="MJ.jpg" alt="Sportsfest 2025"><div class="masonry-info"><h4>Sportsfest 2025</h4><span>Portrait</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="SIATI.jpg" data-caption="Sportsfest 2025"><img src="SIATI.jpg" alt="Sportsfest 2025"><div class="masonry-info"><h4>Sportsfest 2025</h4><span>Portrait</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="TINTIN.jpg" data-caption="Sportsfest 2025"><img src="TINTIN.jpg" alt="Sportsfest 2025"><div class="masonry-info"><h4>Sportsfest 2025</h4><span>Portrait</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+      <div class="event-header"><div class="event-title">Sportsfest 2025</div><div class="event-tag">Official Photographer</div><div class="event-count">4 photos</div></div>
+      <div class="masonry-grid" data-gallery="sf2025" data-limit="6">
+        <div class="masonry-card" data-src="ateno.2.jpg" data-caption="Sportsfest 2025"><img src="ateno.2.jpg" alt="Sportsfest 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>Sportsfest 2025</h4><span>Portrait</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="MJ.jpg" data-caption="Sportsfest 2025"><img src="MJ.jpg" alt="Sportsfest 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>Sportsfest 2025</h4><span>Portrait</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="SIATI.jpg" data-caption="Sportsfest 2025"><img src="SIATI.jpg" alt="Sportsfest 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>Sportsfest 2025</h4><span>Portrait</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="TINTIN.jpg" data-caption="Sportsfest 2025"><img src="TINTIN.jpg" alt="Sportsfest 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>Sportsfest 2025</h4><span>Portrait</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
       </div>
     </div>
 
-    <!-- Sportsfest 2026 -->
     <div class="event-block reveal">
-      <div class="event-header">
-        <div class="event-title">Sportsfest 2026</div>
-        <div class="event-tag">Official Photographer</div>
-        <div class="event-count">13 photos</div>
+      <div class="event-header"><div class="event-title">Sportsfest 2026</div><div class="event-tag">Official Photographer</div><div class="event-count">13 photos</div></div>
+      <div class="masonry-grid" data-gallery="sf2026" data-limit="6">
+        <div class="masonry-card" data-src="SPORSFEST20261.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST20261.jpg" alt="Sportsfest 2026" loading="lazy" decoding="async"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="SPORSFEST20262.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST20262.jpg" alt="Sportsfest 2026" loading="lazy" decoding="async"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="SPORSFEST20263.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST20263.jpg" alt="Sportsfest 2026" loading="lazy" decoding="async"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="SPORSFEST20264.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST20264.jpg" alt="Sportsfest 2026" loading="lazy" decoding="async"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="SPORSFEST20265.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST20265.jpg" alt="Sportsfest 2026" loading="lazy" decoding="async"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="SPORSFEST20266.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST20266.jpg" alt="Sportsfest 2026" loading="lazy" decoding="async"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card hidden-card" data-src="SPORSFEST20267.jpg" data-caption="Sportsfest 2026"><img data-src="SPORSFEST20267.jpg" alt="Sportsfest 2026" loading="lazy" decoding="async"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card hidden-card" data-src="SPORSFEST20268.jpg" data-caption="Sportsfest 2026"><img data-src="SPORSFEST20268.jpg" alt="Sportsfest 2026" loading="lazy" decoding="async"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card hidden-card" data-src="SPORSFEST20269.jpg" data-caption="Sportsfest 2026"><img data-src="SPORSFEST20269.jpg" alt="Sportsfest 2026" loading="lazy" decoding="async"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card hidden-card" data-src="SPORSFEST202610.jpg" data-caption="Sportsfest 2026"><img data-src="SPORSFEST202610.jpg" alt="Sportsfest 2026" loading="lazy" decoding="async"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card hidden-card" data-src="SPORSFEST202611.jpg" data-caption="Sportsfest 2026"><img data-src="SPORSFEST202611.jpg" alt="Sportsfest 2026" loading="lazy" decoding="async"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card hidden-card" data-src="SPORSFEST202612.jpg" data-caption="Sportsfest 2026"><img data-src="SPORSFEST202612.jpg" alt="Sportsfest 2026" loading="lazy" decoding="async"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card hidden-card" data-src="SPORSFEST202613.jpg" data-caption="Sportsfest 2026"><img data-src="SPORSFEST202613.jpg" alt="Sportsfest 2026" loading="lazy" decoding="async"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
       </div>
-      <div class="masonry-grid" data-gallery="sf2026">
-        <div class="masonry-card" data-src="SPORSFEST20261.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST20261.jpg" alt="Sportsfest 2026"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="SPORSFEST20262.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST20262.jpg" alt="Sportsfest 2026"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="SPORSFEST20263.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST20263.jpg" alt="Sportsfest 2026"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="SPORSFEST20264.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST20264.jpg" alt="Sportsfest 2026"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="SPORSFEST20265.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST20265.jpg" alt="Sportsfest 2026"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="SPORSFEST20266.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST20266.jpg" alt="Sportsfest 2026"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="SPORSFEST20267.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST20267.jpg" alt="Sportsfest 2026"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="SPORSFEST20268.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST20268.jpg" alt="Sportsfest 2026"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="SPORSFEST20269.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST20269.jpg" alt="Sportsfest 2026"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="SPORSFEST202610.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST202610.jpg" alt="Sportsfest 2026"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="SPORSFEST202611.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST202611.jpg" alt="Sportsfest 2026"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="SPORSFEST202612.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST202612.jpg" alt="Sportsfest 2026"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-    <div class="masonry-card" data-src="SPORSFEST202613.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST202613.jpg" alt="Sportsfest 2026"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-      </div>
+      <button class="load-more-btn" data-gallery="sf2026">Load More Photos <i class="fas fa-chevron-down"></i></button>
     </div>
 
-    <!-- Tourism Expo 2025 -->
     <div class="event-block reveal">
       <div class="event-header"><div class="event-title">Tourism Expo 2025</div><div class="event-tag">Official Photographer</div><div class="event-count">4 photos</div></div>
       <div class="masonry-grid" data-gallery="tourism2025">
-        <div class="masonry-card" data-src="TOURISM20251.jpg" data-caption="Tourism Expo 2025"><img src="TOURISM20251.jpg" alt="Tourism Expo 2025"><div class="masonry-info"><h4>Tourism Expo 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="TOURISM20252.jpg" data-caption="Tourism Expo 2025"><img src="TOURISM20252.jpg" alt="Tourism Expo 2025"><div class="masonry-info"><h4>Tourism Expo 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="TOURISM20253.jpg" data-caption="Tourism Expo 2025"><img src="TOURISM20253.jpg" alt="Tourism Expo 2025"><div class="masonry-info"><h4>Tourism Expo 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="TOURISM20254.jpg" data-caption="Tourism Expo 2025"><img src="TOURISM20254.jpg" alt="Tourism Expo 2025"><div class="masonry-info"><h4>Tourism Expo 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="TOURISM20251.jpg" data-caption="Tourism Expo 2025"><img src="TOURISM20251.jpg" alt="Tourism Expo 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>Tourism Expo 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="TOURISM20252.jpg" data-caption="Tourism Expo 2025"><img src="TOURISM20252.jpg" alt="Tourism Expo 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>Tourism Expo 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="TOURISM20253.jpg" data-caption="Tourism Expo 2025"><img src="TOURISM20253.jpg" alt="Tourism Expo 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>Tourism Expo 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="TOURISM20254.jpg" data-caption="Tourism Expo 2025"><img src="TOURISM20254.jpg" alt="Tourism Expo 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>Tourism Expo 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
       </div>
     </div>
 
-    <!-- Tourism Expo 2024 -->
     <div class="event-block reveal">
       <div class="event-header"><div class="event-title">Tourism Expo 2024</div><div class="event-tag">Official Photographer</div><div class="event-count">5 photos</div></div>
       <div class="masonry-grid" data-gallery="tourism2024">
-        <div class="masonry-card" data-src="TOURISM20241.jpg" data-caption="Tourism Expo 2024"><img src="TOURISM20241.jpg" alt="Tourism Expo 2024"><div class="masonry-info"><h4>Tourism Expo 2024</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="TOURISM20242.jpg" data-caption="Tourism Expo 2024"><img src="TOURISM20242.jpg" alt="Tourism Expo 2024"><div class="masonry-info"><h4>Tourism Expo 2024</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="TOURISM20243.jpg" data-caption="Tourism Expo 2024"><img src="TOURISM20243.jpg" alt="Tourism Expo 2024"><div class="masonry-info"><h4>Tourism Expo 2024</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="TOURISM20244.jpg" data-caption="Tourism Expo 2024"><img src="TOURISM20244.jpg" alt="Tourism Expo 2024"><div class="masonry-info"><h4>Tourism Expo 2024</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="TOURISM20245.jpg" data-caption="Tourism Expo 2024"><img src="TOURISM20245.jpg" alt="Tourism Expo 2024"><div class="masonry-info"><h4>Tourism Expo 2024</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="TOURISM20241.jpg" data-caption="Tourism Expo 2024"><img src="TOURISM20241.jpg" alt="Tourism Expo 2024" loading="lazy" decoding="async"><div class="masonry-info"><h4>Tourism Expo 2024</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="TOURISM20242.jpg" data-caption="Tourism Expo 2024"><img src="TOURISM20242.jpg" alt="Tourism Expo 2024" loading="lazy" decoding="async"><div class="masonry-info"><h4>Tourism Expo 2024</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="TOURISM20243.jpg" data-caption="Tourism Expo 2024"><img src="TOURISM20243.jpg" alt="Tourism Expo 2024" loading="lazy" decoding="async"><div class="masonry-info"><h4>Tourism Expo 2024</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="TOURISM20244.jpg" data-caption="Tourism Expo 2024"><img src="TOURISM20244.jpg" alt="Tourism Expo 2024" loading="lazy" decoding="async"><div class="masonry-info"><h4>Tourism Expo 2024</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="TOURISM20245.jpg" data-caption="Tourism Expo 2024"><img src="TOURISM20245.jpg" alt="Tourism Expo 2024" loading="lazy" decoding="async"><div class="masonry-info"><h4>Tourism Expo 2024</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
       </div>
     </div>
 
-    <!-- Talent Search 2025 -->
     <div class="event-block reveal">
       <div class="event-header"><div class="event-title">Talent Search 2025</div><div class="event-tag">Official Photographer</div><div class="event-count">4 photos</div></div>
       <div class="masonry-grid" data-gallery="talent2025">
-        <div class="masonry-card" data-src="TSEDIT1.jpg" data-caption="Talent Search 2025"><img src="TSEDIT1.jpg" alt="Talent Search 2025"><div class="masonry-info"><h4>Talent Search 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="TSEDIT2.jpg" data-caption="Talent Search 2025"><img src="TSEDIT2.jpg" alt="Talent Search 2025"><div class="masonry-info"><h4>Talent Search 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="TSEDIT3.jpg" data-caption="Talent Search 2025"><img src="TSEDIT3.jpg" alt="Talent Search 2025"><div class="masonry-info"><h4>Talent Search 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="TSEDIT4.jpg" data-caption="Talent Search 2025"><img src="TSEDIT4.jpg" alt="Talent Search 2025"><div class="masonry-info"><h4>Talent Search 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="TSEDIT1.jpg" data-caption="Talent Search 2025"><img src="TSEDIT1.jpg" alt="Talent Search 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>Talent Search 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="TSEDIT2.jpg" data-caption="Talent Search 2025"><img src="TSEDIT2.jpg" alt="Talent Search 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>Talent Search 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="TSEDIT3.jpg" data-caption="Talent Search 2025"><img src="TSEDIT3.jpg" alt="Talent Search 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>Talent Search 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="TSEDIT4.jpg" alt="Talent Search 2025" data-caption="Talent Search 2025"><img src="TSEDIT4.jpg" alt="Talent Search 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>Talent Search 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
       </div>
     </div>
 
-    <!-- CSID -->
+    <div class="event-block reveal">
+      <div class="event-header"><div class="event-title">Valentines 2026</div><div class="event-tag">Official Photographer</div><div class="event-count">8 photos</div></div>
+      <div class="masonry-grid" data-gallery="vday2026">
+        <div class="masonry-card" data-src="VDAY20261.jpg" data-caption="Valentines 2026"><img src="VDAY20261.jpg" alt="Valentines 2026" loading="lazy" decoding="async"><div class="masonry-info"><h4>Valentines 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="VDAY20262.jpg" data-caption="Valentines 2026"><img src="VDAY20262.jpg" alt="Valentines 2026" loading="lazy" decoding="async"><div class="masonry-info"><h4>Valentines 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="VDAY20263.jpg" data-caption="Valentines 2026"><img src="VDAY20263.jpg" alt="Valentines 2026" loading="lazy" decoding="async"><div class="masonry-info"><h4>Valentines 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="VDAY20264.jpg" data-caption="Valentines 2026"><img src="VDAY20264.jpg" alt="Valentines 2026" loading="lazy" decoding="async"><div class="masonry-info"><h4>Valentines 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="VDAY20265.jpg" data-caption="Valentines 2026"><img src="VDAY20265.jpg" alt="Valentines 2026" loading="lazy" decoding="async"><div class="masonry-info"><h4>Valentines 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="VDAY20266.jpg" data-caption="Valentines 2026"><img src="VDAY20266.jpg" alt="Valentines 2026" loading="lazy" decoding="async"><div class="masonry-info"><h4>Valentines 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card hidden-card" data-src="VDAY20267.jpg" data-caption="Valentines 2026"><img data-src="VDAY20267.jpg" alt="Valentines 2026" loading="lazy" decoding="async"><div class="masonry-info"><h4>Valentines 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card hidden-card" data-src="VDAY20268.jpg" data-caption="Valentines 2026"><img data-src="VDAY20268.jpg" alt="Valentines 2026" loading="lazy" decoding="async"><div class="masonry-info"><h4>Valentines 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+      </div>
+      <button class="load-more-btn" data-gallery="vday2026">Load More Photos <i class="fas fa-chevron-down"></i></button>
+    </div>
+
+    <div class="event-block reveal">
+      <div class="event-header"><div class="event-title">Valentines 2025</div><div class="event-tag">Official Photographer</div><div class="event-count">3 photos</div></div>
+      <div class="masonry-grid" data-gallery="vday2025">
+        <div class="masonry-card" data-src="VDAY20241.jpg" data-caption="Valentines 2025"><img src="VDAY20241.jpg" alt="Valentines 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>Valentines 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="VDAY20242.jpg" data-caption="Valentines 2025"><img src="VDAY20242.jpg" alt="Valentines 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>Valentines 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="VDAY20243.jpg" data-caption="Valentines 2025"><img src="VDAY20243.jpg" alt="Valentines 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>Valentines 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+      </div>
+    </div>
+
+    <div class="event-block reveal">
+      <div class="event-header"><div class="event-title">Valoshoot</div><div class="event-tag">Photographer</div><div class="event-count">1 photo</div></div>
+      <div class="masonry-grid" data-gallery="valoshoot">
+        <div class="masonry-card" data-src="VALOSHOOT1.jpg" data-caption="Valoshoot"><img src="VALOSHOOT1.jpg" alt="Valoshoot" loading="lazy" decoding="async"><div class="masonry-info"><h4>Valoshoot</h4><span>Portrait / Shoot</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+      </div>
+    </div>
+
+    <div class="event-block reveal">
+      <div class="event-header"><div class="event-title">Mass Dance 2025</div><div class="event-tag">Official Photographer</div><div class="event-count">2 photos</div></div>
+      <div class="masonry-grid" data-gallery="massdance">
+        <div class="masonry-card" data-src="MASS1.jpg" data-caption="Mass Dance 2025"><img src="MASS1.jpg" alt="Mass Dance 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>Mass Dance 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="MASS2.jpg" data-caption="Mass Dance 2025"><img src="MASS2.jpg" alt="Mass Dance 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>Mass Dance 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+      </div>
+    </div>
+
     <div class="event-block reveal">
       <div class="event-header"><div class="event-title">Christmas Station ID 2025</div><div class="event-tag">BTS Photographer</div><div class="event-count">3 photos</div></div>
       <div class="masonry-grid" data-gallery="csid">
-        <div class="masonry-card" data-src="CSID1.jpg" data-caption="Christmas Station ID 2025"><img src="CSID1.jpg" alt="CSID 2025"><div class="masonry-info"><h4>CSID 2025</h4><span>Behind the Scenes</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="CSID2.jpg" data-caption="Christmas Station ID 2025"><img src="CSID2.jpg" alt="CSID 2025"><div class="masonry-info"><h4>CSID 2025</h4><span>Behind the Scenes</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="CSID3.jpg" data-caption="Christmas Station ID 2025"><img src="CSID3.jpg" alt="CSID 2025"><div class="masonry-info"><h4>CSID 2025</h4><span>Behind the Scenes</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="CSID1.jpg" data-caption="Christmas Station ID 2025"><img src="CSID1.jpg" alt="CSID 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>CSID 2025</h4><span>Behind the Scenes</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="CSID2.jpg" data-caption="Christmas Station ID 2025"><img src="CSID2.jpg" alt="CSID 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>CSID 2025</h4><span>Behind the Scenes</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="CSID3.jpg" data-caption="Christmas Station ID 2025"><img src="CSID3.jpg" alt="CSID 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>CSID 2025</h4><span>Behind the Scenes</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
       </div>
     </div>
 
-    <!-- Graduation 2025 -->
     <div class="event-block reveal">
       <div class="event-header"><div class="event-title">Graduation 2025</div><div class="event-tag">Official Photographer</div><div class="event-count">9 photos</div></div>
       <div class="masonry-grid" data-gallery="grad2025">
-        <div class="masonry-card" data-src="GRAD1.jpg" data-caption="Graduation 2025"><img src="GRAD1.jpg" alt="Graduation 2025"><div class="masonry-info"><h4>Graduation 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="GRAD2.jpg" data-caption="Graduation 2025"><img src="GRAD2.jpg" alt="Graduation 2025"><div class="masonry-info"><h4>Graduation 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="GRAD3.jpg" data-caption="Graduation 2025"><img src="GRAD3.jpg" alt="Graduation 2025"><div class="masonry-info"><h4>Graduation 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="GRAD4.jpg" data-caption="Graduation 2025"><img src="GRAD4.jpg" alt="Graduation 2025"><div class="masonry-info"><h4>Graduation 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="GRAD5.jpg" data-caption="Graduation 2025"><img src="GRAD5.jpg" alt="Graduation 2025"><div class="masonry-info"><h4>Graduation 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="GRAD6.jpg" data-caption="Graduation 2025"><img src="GRAD6.jpg" alt="Graduation 2025"><div class="masonry-info"><h4>Graduation 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="GRAD7.jpg" data-caption="Graduation 2025"><img src="GRAD7.jpg" alt="Graduation 2025"><div class="masonry-info"><h4>Graduation 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="GRAD8.jpg" data-caption="Graduation 2025"><img src="GRAD8.jpg" alt="Graduation 2025"><div class="masonry-info"><h4>Graduation 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="GRAD9.jpg" data-caption="Graduation 2025"><img src="GRAD9.jpg" alt="Graduation 2025"><div class="masonry-info"><h4>Graduation 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="GRAD1.jpg" data-caption="Graduation 2025"><img src="GRAD1.jpg" alt="Graduation 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>Graduation 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="GRAD2.jpg" data-caption="Graduation 2025"><img src="GRAD2.jpg" alt="Graduation 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>Graduation 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="GRAD3.jpg" data-caption="Graduation 2025"><img src="GRAD3.jpg" alt="Graduation 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>Graduation 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="GRAD4.jpg" data-caption="Graduation 2025"><img src="GRAD4.jpg" alt="Graduation 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>Graduation 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="GRAD5.jpg" data-caption="Graduation 2025"><img src="GRAD5.jpg" alt="Graduation 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>Graduation 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="GRAD6.jpg" data-caption="Graduation 2025"><img src="GRAD6.jpg" alt="Graduation 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>Graduation 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card hidden-card" data-src="GRAD7.jpg" data-caption="Graduation 2025"><img data-src="GRAD7.jpg" alt="Graduation 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>Graduation 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card hidden-card" data-src="GRAD8.jpg" data-caption="Graduation 2025"><img data-src="GRAD8.jpg" alt="Graduation 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>Graduation 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card hidden-card" data-src="GRAD9.jpg" data-caption="Graduation 2025"><img data-src="GRAD9.jpg" alt="Graduation 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>Graduation 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+      </div>
+      <button class="load-more-btn" data-gallery="grad2025">Load More Photos <i class="fas fa-chevron-down"></i></button>
+    </div>
+
+    <div class="event-block reveal">
+      <div class="event-header"><div class="event-title">College Fair</div><div class="event-tag">Official Photographer</div><div class="event-count">2 photos</div></div>
+      <div class="masonry-grid" data-gallery="collegefair">
+        <div class="masonry-card" data-src="COLLEGEFAIR1.jpg" data-caption="College Fair"><img src="COLLEGEFAIR1.jpg" alt="College Fair" loading="lazy" decoding="async"><div class="masonry-info"><h4>College Fair</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="COLLEGEFAIR2.jpg" data-caption="College Fair"><img src="COLLEGEFAIR2.jpg" alt="College Fair" loading="lazy" decoding="async"><div class="masonry-info"><h4>College Fair</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
       </div>
     </div>
 
-    <!-- STI Exposition 2025 -->
     <div class="event-block reveal">
       <div class="event-header"><div class="event-title">STI Exposition 2025</div><div class="event-tag">Official Photographer</div><div class="event-count">2 photos</div></div>
       <div class="masonry-grid" data-gallery="shsexpo">
-        <div class="masonry-card" data-src="SHSEXPO1.jpg" data-caption="STI Exposition 2025"><img src="SHSEXPO1.jpg" alt="STI Exposition 2025"><div class="masonry-info"><h4>STI Exposition 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="SHSEXPO2.jpg" data-caption="STI Exposition 2025"><img src="SHSEXPO2.jpg" alt="STI Exposition 2025"><div class="masonry-info"><h4>STI Exposition 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="SHSEXPO1.jpg" data-caption="STI Exposition 2025"><img src="SHSEXPO1.jpg" alt="STI Exposition 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>STI Exposition 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="SHSEXPO2.jpg" data-caption="STI Exposition 2025"><img src="SHSEXPO2.jpg" alt="STI Exposition 2025" loading="lazy" decoding="async"><div class="masonry-info"><h4>STI Exposition 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
       </div>
     </div>
 
-    <!-- Christmas Lighting -->
     <div class="event-block reveal">
       <div class="event-header"><div class="event-title">Christmas Lighting</div><div class="event-tag">Official Photographer</div><div class="event-count">6 photos</div></div>
       <div class="masonry-grid" data-gallery="clight">
-        <div class="masonry-card" data-src="CLIGHT1.jpg" data-caption="Christmas Lighting"><img src="CLIGHT1.jpg" alt="Christmas Lighting"><div class="masonry-info"><h4>Christmas Lighting</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="CLIGHT2.jpg" data-caption="Christmas Lighting"><img src="CLIGHT2.jpg" alt="Christmas Lighting"><div class="masonry-info"><h4>Christmas Lighting</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="CLIGHT3.jpg" data-caption="Christmas Lighting"><img src="CLIGHT3.jpg" alt="Christmas Lighting"><div class="masonry-info"><h4>Christmas Lighting</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="CLIGHT4.jpg" data-caption="Christmas Lighting"><img src="CLIGHT4.jpg" alt="Christmas Lighting"><div class="masonry-info"><h4>Christmas Lighting</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="CLIGHT5.jpg" data-caption="Christmas Lighting"><img src="CLIGHT5.jpg" alt="Christmas Lighting"><div class="masonry-info"><h4>Christmas Lighting</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="masonry-card" data-src="CLIGHT6.jpg" data-caption="Christmas Lighting"><img src="CLIGHT6.jpg" alt="Christmas Lighting"><div class="masonry-info"><h4>Christmas Lighting</h4><span>Event</span></div><button class="masonry-zoom"><i class("fas fa-expand"). </i></button></div>
+        <div class="masonry-card" data-src="CLIGHT1.jpg" data-caption="Christmas Lighting"><img src="CLIGHT1.jpg" alt="Christmas Lighting" loading="lazy" decoding="async"><div class="masonry-info"><h4>Christmas Lighting</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="CLIGHT2.jpg" data-caption="Christmas Lighting"><img src="CLIGHT2.jpg" alt="Christmas Lighting" loading="lazy" decoding="async"><div class="masonry-info"><h4>Christmas Lighting</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="CLIGHT3.jpg" data-caption="Christmas Lighting"><img src="CLIGHT3.jpg" alt="Christmas Lighting" loading="lazy" decoding="async"><div class="masonry-info"><h4>Christmas Lighting</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card hidden-card" data-src="CLIGHT4.jpg" data-caption="Christmas Lighting"><img data-src="CLIGHT4.jpg" alt="Christmas Lighting" loading="lazy" decoding="async"><div class="masonry-info"><h4>Christmas Lighting</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card hidden-card" data-src="CLIGHT5.jpg" data-caption="Christmas Lighting"><img data-src="CLIGHT5.jpg" alt="Christmas Lighting" loading="lazy" decoding="async"><div class="masonry-info"><h4>Christmas Lighting</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card hidden-card" data-src="CLIGHT6.jpg" data-caption="Christmas Lighting"><img data-src="CLIGHT6.jpg" alt="Christmas Lighting" loading="lazy" decoding="async"><div class="masonry-info"><h4>Christmas Lighting</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
       </div>
+      <button class="load-more-btn" data-gallery="clight">Load More Photos <i class="fas fa-chevron-down"></i></button>
     </div>
 
   </div>
@@ -879,67 +916,35 @@
   <h2 class="section-title reveal reveal-delay-1">Graphic Design <em>Portfolio</em></h2>
   <div class="graphics-groups">
 
-    <!-- SSC Works -->
     <div class="reveal">
-      <div class="graphics-group-header">
-        <div class="graphics-group-title">Supreme Student Council</div>
-        <div class="graphics-tag">SSC · STI Lipa</div>
-      </div>
+      <div class="graphics-group-header"><div class="graphics-group-title">Supreme Student Council</div><div class="graphics-tag">SSC · STI Lipa</div></div>
       <div class="graphics-grid">
-        <div class="graphic-card" data-src="graphic1.png" data-caption="Ninoy Aquino's Day 2024 — SSC">
-          <img src="graphic1.png" alt="Ninoy Aquino's Day SSC"><div class="graphic-info"><h4>Ninoy Aquino's Day 2024</h4><span>SSC</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button>
-        </div>
-        <div class="graphic-card" data-src="graphic2.png" data-caption="Stay Safe STIers 2024–2025 — SSC">
-          <img src="graphic2.png" alt="Stay Safe STIers"><div class="graphic-info"><h4>Stay Safe STIers 2024–2025</h4><span>SSC</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button>
-        </div>
-        <div class="graphic-card" data-src="projecttulongbayanhian.png" data-caption="Project Tulong Bayanihan 2024 — SSC">
-          <img src="projecttulongbayanhian.png" alt="Project Tulong Bayanihan"><div class="graphic-info"><h4>Project Tulong Bayanihan 2024</h4><span>SSC</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button>
-        </div>
+        <div class="graphic-card" data-src="graphic1.png" data-caption="Ninoy Aquino's Day 2024 — SSC"><img src="graphic1.png" alt="Ninoy Aquino's Day SSC" loading="lazy" decoding="async"><div class="graphic-info"><h4>Ninoy Aquino's Day 2024</h4><span>SSC</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="graphic-card" data-src="graphic2.png" data-caption="Stay Safe STIers 2024–2025 — SSC"><img src="graphic2.png" alt="Stay Safe STIers" loading="lazy" decoding="async"><div class="graphic-info"><h4>Stay Safe STIers 2024–2025</h4><span>SSC</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="graphic-card" data-src="projecttulongbayanhian.png" data-caption="Project Tulong Bayanihan 2024 — SSC"><img src="projecttulongbayanhian.png" alt="Project Tulong Bayanihan" loading="lazy" decoding="async"><div class="graphic-info"><h4>Project Tulong Bayanihan 2024</h4><span>SSC</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
       </div>
     </div>
 
-    <!-- Ocularis Works -->
     <div class="reveal">
-      <div class="graphics-group-header">
-        <div class="graphics-group-title">Ocularis Media Team</div>
-        <div class="graphics-tag">Ocularis · STI Lipa</div>
-      </div>
+      <div class="graphics-group-header"><div class="graphics-group-title">Ocularis Media Team</div><div class="graphics-tag">Ocularis · STI Lipa</div></div>
       <div class="graphics-grid">
-        <div class="graphic-card" data-src="ninoyaquinoforocu.png" data-caption="Ninoy Aquino's Day 2024 — Ocularis">
-          <img src="ninoyaquinoforocu.png" alt="Ninoy Aquino Ocularis"><div class="graphic-info"><h4>Ninoy Aquino's Day 2024</h4><span>Ocularis</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button>
-        </div>
-        <div class="graphic-card" data-src="graduationfront.png" data-caption="Graduation 2024 Front Post — Ocularis">
-          <img src="graduationfront.png" alt="Graduation 2024 Ocularis"><div class="graphic-info"><h4>Graduation 2024 Front Post</h4><span>Ocularis</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button>
-        </div>
+        <div class="graphic-card" data-src="ninoyaquinoforocu.png" data-caption="Ninoy Aquino's Day 2024 — Ocularis"><img src="ninoyaquinoforocu.png" alt="Ninoy Aquino Ocularis" loading="lazy" decoding="async"><div class="graphic-info"><h4>Ninoy Aquino's Day 2024</h4><span>Ocularis</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="graphic-card" data-src="graduationfront.png" data-caption="Graduation 2024 Front Post — Ocularis"><img src="graduationfront.png" alt="Graduation 2024 Ocularis" loading="lazy" decoding="async"><div class="graphic-info"><h4>Graduation 2024 Front Post</h4><span>Ocularis</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
       </div>
     </div>
 
-    <!-- Competition Works -->
     <div class="reveal">
-      <div class="graphics-group-header">
-        <div class="graphics-group-title">Competition</div>
-        <div class="graphics-tag">STI Tagisan ng Sining · National</div>
-      </div>
+      <div class="graphics-group-header"><div class="graphics-group-title">Competition</div><div class="graphics-tag">STI Tagisan ng Sining · National</div></div>
       <div class="graphics-grid">
-        <div class="graphic-card" data-src="unsungheroposter.png" data-caption="Unsung Hero Poster — Sanctum Studios · STI Tagisan ng Sining">
-          <img src="unsungheroposter.png" alt="Unsung Hero Poster"><div class="graphic-info"><h4>Unsung Hero Poster</h4><span>Sanctum Studios · National Competition</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button>
-        </div>
+        <div class="graphic-card" data-src="unsungheroposter.png" data-caption="Unsung Hero Poster — Sanctum Studios · STI Tagisan ng Sining"><img src="unsungheroposter.png" alt="Unsung Hero Poster" loading="lazy" decoding="async"><div class="graphic-info"><h4>Unsung Hero Poster</h4><span>Sanctum Studios · National Competition</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
       </div>
     </div>
 
-    <!-- Personal Works -->
     <div class="reveal">
-      <div class="graphics-group-header">
-        <div class="graphics-group-title">Personal / Practice</div>
-        <div class="graphics-tag">Design Practice</div>
-      </div>
+      <div class="graphics-group-header"><div class="graphics-group-title">Personal / Practice</div><div class="graphics-tag">Design Practice</div></div>
       <div class="graphics-grid">
-        <div class="graphic-card" data-src="graphic3.png" data-caption="Air Jordan 4 University Blue">
-          <img src="graphic3.png" alt="Air Jordan 4 University Blue"><div class="graphic-info"><h4>Air Jordan 4 University Blue</h4><span>Personal</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button>
-        </div>
-        <div class="graphic-card" data-src="graphic4.png" data-caption="Air Jordan 4 Pine Green">
-          <img src="graphic4.png" alt="Air Jordan 4 Pine Green"><div class="graphic-info"><h4>Air Jordan 4 Pine Green</h4><span>Personal</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button>
-        </div>
+        <div class="graphic-card" data-src="graphic3.png" data-caption="Air Jordan 4 University Blue"><img src="graphic3.png" alt="Air Jordan 4 University Blue" loading="lazy" decoding="async"><div class="graphic-info"><h4>Air Jordan 4 University Blue</h4><span>Personal</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="graphic-card" data-src="graphic4.png" data-caption="Air Jordan 4 Pine Green"><img src="graphic4.png" alt="Air Jordan 4 Pine Green" loading="lazy" decoding="async"><div class="graphic-info"><h4>Air Jordan 4 Pine Green</h4><span>Personal</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
       </div>
     </div>
 
@@ -956,9 +961,9 @@
       <div class="contact-links">
         <a href="mailto:redenlopez17@gmail.com" class="contact-link"><i class="fas fa-envelope"></i> redenlopez17@gmail.com</a>
         <a href="tel:+639692001758" class="contact-link"><i class="fas fa-phone"></i> +63 969 200 1758</a>
-        <a href="https://www.facebook.com/rdnlopez1/" class="contact-link" target="_blank"><i class="fab fa-facebook-f"></i> facebook.com/rdnlopez1</a>
-        <a href="https://www.instagram.com/rdn_lopez/" class="contact-link" target="_blank"><i class="fab fa-instagram"></i> @rdn_lopez</a>
-        <a href="https://www.linkedin.com/in/reden-lopez-43a9b52ba/" class="contact-link" target="_blank"><i class="fab fa-linkedin-in"></i> linkedin.com/in/reden-lopez</a>
+        <a href="https://www.facebook.com/rdnlopez1/" class="contact-link" target="_blank" rel="noopener"><i class="fab fa-facebook-f"></i> facebook.com/rdnlopez1</a>
+        <a href="https://www.instagram.com/rdn_lopez/" class="contact-link" target="_blank" rel="noopener"><i class="fab fa-instagram"></i> @rdn_lopez</a>
+        <a href="https://www.linkedin.com/in/reden-lopez-43a9b52ba/" class="contact-link" target="_blank" rel="noopener"><i class="fab fa-linkedin-in"></i> linkedin.com/in/reden-lopez</a>
       </div>
     </div>
     <div class="reveal reveal-delay-3">
@@ -980,19 +985,21 @@
   <div class="footer-logo">R<span>.</span>LOPEZ</div>
   <div class="footer-copy">© 2025 Reden Masacayan Lopez. All Rights Reserved.</div>
   <div class="footer-socials">
-    <a href="https://www.facebook.com/rdnlopez1/" target="_blank"><i class="fab fa-facebook-f"></i></a>
-    <a href="https://www.instagram.com/rdn_lopez/" target="_blank"><i class="fab fa-instagram"></i></a>
-    <a href="https://x.com/rdn_lopez" target="_blank"><i class="fab fa-twitter"></i></a>
-    <a href="https://www.linkedin.com/in/reden-lopez-43a9b52ba/" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+    <a href="https://www.facebook.com/rdnlopez1/" target="_blank" rel="noopener"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://www.instagram.com/rdn_lopez/" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+    <a href="https://x.com/rdn_lopez" target="_blank" rel="noopener"><i class="fab fa-twitter"></i></a>
+    <a href="https://www.linkedin.com/in/reden-lopez-43a9b52ba/" target="_blank" rel="noopener"><i class="fab fa-linkedin-in"></i></a>
   </div>
 </footer>
 
 <button class="scroll-top" id="scrollTop"><i class="fas fa-arrow-up"></i></button>
 
-<script>
+<!-- All JS deferred to end of body -->
+<script defer>
   /* ── Typewriter ── */
   (function(){
     const el=document.querySelector('.typewriter');
+    if(!el)return;
     const titles=['Front End Developer','UI / UX Designer','Photographer','Graphic Designer','Technical Director','Videographer & Editor'];
     let ti=0,ci=0,del=false;
     function type(){
@@ -1008,7 +1015,7 @@
   const dot=document.getElementById('cursorDot'),ring=document.getElementById('cursorRing');
   let mx=0,my=0,rx=0,ry=0;
   if(dot&&ring){
-    document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+    document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;},{passive:true});
     (function a(){dot.style.left=mx+'px';dot.style.top=my+'px';rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(a);})();
   }
 
@@ -1017,7 +1024,10 @@
 
   /* ── Navbar ── */
   const navbar=document.getElementById('navbar'),stBtn=document.getElementById('scrollTop');
-  window.addEventListener('scroll',()=>{navbar.classList.toggle('scrolled',scrollY>40);stBtn.classList.toggle('show',scrollY>400);});
+  window.addEventListener('scroll',()=>{
+    navbar.classList.toggle('scrolled',scrollY>40);
+    stBtn.classList.toggle('show',scrollY>400);
+  },{passive:true});
 
   /* ── Hamburger ── */
   const ham=document.getElementById('hamburger'),drawer=document.getElementById('navDrawer');
@@ -1027,23 +1037,46 @@
   /* ── Scroll Top ── */
   stBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
 
-  /* ── Reveal ── */
-  const ro=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:.08});
+  /* ── Reveal via IntersectionObserver ── */
+  const ro=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('visible');ro.unobserve(x.target);}}),{threshold:.08,rootMargin:'0px 0px -40px 0px'});
   document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
 
   /* ── Stat Counters ── */
-  const so=new IntersectionObserver(e=>{e.forEach(x=>{if(!x.isIntersecting)return;const el=x.target,t=parseInt(el.dataset.target),p=el.dataset.plus==='true',s=t/(1600/16);let c=0;const i=setInterval(()=>{c+=s;if(c>=t){el.textContent=t+(p?'+':'');clearInterval(i);}else el.textContent=Math.floor(c)+(p?'+':'');},16);so.unobserve(el);});},{threshold:.5});
+  const so=new IntersectionObserver(e=>{e.forEach(x=>{
+    if(!x.isIntersecting)return;
+    const el=x.target,t=parseInt(el.dataset.target),p=el.dataset.plus==='true',s=t/(1600/16);
+    let c=0;
+    const i=setInterval(()=>{c+=s;if(c>=t){el.textContent=t+(p?'+':'');clearInterval(i);}else el.textContent=Math.floor(c)+(p?'+':'');},16);
+    so.unobserve(el);
+  });},{threshold:.5});
   document.querySelectorAll('.stat-num[data-target]').forEach(el=>so.observe(el));
 
-  /* ── Lightbox (photo + graphic) ── */
+  /* ── Load More for galleries ── */
+  document.querySelectorAll('.load-more-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const galleryId=btn.dataset.gallery;
+      const grid=document.querySelector(`.masonry-grid[data-gallery="${galleryId}"]`);
+      if(!grid)return;
+      const hidden=grid.querySelectorAll('.hidden-card');
+      hidden.forEach(card=>{
+        card.classList.remove('hidden-card');
+        // Lazy load the deferred images
+        const img=card.querySelector('img[data-src]');
+        if(img){img.src=img.dataset.src;img.removeAttribute('data-src');}
+      });
+      btn.classList.add('hidden');
+    });
+  });
+
+  /* ── Lightbox ── */
   const lb=document.getElementById('lightbox'),lbImg=document.getElementById('lightboxImg'),lbCap=document.getElementById('lightboxCaption');
   let lbGallery=[],lbIdx=0;
 
   function buildGallery(clickedEl){
     const grid=clickedEl.closest('.masonry-grid,.graphics-grid,.project-card');
     if(grid){
-      const cards=grid.querySelectorAll('[data-src]');
-      lbGallery=[...cards].map(c=>({src:c.dataset.src||c.getAttribute('data-src'),cap:c.dataset.caption||''}));
+      const cards=grid.querySelectorAll('[data-src]:not(.hidden-card)');
+      lbGallery=[...cards].map(c=>({src:c.dataset.src,cap:c.dataset.caption||''}));
       lbIdx=[...cards].indexOf(clickedEl);
     } else {
       lbGallery=[{src:clickedEl.dataset.src,cap:clickedEl.dataset.caption||''}];
@@ -1051,10 +1084,11 @@
     }
   }
 
-  function openLB(el){buildGallery(el);lbImg.src=lbGallery[lbIdx].src;lbCap.textContent=lbGallery[lbIdx].cap;lb.classList.add('active');document.body.style.overflow='hidden';}
+  function openLB(el){buildGallery(el);showLB();}
+  function showLB(){lbImg.src=lbGallery[lbIdx].src;lbCap.textContent=lbGallery[lbIdx].cap;lb.classList.add('active');document.body.style.overflow='hidden';}
   function closeLB(){lb.classList.remove('active');document.body.style.overflow='';}
-  function nextLB(){lbIdx=(lbIdx+1)%lbGallery.length;lbImg.src=lbGallery[lbIdx].src;lbCap.textContent=lbGallery[lbIdx].cap;}
-  function prevLB(){lbIdx=(lbIdx-1+lbGallery.length)%lbGallery.length;lbImg.src=lbGallery[lbIdx].src;lbCap.textContent=lbGallery[lbIdx].cap;}
+  function nextLB(){lbIdx=(lbIdx+1)%lbGallery.length;showLB();}
+  function prevLB(){lbIdx=(lbIdx-1+lbGallery.length)%lbGallery.length;showLB();}
 
   document.querySelectorAll('.masonry-card,.graphic-card').forEach(el=>el.addEventListener('click',()=>openLB(el)));
   document.querySelectorAll('.project-screenshot').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();openLB(el);}));
@@ -1070,34 +1104,49 @@
     }
   });
 
-  /* ── Video Modal ── */
-  const vm=document.getElementById('videoModal'),modalVid=document.getElementById('modalVideo'),muteIcon=document.getElementById('muteIcon'),muteLabel=document.getElementById('muteLabel'),vmTitle=document.getElementById('videoModalTitle');
+  /* ── Video Modal — video created on demand, destroyed on close ── */
+  const vm=document.getElementById('videoModal'),vmInner=document.getElementById('videoModalInner'),vmTitle=document.getElementById('videoModalTitle');
+  let activeVideo=null;
 
   function openVideo(src,title){
-    modalVid.src=src;modalVid.muted=true;modalVid.play();
+    // Remove any existing video
+    if(activeVideo){activeVideo.remove();activeVideo=null;}
+    const v=document.createElement('video');
+    v.src=src;v.autoplay=true;v.loop=true;v.muted=true;v.playsInline=true;v.controls=true;
+    v.style.cssText='width:100%;display:block;aspect-ratio:16/9;background:#000;';
+    // Unmute btn
+    const unmute=document.createElement('button');
+    unmute.className='video-modal-unmute';
+    unmute.innerHTML='<i class="fas fa-volume-mute"></i> <span>Unmute</span>';
+    unmute.addEventListener('click',()=>{
+      v.muted=!v.muted;
+      unmute.innerHTML=v.muted?'<i class="fas fa-volume-mute"></i> <span>Unmute</span>':'<i class="fas fa-volume-up"></i> <span>Mute</span>';
+    });
+    vmInner.insertBefore(v,vmTitle);
+    vmInner.insertBefore(unmute,vmTitle);
     vmTitle.textContent=title;
+    activeVideo=v;
     vm.classList.add('active');
     document.body.style.overflow='hidden';
-    muteIcon.className='fas fa-volume-mute';muteLabel.textContent='Unmute';
   }
 
-  document.getElementById('videoModalClose').addEventListener('click',()=>{
-    vm.classList.remove('active');modalVid.pause();modalVid.src='';document.body.style.overflow='';
-  });
-  vm.addEventListener('click',e=>{if(e.target===vm){vm.classList.remove('active');modalVid.pause();modalVid.src='';document.body.style.overflow='';}});
+  function closeVideo(){
+    vm.classList.remove('active');
+    if(activeVideo){activeVideo.pause();activeVideo.src='';activeVideo.remove();activeVideo=null;}
+    // Remove unmute button too
+    const ub=vmInner.querySelector('.video-modal-unmute');
+    if(ub)ub.remove();
+    document.body.style.overflow='';
+  }
 
-  document.getElementById('unmuteBtn').addEventListener('click',()=>{
-    modalVid.muted=!modalVid.muted;
-    muteIcon.className=modalVid.muted?'fas fa-volume-mute':'fas fa-volume-up';
-    muteLabel.textContent=modalVid.muted?'Unmute':'Mute';
+  // Attach click to film thumbs
+  document.querySelectorAll('.film-thumb[data-video]').forEach(thumb=>{
+    thumb.addEventListener('click',()=>openVideo(thumb.dataset.video,thumb.dataset.title));
   });
 
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&vm.classList.contains('active')){vm.classList.remove('active');modalVid.pause();modalVid.src='';document.body.style.overflow='';}});
-
-  /* ── Video thumbnails auto-seek to frame 1s ── */
-  document.querySelectorAll('.film-thumb video').forEach(v=>{
-    v.addEventListener('loadedmetadata',()=>{v.currentTime=1;});
-  });
+  document.getElementById('videoModalClose').addEventListener('click',closeVideo);
+  vm.addEventListener('click',e=>{if(e.target===vm)closeVideo();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&vm.classList.contains('active'))closeVideo();});
 
   /* ── Contact Form ── */
   const form=document.getElementById('contactForm'),status=document.getElementById('formStatus'),submitBtn=document.getElementById('formSubmit');
