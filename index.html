@@ -49,8 +49,8 @@
     nav.scrolled { padding: 1rem var(--pad); background: rgba(10,10,10,.92); backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); }
     .nav-logo { font-weight: 800; font-size: clamp(.95rem,2.5vw,1.1rem); letter-spacing: .15em; text-decoration: none; color: var(--white); position: relative; z-index: 1001; }
     .nav-logo span { color: var(--red); }
-    .nav-links { display: flex; gap: clamp(1rem,2.5vw,2.5rem); list-style: none; }
-    .nav-links a { color: var(--grey-text); text-decoration: none; font-size: clamp(.65rem,1.1vw,.8rem); letter-spacing: .12em; text-transform: uppercase; font-family: 'Space Mono', monospace; transition: color var(--transition); position: relative; }
+    .nav-links { display: flex; gap: clamp(.6rem,1.5vw,1.8rem); list-style: none; }
+    .nav-links a { color: var(--grey-text); text-decoration: none; font-size: clamp(.58rem,.95vw,.72rem); letter-spacing: .12em; text-transform: uppercase; font-family: 'Space Mono', monospace; transition: color var(--transition); position: relative; }
     .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: var(--red); transition: width var(--transition); }
     .nav-links a:hover { color: var(--white); }
     .nav-links a:hover::after { width: 100%; }
@@ -108,7 +108,6 @@
     .stat-box:hover { background: var(--grey-mid); }
     .stat-num { font-size: clamp(1.8rem,4vw,2.5rem); font-weight: 800; color: var(--red); font-family: 'Space Mono', monospace; display: block; }
     .stat-label { font-size: clamp(.6rem,1.2vw,.7rem); letter-spacing: .1em; text-transform: uppercase; color: var(--grey-text); margin-top: 6px; display: block; font-family: 'Space Mono', monospace; }
-    /* Personal info baked into About */
     .personal-mini { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--glass-border); border: 1px solid var(--glass-border); }
     .detail-card { background: var(--grey-dark); padding: clamp(14px,2vw,20px) clamp(16px,3vw,24px); display: flex; align-items: flex-start; gap: 14px; transition: background var(--transition); }
     .detail-card:hover { background: var(--grey-mid); }
@@ -130,24 +129,20 @@
     .skill-name { font-size: clamp(.9rem,1.6vw,1.05rem); font-weight: 700; letter-spacing: -.01em; flex: 1; position: relative; z-index: 1; }
     .skill-dot { width: 6px; height: 6px; background: var(--red); border-radius: 50%; flex-shrink: 0; opacity: 0; transition: opacity var(--transition); }
     .skill-list-item:hover .skill-dot { opacity: 1; }
-
     .skills-right { display: flex; flex-direction: column; gap: clamp(24px,4vw,40px); }
     .skills-tags { display: flex; flex-wrap: wrap; gap: 10px; }
     .skill-tag { padding: 9px 16px; border: 1px solid var(--glass-border); font-size: clamp(.62rem,1.2vw,.72rem); letter-spacing: .08em; text-transform: uppercase; font-family: 'Space Mono', monospace; color: var(--grey-text); transition: var(--transition); }
     .skill-tag:hover { border-color: var(--red); color: var(--white); background: rgba(230,48,34,.08); }
-
-    /* ── Tech Stack / Languages ── */
-    #techstack { background: var(--grey-dark); padding-top: 0; }
     .lang-grid { display: grid; grid-template-columns: repeat(8,1fr); gap: 1px; background: var(--glass-border); border: 1px solid var(--glass-border); }
-    .lang-card { background: var(--grey-dark); padding: clamp(20px,3vw,36px) 10px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 14px; transition: background var(--transition), transform var(--transition); }
-    .lang-card:hover { background: var(--grey-mid); transform: translateY(-4px); }
+    .lang-card { background: var(--grey-mid); padding: clamp(20px,3vw,36px) 10px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 14px; transition: background var(--transition), transform var(--transition); }
+    .lang-card:hover { background: var(--grey-light); transform: translateY(-4px); }
     .lang-card i { font-size: clamp(1.4rem,2.5vw,2rem); color: var(--grey-text); transition: color var(--transition); }
     .lang-card:hover i { color: var(--red); }
     .lang-card span { font-size: clamp(.55rem,1vw,.65rem); letter-spacing: .15em; text-transform: uppercase; font-family: 'Space Mono', monospace; color: var(--grey-text); transition: color var(--transition); }
     .lang-card:hover span { color: var(--white); }
 
     /* ── Projects ── */
-    #projects { background: var(--black); }
+    #projects { background: var(--grey-dark); }
     .projects-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: clamp(12px,2vw,20px); }
     .project-card { background: var(--grey-mid); border: 1px solid var(--glass-border); padding: clamp(24px,3vw,36px); display: flex; flex-direction: column; gap: 16px; transition: border-color var(--transition), background var(--transition), transform var(--transition); position: relative; overflow: hidden; }
     .project-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 0; background: var(--red); transition: height .4s cubic-bezier(.4,0,.2,1); }
@@ -171,10 +166,15 @@
     .project-tags { display: flex; flex-wrap: wrap; gap: 8px; }
     .project-tag { font-family: 'Space Mono', monospace; font-size: .58rem; letter-spacing: .1em; text-transform: uppercase; color: var(--grey-text); border: 1px solid var(--glass-border); padding: 4px 10px; transition: var(--transition); }
     .project-card:hover .project-tag { border-color: rgba(230,48,34,.2); color: var(--white); }
-    .project-placeholder { opacity: .4; pointer-events: none; }
+
+    /* Project Screenshots Strip */
+    .project-screenshots { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+    .project-screenshots::-webkit-scrollbar { display: none; }
+    .project-screenshot { width: 72px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid var(--glass-border); cursor: pointer; transition: var(--transition); filter: grayscale(20%); }
+    .project-screenshot:hover { border-color: var(--red); filter: grayscale(0%); transform: scale(1.05); }
 
     /* ── Experience / Timeline ── */
-    #timeline { background: var(--grey-dark); }
+    #timeline { background: var(--black); }
     .timeline-list { position: relative; padding-left: clamp(28px,5vw,48px); }
     .timeline-list::before { content: ''; position: absolute; left: 0; top: 6px; bottom: 6px; width: 1px; background: var(--glass-border); }
     .timeline-item { position: relative; padding-bottom: 52px; }
@@ -186,67 +186,72 @@
     .timeline-org { font-size: clamp(.72rem,1.3vw,.8rem); color: var(--grey-text); font-family: 'Space Mono', monospace; margin-bottom: 12px; }
     .timeline-desc { color: var(--grey-text); font-size: clamp(.82rem,1.4vw,.9rem); line-height: 1.7; max-width: 560px; }
 
-    /* ── Photography — Masonry Grid ── */
+    /* ── Films ── */
+    #films { background: var(--grey-dark); }
+    .films-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(16px,3vw,28px); }
+    .film-card { background: var(--grey-mid); border: 1px solid var(--glass-border); overflow: hidden; position: relative; transition: border-color var(--transition), transform var(--transition); }
+    .film-card:hover { border-color: rgba(230,48,34,.3); transform: translateY(-4px); }
+    .film-thumb { position: relative; width: 100%; aspect-ratio: 16/9; background: var(--grey-light); overflow: hidden; cursor: pointer; }
+    .film-thumb video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .film-play-btn { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,.45); transition: background var(--transition); }
+    .film-thumb:hover .film-play-btn { background: rgba(0,0,0,.6); }
+    .film-play-icon { width: 60px; height: 60px; border: 2px solid var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: var(--white); transition: var(--transition); background: rgba(230,48,34,.2); }
+    .film-thumb:hover .film-play-icon { background: var(--red); border-color: var(--red); transform: scale(1.1); }
+    .film-info { padding: clamp(16px,2.5vw,24px); }
+    .film-badge { display: inline-block; font-family: 'Space Mono', monospace; font-size: .58rem; letter-spacing: .15em; text-transform: uppercase; color: var(--red); border: 1px solid rgba(230,48,34,.3); padding: 3px 10px; margin-bottom: 10px; }
+    .film-title { font-size: clamp(.95rem,1.8vw,1.15rem); font-weight: 700; line-height: 1.3; margin-bottom: 8px; }
+    .film-role { display: flex; align-items: center; gap: 8px; font-family: 'Space Mono', monospace; font-size: .68rem; color: var(--grey-text); letter-spacing: .06em; }
+    .film-role i { color: var(--red); font-size: .65rem; }
+
+    /* ── Photography ── */
     #photography { background: var(--black); }
-    .photo-intro { margin-bottom: clamp(36px,5vw,56px); }
-    .masonry-grid {
-      columns: 3;
-      column-gap: clamp(8px,1.5vw,14px);
-    }
-    .masonry-card {
-      position: relative;
-      overflow: hidden;
-      cursor: pointer;
-      background: var(--grey-mid);
-      break-inside: avoid;
-      margin-bottom: clamp(8px,1.5vw,14px);
-      display: block;
-    }
+    .photo-events { display: flex; flex-direction: column; gap: clamp(48px,8vw,80px); }
+    .event-block { }
+    .event-header { display: flex; align-items: baseline; gap: 20px; margin-bottom: clamp(16px,3vw,28px); padding-bottom: 16px; border-bottom: 1px solid var(--glass-border); flex-wrap: wrap; }
+    .event-title { font-size: clamp(1.1rem,2.5vw,1.6rem); font-weight: 800; letter-spacing: -.01em; }
+    .event-tag { font-family: 'Space Mono', monospace; font-size: .6rem; letter-spacing: .15em; text-transform: uppercase; color: var(--red); border: 1px solid rgba(230,48,34,.3); padding: 3px 10px; }
+    .event-count { font-family: 'Space Mono', monospace; font-size: .6rem; color: var(--grey-text); letter-spacing: .1em; margin-left: auto; }
+    .masonry-grid { columns: 3; column-gap: clamp(8px,1.5vw,14px); }
+    .masonry-card { position: relative; overflow: hidden; cursor: pointer; background: var(--grey-mid); break-inside: avoid; margin-bottom: clamp(8px,1.5vw,14px); display: block; }
     .masonry-card img { width: 100%; height: auto; display: block; transition: transform .6s cubic-bezier(.4,0,.2,1), filter .4s; filter: grayscale(25%); }
     .masonry-card:hover img { transform: scale(1.04); filter: grayscale(0%); }
-    .masonry-info {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      padding: 36px 20px 16px;
-      background: linear-gradient(transparent,rgba(0,0,0,.88));
-      transform: translateY(100%);
-      transition: transform .4s cubic-bezier(.4,0,.2,1);
-      display: flex; justify-content: space-between; align-items: flex-end;
-    }
+    .masonry-info { position: absolute; bottom: 0; left: 0; right: 0; padding: 36px 20px 16px; background: linear-gradient(transparent,rgba(0,0,0,.88)); transform: translateY(100%); transition: transform .4s cubic-bezier(.4,0,.2,1); display: flex; justify-content: space-between; align-items: flex-end; }
     .masonry-card:hover .masonry-info { transform: translateY(0); }
     .masonry-info h4 { font-size: clamp(.82rem,1.4vw,.95rem); font-weight: 700; }
     .masonry-info span { font-family: 'Space Mono', monospace; font-size: .6rem; color: var(--red); letter-spacing: .1em; }
-    .masonry-zoom {
-      position: absolute; top: 12px; right: 12px; width: 32px; height: 32px;
-      background: rgba(0,0,0,.6); border: 1px solid rgba(255,255,255,.2); color: var(--white);
-      display: flex; align-items: center; justify-content: center; font-size: .75rem;
-      opacity: 0; transition: opacity var(--transition), background var(--transition); cursor: pointer;
-    }
+    .masonry-zoom { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; background: rgba(0,0,0,.6); border: 1px solid rgba(255,255,255,.2); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: .75rem; opacity: 0; transition: opacity var(--transition), background var(--transition); cursor: pointer; }
     .masonry-card:hover .masonry-zoom { opacity: 1; }
     .masonry-zoom:hover { background: var(--red); border-color: var(--red); }
 
-    /* ── Graphics — Horizontal Sticky Scroll ── */
-    #graphics { background: var(--grey-dark); padding: 0; position: relative; }
-    .graphics-intro { padding: clamp(60px,10vw,120px) var(--pad) clamp(40px,6vw,70px); }
-    .graphics-sticky-wrap { position: relative; height: 400vh; }
-    .graphics-sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; display: flex; align-items: center; }
-    .graphics-track { display: flex; gap: clamp(12px,2vw,24px); padding: 0 var(--pad); will-change: transform; }
-    .graphic-card { position: relative; overflow: hidden; cursor: pointer; background: var(--grey-mid); height: clamp(320px,60vh,520px); flex-shrink: 0; aspect-ratio: 3/4; border: 1px solid var(--glass-border); transition: border-color var(--transition); }
-    .graphic-card:hover { border-color: rgba(230,48,34,.4); }
+    /* ── Graphics ── */
+    #graphics { background: var(--grey-dark); }
+    .graphics-groups { display: flex; flex-direction: column; gap: clamp(48px,8vw,80px); }
+    .graphics-group-header { display: flex; align-items: baseline; gap: 20px; margin-bottom: clamp(16px,3vw,28px); padding-bottom: 16px; border-bottom: 1px solid var(--glass-border); flex-wrap: wrap; }
+    .graphics-group-title { font-size: clamp(1.1rem,2.5vw,1.6rem); font-weight: 800; letter-spacing: -.01em; }
+    .graphics-tag { font-family: 'Space Mono', monospace; font-size: .6rem; letter-spacing: .15em; text-transform: uppercase; color: var(--red); border: 1px solid rgba(230,48,34,.3); padding: 3px 10px; }
+    .graphics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(8px,1.5vw,16px); }
+    .graphic-card { position: relative; overflow: hidden; cursor: pointer; background: var(--grey-mid); border: 1px solid var(--glass-border); aspect-ratio: 3/4; transition: border-color var(--transition), transform var(--transition); }
+    .graphic-card:hover { border-color: rgba(230,48,34,.4); transform: translateY(-4px); }
     .graphic-card img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s cubic-bezier(.4,0,.2,1), filter .4s; filter: grayscale(15%); }
     .graphic-card:hover img { transform: scale(1.04); filter: grayscale(0%); }
-    .graphic-info { position: absolute; bottom: 0; left: 0; right: 0; padding: 40px 24px 20px; background: linear-gradient(transparent,rgba(0,0,0,.88)); transform: translateY(100%); transition: transform .4s cubic-bezier(.4,0,.2,1); display: flex; justify-content: space-between; align-items: flex-end; }
+    .graphic-info { position: absolute; bottom: 0; left: 0; right: 0; padding: 40px 16px 16px; background: linear-gradient(transparent,rgba(0,0,0,.88)); transform: translateY(100%); transition: transform .4s cubic-bezier(.4,0,.2,1); }
     .graphic-card:hover .graphic-info { transform: translateY(0); }
-    .graphic-info h4 { font-size: clamp(.875rem,1.5vw,1rem); font-weight: 700; }
-    .graphic-info span { font-family: 'Space Mono', monospace; font-size: .65rem; color: var(--red); letter-spacing: .1em; }
-    .graphic-zoom { position: absolute; top: 16px; right: 16px; width: 36px; height: 36px; background: rgba(0,0,0,.6); border: 1px solid rgba(255,255,255,.2); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: .8rem; opacity: 0; transition: opacity var(--transition), background var(--transition); cursor: pointer; }
+    .graphic-info h4 { font-size: clamp(.8rem,1.4vw,.95rem); font-weight: 700; margin-bottom: 4px; }
+    .graphic-info span { font-family: 'Space Mono', monospace; font-size: .6rem; color: var(--red); letter-spacing: .1em; }
+    .graphic-zoom { position: absolute; top: 10px; right: 10px; width: 30px; height: 30px; background: rgba(0,0,0,.6); border: 1px solid rgba(255,255,255,.2); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: .72rem; opacity: 0; transition: opacity var(--transition), background var(--transition); cursor: pointer; }
     .graphic-card:hover .graphic-zoom { opacity: 1; }
     .graphic-zoom:hover { background: var(--red); border-color: var(--red); }
-    .graphics-progress-bar { position: absolute; bottom: 32px; left: var(--pad); right: var(--pad); height: 1px; background: var(--glass-border); }
-    .graphics-progress-fill { height: 100%; background: var(--red); width: 0; transition: width .05s linear; }
-    .graphics-hint { position: absolute; bottom: 48px; right: var(--pad); font-family: 'Space Mono', monospace; font-size: .62rem; letter-spacing: .15em; text-transform: uppercase; color: var(--grey-text); display: flex; align-items: center; gap: 10px; transition: opacity .4s; }
-    .graphics-hint.hide { opacity: 0; }
-    .graphics-hint i { color: var(--red); animation: nudge 1.2s ease-in-out infinite; }
-    @keyframes nudge { 0%,100%{transform:translateX(0)} 50%{transform:translateX(6px)} }
+
+    /* ── Video Modal ── */
+    .video-modal { position: fixed; inset: 0; background: rgba(0,0,0,.96); z-index: 9990; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity .4s, visibility .4s; backdrop-filter: blur(12px); }
+    .video-modal.active { opacity: 1; visibility: visible; }
+    .video-modal-inner { width: min(900px, 92vw); position: relative; }
+    .video-modal-inner video { width: 100%; display: block; aspect-ratio: 16/9; background: #000; }
+    .video-modal-close { position: fixed; top: 28px; right: 32px; background: none; border: 1px solid var(--glass-border); color: var(--white); font-size: 1.2rem; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition); z-index: 9991; }
+    .video-modal-close:hover { background: var(--red); border-color: var(--red); }
+    .video-modal-unmute { position: absolute; bottom: 16px; right: 16px; background: rgba(0,0,0,.7); border: 1px solid var(--glass-border); color: var(--white); font-family: 'Space Mono', monospace; font-size: .65rem; letter-spacing: .1em; padding: 8px 14px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: var(--transition); }
+    .video-modal-unmute:hover { background: var(--red); border-color: var(--red); }
+    .video-modal-title { margin-top: 16px; font-family: 'Space Mono', monospace; font-size: .75rem; color: var(--grey-text); letter-spacing: .1em; }
 
     /* ── Lightbox ── */
     .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,.96); z-index: 9990; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity .4s, visibility .4s; backdrop-filter: blur(10px); }
@@ -302,8 +307,9 @@
 
     /* ══ RESPONSIVE ══ */
     @media (max-width: 1100px) {
-      .lang-grid { grid-template-columns: repeat(4,1fr); }
       .projects-grid { grid-template-columns: repeat(2,1fr); }
+      .graphics-grid { grid-template-columns: repeat(3, 1fr); }
+      .films-grid { grid-template-columns: repeat(2,1fr); }
       .masonry-grid { columns: 2; }
     }
     @media (max-width: 900px) {
@@ -322,26 +328,23 @@
       .personal-mini { grid-template-columns: 1fr; }
       .lang-grid { grid-template-columns: repeat(4,1fr); }
       .projects-grid { grid-template-columns: 1fr; }
+      .films-grid { grid-template-columns: 1fr; }
+      .graphics-grid { grid-template-columns: repeat(2, 1fr); }
       footer { justify-content: center; text-align: center; flex-direction: column; }
       .stats-row { grid-template-columns: repeat(3,1fr); }
-      #graphics { padding: clamp(60px,10vw,120px) var(--pad); }
-      .graphics-intro { padding: 0 0 clamp(30px,5vw,50px); }
-      .graphics-sticky-wrap { height: auto; }
-      .graphics-sticky { position: static; height: auto; overflow: visible; }
-      .graphics-track { flex-wrap: wrap; padding: 0; transform: none !important; }
-      .graphic-card { height: auto; aspect-ratio: 3/4; flex: 1 1 calc(50% - 12px); min-width: 140px; }
-      .graphics-progress-bar, .graphics-hint { display: none; }
     }
     @media (max-width: 600px) {
       .stats-row { grid-template-columns: 1fr; }
       .lang-grid { grid-template-columns: repeat(4,1fr); }
       .masonry-grid { columns: 2; }
+      .graphics-grid { grid-template-columns: repeat(2, 1fr); }
       .hero-img-frame { width: min(240px,72vw); }
     }
     @media (max-width: 400px) {
       .btn-primary, .btn-secondary { width: 100%; text-align: center; }
       .hero-cta { flex-direction: column; align-items: stretch; }
       .masonry-grid { columns: 1; }
+      .graphics-grid { grid-template-columns: 1fr 1fr; }
     }
     @media (max-height: 600px) and (max-width: 900px) { #home { min-height: auto; padding-top: 90px; } }
   </style>
@@ -356,11 +359,22 @@
   <div class="loader-bar"><div class="loader-bar-fill"></div></div>
 </div>
 
+<!-- Lightbox -->
 <div class="lightbox" id="lightbox">
   <button class="lightbox-nav lightbox-prev" id="lbPrev"><i class="fas fa-chevron-left"></i></button>
   <div class="lightbox-inner"><img src="" id="lightboxImg" alt=""><div class="lightbox-caption" id="lightboxCaption"></div></div>
   <button class="lightbox-nav lightbox-next" id="lbNext"><i class="fas fa-chevron-right"></i></button>
   <button class="lightbox-close" id="lightboxClose"><i class="fas fa-times"></i></button>
+</div>
+
+<!-- Video Modal -->
+<div class="video-modal" id="videoModal">
+  <div class="video-modal-inner">
+    <video id="modalVideo" autoplay loop muted playsinline></video>
+    <button class="video-modal-unmute" id="unmuteBtn"><i class="fas fa-volume-mute" id="muteIcon"></i> <span id="muteLabel">Unmute</span></button>
+    <div class="video-modal-title" id="videoModalTitle"></div>
+  </div>
+  <button class="video-modal-close" id="videoModalClose"><i class="fas fa-times"></i></button>
 </div>
 
 <div class="social-bar">
@@ -379,6 +393,7 @@
     <li><a href="#skills">Skills</a></li>
     <li><a href="#projects">Projects</a></li>
     <li><a href="#timeline">Experience</a></li>
+    <li><a href="#films">Films</a></li>
     <li><a href="#photography">Photography</a></li>
     <li><a href="#graphics">Graphics</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -388,8 +403,8 @@
 <div class="nav-drawer" id="navDrawer">
   <a href="#home">Home</a><a href="#about">About</a><a href="#skills">Skills</a>
   <a href="#projects">Projects</a><a href="#timeline">Experience</a>
-  <a href="#photography">Photography</a><a href="#graphics">Graphics</a>
-  <a href="#contact">Contact</a>
+  <a href="#films">Films</a><a href="#photography">Photography</a>
+  <a href="#graphics">Graphics</a><a href="#contact">Contact</a>
 </div>
 
 <!-- 1. HOME -->
@@ -419,7 +434,7 @@
   <div class="hero-bg-text">REDEN</div>
 </section>
 
-<!-- 2. ABOUT (with personal info baked in) -->
+<!-- 2. ABOUT -->
 <section id="about">
   <div class="section-tag reveal">About Me</div>
   <h2 class="section-title reveal reveal-delay-1">Who I <em>Am</em></h2>
@@ -428,7 +443,6 @@
       <p>Hi, I'm <strong>Reden</strong> — a 22-year-old 4th Year BSIT student at STI College Lipa. I'm passionate about front-end development, UI/UX design, and visual storytelling — constantly finding ways to blend code with creativity.</p>
       <p>Born on June 1, 2003 in <strong>Lipa City, Batangas</strong>, I've always been drawn to the intersection of technology and design. As <strong>Technical Director, Lead Photographer, Social Media Manager, and Graphic Designer</strong> of Ocularis — STI Lipa's official media team — I've built a body of work that reflects both technical precision and artistic vision.</p>
       <p>My journey is about continuous learning: pushing the boundaries of what's possible when passion meets purpose.</p>
-      <!-- Personal info mini cards -->
       <div class="personal-mini" style="margin-top: 2rem;">
         <div class="detail-card"><div class="detail-icon-box"><i class="fas fa-map-marker-alt"></i></div><div class="detail-text"><h4>Location</h4><p>Lipa City, Batangas</p></div></div>
         <div class="detail-card"><div class="detail-icon-box"><i class="fas fa-graduation-cap"></i></div><div class="detail-text"><h4>Education</h4><p>4th Year BSIT · STI Lipa</p></div></div>
@@ -446,7 +460,7 @@
   </div>
 </section>
 
-<!-- 3. SKILLS + TECH -->
+<!-- 3. SKILLS -->
 <section id="skills">
   <div class="section-tag reveal">What I Do</div>
   <h2 class="section-title reveal reveal-delay-1">Skills &amp; <em>Tech Stack</em></h2>
@@ -456,9 +470,10 @@
       <div class="skill-list-item"><span class="skill-num">02</span><span class="skill-name">Graphic Design</span><span class="skill-dot"></span></div>
       <div class="skill-list-item"><span class="skill-num">03</span><span class="skill-name">Front End Development</span><span class="skill-dot"></span></div>
       <div class="skill-list-item"><span class="skill-num">04</span><span class="skill-name">UI / UX Design</span><span class="skill-dot"></span></div>
-      <div class="skill-list-item"><span class="skill-num">05</span><span class="skill-name">Technical Directing</span><span class="skill-dot"></span></div>
-      <div class="skill-list-item"><span class="skill-num">06</span><span class="skill-name">Social Media Management</span><span class="skill-dot"></span></div>
-      <div class="skill-list-item"><span class="skill-num">07</span><span class="skill-name">Photo Editing</span><span class="skill-dot"></span></div>
+      <div class="skill-list-item"><span class="skill-num">05</span><span class="skill-name">Videography & Editing</span><span class="skill-dot"></span></div>
+      <div class="skill-list-item"><span class="skill-num">06</span><span class="skill-name">Technical Directing</span><span class="skill-dot"></span></div>
+      <div class="skill-list-item"><span class="skill-num">07</span><span class="skill-name">Social Media Management</span><span class="skill-dot"></span></div>
+      <div class="skill-list-item"><span class="skill-num">08</span><span class="skill-name">Photo Editing</span><span class="skill-dot"></span></div>
     </div>
     <div class="skills-right reveal reveal-delay-2">
       <div>
@@ -473,15 +488,15 @@
       </div>
       <div>
         <div class="section-tag" style="margin-bottom:16px;">Programming Languages</div>
-        <div class="lang-grid" style="border:1px solid var(--glass-border); background:var(--glass-border);">
-          <div class="lang-card" style="background:var(--grey-mid);"><i class="fab fa-java"></i><span>Java</span></div>
-          <div class="lang-card" style="background:var(--grey-mid);"><i class="fab fa-html5"></i><span>HTML</span></div>
-          <div class="lang-card" style="background:var(--grey-mid);"><i class="fab fa-css3-alt"></i><span>CSS</span></div>
-          <div class="lang-card" style="background:var(--grey-mid);"><i class="fab fa-js"></i><span>JavaScript</span></div>
-          <div class="lang-card" style="background:var(--grey-mid);"><i class="fab fa-python"></i><span>Python</span></div>
-          <div class="lang-card" style="background:var(--grey-mid);"><i class="fas fa-copyright"></i><span>C#</span></div>
-          <div class="lang-card" style="background:var(--grey-mid);"><i class="fas fa-database"></i><span>SQL</span></div>
-          <div class="lang-card" style="background:var(--grey-mid);"><i class="fas fa-mobile-alt"></i><span>Dart</span></div>
+        <div class="lang-grid">
+          <div class="lang-card"><i class="fab fa-java"></i><span>Java</span></div>
+          <div class="lang-card"><i class="fab fa-html5"></i><span>HTML</span></div>
+          <div class="lang-card"><i class="fab fa-css3-alt"></i><span>CSS</span></div>
+          <div class="lang-card"><i class="fab fa-js"></i><span>JavaScript</span></div>
+          <div class="lang-card"><i class="fab fa-python"></i><span>Python</span></div>
+          <div class="lang-card"><i class="fas fa-copyright"></i><span>C#</span></div>
+          <div class="lang-card"><i class="fas fa-database"></i><span>SQL</span></div>
+          <div class="lang-card"><i class="fas fa-mobile-alt"></i><span>Dart</span></div>
         </div>
       </div>
     </div>
@@ -491,14 +506,22 @@
 <!-- 4. PROJECTS -->
 <section id="projects">
   <div class="section-tag reveal">What I've Built</div>
-  <h2 class="section-title reveal reveal-delay-1">Programming <em>Projects</em></h2>
+  <h2 class="section-title reveal reveal-delay-1">Programming &amp; Design <em>Projects</em></h2>
   <div class="projects-grid">
+
+    <!-- LipaAlertHub -->
     <div class="project-card reveal reveal-delay-1">
       <div class="project-icon"><i class="fas fa-bell"></i></div>
       <div class="project-badge">Capstone Project</div>
       <div class="project-title">LipaAlertHub</div>
-      <p class="project-desc">A real-time alert and incident reporting system designed to improve public safety and emergency communication in Lipa City. Built as a mobile app for the public and a web-based admin dashboard for authorized responders — enabling fast incident reporting, real-time notifications, and centralized management.</p>
-      <div class="project-role-row"><i class="fas fa-user-shield"></i><span>Role: Programmer & Project Leader</span></div>
+      <p class="project-desc">A real-time alert and incident reporting system designed to improve public safety and emergency communication in Lipa City. Built as a mobile app for the public and a web-based admin dashboard for authorized responders.</p>
+      <div class="project-role-row"><i class="fas fa-user-shield"></i><span>Lead Programmer · Group Leader · Lead Documenter</span></div>
+      <div class="project-screenshots">
+        <img class="project-screenshot" src="LIPA1.png" alt="LipaAlertHub screen 1" data-src="LIPA1.png" data-caption="LipaAlertHub — Screen 1">
+        <img class="project-screenshot" src="LIPA2.png" alt="LipaAlertHub screen 2" data-src="LIPA2.png" data-caption="LipaAlertHub — Screen 2">
+        <img class="project-screenshot" src="LIPA3.png" alt="LipaAlertHub screen 3" data-src="LIPA3.png" data-caption="LipaAlertHub — Screen 3">
+        <img class="project-screenshot" src="LIPA4.png" alt="LipaAlertHub screen 4" data-src="LIPA4.png" data-caption="LipaAlertHub — Screen 4">
+      </div>
       <div class="project-features">
         <div class="project-feature"><i class="fas fa-circle"></i> React Native mobile app for community incident reporting</div>
         <div class="project-feature"><i class="fas fa-circle"></i> Web-based admin dashboard for authorized personnel</div>
@@ -518,20 +541,110 @@
         <span class="project-tag">Real-time DB</span><span class="project-tag">Full Stack</span>
       </div>
     </div>
-    <div class="project-card project-placeholder reveal reveal-delay-2">
-      <div class="project-icon"><i class="fas fa-code"></i></div>
-      <div class="project-badge">Coming Soon</div>
-      <div class="project-title">Next Project</div>
-      <p class="project-desc">More projects coming soon. Stay tuned.</p>
-      <div class="project-tags"><span class="project-tag">TBA</span></div>
+
+    <!-- MINT -->
+    <div class="project-card reveal reveal-delay-2">
+      <div class="project-icon"><i class="fas fa-wallet"></i></div>
+      <div class="project-badge">Mobile App</div>
+      <div class="project-title">MINT — Personal Finance Tracker</div>
+      <p class="project-desc">A personal finance tracker mobile application designed to help users manage budgets, track expenses, and gain insights into their spending habits through a clean, intuitive interface.</p>
+      <div class="project-role-row"><i class="fas fa-user-shield"></i><span>Developer</span></div>
+      <div class="project-screenshots">
+        <img class="project-screenshot" src="mint.png" alt="MINT app" data-src="mint.png" data-caption="MINT — Personal Finance Tracker">
+      </div>
+      <div class="project-features">
+        <div class="project-feature"><i class="fas fa-circle"></i> Budget tracking and expense categorization</div>
+        <div class="project-feature"><i class="fas fa-circle"></i> Visual spending insights and reports</div>
+        <div class="project-feature"><i class="fas fa-circle"></i> Clean, intuitive mobile UI</div>
+      </div>
+      <div class="project-tags">
+        <span class="project-tag">Mobile App</span><span class="project-tag">UI/UX</span><span class="project-tag">Finance</span>
+      </div>
     </div>
-    <div class="project-card project-placeholder reveal reveal-delay-3">
-      <div class="project-icon"><i class="fas fa-laptop-code"></i></div>
-      <div class="project-badge">Coming Soon</div>
-      <div class="project-title">Next Project</div>
-      <p class="project-desc">More projects coming soon. Stay tuned.</p>
-      <div class="project-tags"><span class="project-tag">TBA</span></div>
+
+    <!-- KosekiLink -->
+    <div class="project-card reveal reveal-delay-3">
+      <div class="project-icon"><i class="fas fa-globe"></i></div>
+      <div class="project-badge">Website · DA SAAD</div>
+      <div class="project-title">KosekiLink</div>
+      <p class="project-desc">A mockup redesign and UI/UX improvement of a document tracker website for the Department of Agriculture SAAD IV-A. Focused on improving usability, visual hierarchy, and overall user experience of the platform.</p>
+      <div class="project-role-row"><i class="fas fa-user-shield"></i><span>Website Designer · UI/UX Mockup</span></div>
+      <div class="project-screenshots">
+        <img class="project-screenshot" src="KOSEKI1.png" alt="KosekiLink screen 1" data-src="KOSEKI1.png" data-caption="KosekiLink — Screen 1">
+        <img class="project-screenshot" src="KOSEKI2.png" alt="KosekiLink screen 2" data-src="KOSEKI2.png" data-caption="KosekiLink — Screen 2">
+        <img class="project-screenshot" src="KOSEKI3.png" alt="KosekiLink screen 3" data-src="KOSEKI3.png" data-caption="KosekiLink — Screen 3">
+      </div>
+      <div class="project-features">
+        <div class="project-feature"><i class="fas fa-circle"></i> Redesigned UI for document tracking workflow</div>
+        <div class="project-feature"><i class="fas fa-circle"></i> Improved visual hierarchy and information architecture</div>
+        <div class="project-feature"><i class="fas fa-circle"></i> Responsive mockup for DA SAAD IV-A</div>
+      </div>
+      <div class="project-tags">
+        <span class="project-tag">UI/UX</span><span class="project-tag">Web Design</span><span class="project-tag">DA SAAD</span><span class="project-tag">Mockup</span>
+      </div>
     </div>
+
+    <!-- SAAD Profiling App -->
+    <div class="project-card reveal reveal-delay-1">
+      <div class="project-icon"><i class="fas fa-id-card"></i></div>
+      <div class="project-badge">Mobile App · DA SAAD</div>
+      <div class="project-title">SAAD Profiling App</div>
+      <p class="project-desc">A profiling mobile application for the Department of Agriculture SAAD CALABARZON, enabling efficient data collection and beneficiary profiling for government agricultural programs.</p>
+      <div class="project-role-row"><i class="fas fa-user-shield"></i><span>UI/UX Designer · Frontend Developer</span></div>
+      <div class="project-screenshots">
+        <img class="project-screenshot" src="SAAD2.png" alt="SAAD Profiling app" data-src="SAAD2.png" data-caption="SAAD Profiling App">
+      </div>
+      <div class="project-features">
+        <div class="project-feature"><i class="fas fa-circle"></i> Beneficiary profiling and data management</div>
+        <div class="project-feature"><i class="fas fa-circle"></i> Field-ready mobile UI for data collection</div>
+        <div class="project-feature"><i class="fas fa-circle"></i> Designed for DA SAAD CALABARZON operations</div>
+      </div>
+      <div class="project-tags">
+        <span class="project-tag">Mobile App</span><span class="project-tag">UI/UX</span><span class="project-tag">Frontend</span><span class="project-tag">DA SAAD</span>
+      </div>
+    </div>
+
+    <!-- AgriTrack -->
+    <div class="project-card reveal reveal-delay-2">
+      <div class="project-icon"><i class="fas fa-seedling"></i></div>
+      <div class="project-badge">Mobile App · DA SAAD</div>
+      <div class="project-title">AgriTrack</div>
+      <p class="project-desc">A monitoring mobile application for the Department of Agriculture SAAD CALABARZON, built to track agricultural program progress, beneficiary status, and field operations in real time.</p>
+      <div class="project-role-row"><i class="fas fa-user-shield"></i><span>UI/UX Designer · Frontend Developer</span></div>
+      <div class="project-screenshots">
+        <img class="project-screenshot" src="SAAD1.png" alt="AgriTrack app" data-src="SAAD1.png" data-caption="AgriTrack — DA SAAD Monitoring App">
+      </div>
+      <div class="project-features">
+        <div class="project-feature"><i class="fas fa-circle"></i> Real-time agricultural program monitoring</div>
+        <div class="project-feature"><i class="fas fa-circle"></i> Field operations tracking dashboard</div>
+        <div class="project-feature"><i class="fas fa-circle"></i> Designed for DA SAAD CALABARZON</div>
+      </div>
+      <div class="project-tags">
+        <span class="project-tag">Mobile App</span><span class="project-tag">UI/UX</span><span class="project-tag">Frontend</span><span class="project-tag">DA SAAD</span>
+      </div>
+    </div>
+
+    <!-- Electro Gadgets -->
+    <div class="project-card reveal reveal-delay-3">
+      <div class="project-icon"><i class="fas fa-laptop"></i></div>
+      <div class="project-badge">UI/UX · Web Design</div>
+      <div class="project-title">Electro Gadgets</div>
+      <p class="project-desc">A UI/UX design project for an e-commerce website dedicated to gadget shopping. Focused on creating a clean, modern shopping experience with intuitive product browsing, cart flow, and checkout design.</p>
+      <div class="project-role-row"><i class="fas fa-user-shield"></i><span>UI/UX Designer</span></div>
+      <div class="project-screenshots">
+        <img class="project-screenshot" src="ELECTRO1.png" alt="Electro Gadgets screen 1" data-src="ELECTOR1.png" data-caption="Electro Gadgets — Screen 1">
+        <img class="project-screenshot" src="ELECTRO2.png" alt="Electro Gadgets screen 2" data-src="ELECTOR2.png" data-caption="Electro Gadgets — Screen 2">
+      </div>
+      <div class="project-features">
+        <div class="project-feature"><i class="fas fa-circle"></i> E-commerce UI for gadget shopping</div>
+        <div class="project-feature"><i class="fas fa-circle"></i> Product browsing, cart, and checkout flow</div>
+        <div class="project-feature"><i class="fas fa-circle"></i> Clean, modern web design aesthetic</div>
+      </div>
+      <div class="project-tags">
+        <span class="project-tag">UI/UX</span><span class="project-tag">E-commerce</span><span class="project-tag">Web Design</span>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -573,76 +686,316 @@
   </div>
 </section>
 
-<!-- 6. PHOTOGRAPHY — Masonry Grid -->
-<section id="photography">
-  <div class="photo-intro">
-    <div class="section-tag reveal">Visual Stories</div>
-    <h2 class="section-title reveal reveal-delay-1">Photography <em>Portfolio</em></h2>
-  </div>
-  <!-- Add more photos here — just copy a .masonry-card block -->
-  <div class="masonry-grid">
-    <div class="masonry-card" data-src="ateno.2.jpg" data-caption="Ate No.2">
-      <img src="ateno.2.jpg" alt="Ate No.2">
-      <div class="masonry-info"><h4>Ate No.2</h4><span>Portrait</span></div>
-      <button class="masonry-zoom"><i class="fas fa-expand"></i></button>
+<!-- 6. FILMS -->
+<section id="films">
+  <div class="section-tag reveal">Behind the Lens</div>
+  <h2 class="section-title reveal reveal-delay-1">Films &amp; <em>Videos</em></h2>
+  <div class="films-grid">
+
+    <div class="film-card reveal reveal-delay-1">
+      <div class="film-thumb" onclick="openVideo('STILIPASPORTSFEST.mp4', 'Sportsfest 2025 Teaser')">
+        <video src="STILIPASPORTSFEST.mp4" muted playsinline preload="metadata"></video>
+        <div class="film-play-btn"><div class="film-play-icon"><i class="fas fa-play"></i></div></div>
+      </div>
+      <div class="film-info">
+        <div class="film-badge">Film</div>
+        <div class="film-title">Sportsfest 2025 Teaser</div>
+        <div class="film-role"><i class="fas fa-video"></i> Videographer</div>
+      </div>
     </div>
-    <div class="masonry-card" data-src="MJ.jpg" data-caption="MJ">
-      <img src="MJ.jpg" alt="MJ">
-      <div class="masonry-info"><h4>MJ</h4><span>Portrait</span></div>
-      <button class="masonry-zoom"><i class="fas fa-expand"></i></button>
+
+    <div class="film-card reveal reveal-delay-2">
+      <div class="film-thumb" onclick="openVideo('SAMSUNGGALAXYS24.mp4', 'Samsung Galaxy S24')">
+        <video src="SAMSUNGGALAXYS24.mp4" muted playsinline preload="metadata"></video>
+        <div class="film-play-btn"><div class="film-play-icon"><i class="fas fa-play"></i></div></div>
+      </div>
+      <div class="film-info">
+        <div class="film-badge">Film</div>
+        <div class="film-title">Samsung Galaxy S24</div>
+        <div class="film-role"><i class="fas fa-cut"></i> Editor / Animator</div>
+      </div>
     </div>
-    <div class="masonry-card" data-src="SIATI.jpg" data-caption="Si Ate">
-      <img src="SIATI.jpg" alt="Si Ate">
-      <div class="masonry-info"><h4>Si Ate</h4><span>Portrait</span></div>
-      <button class="masonry-zoom"><i class="fas fa-expand"></i></button>
+
+    <div class="film-card reveal reveal-delay-3">
+      <div class="film-thumb" onclick="openVideo('OUTREACHPROGRAM.mp4', 'STI Christmas Outreach Program 2024')">
+        <video src="OUTREACHPROGRAM.mp4" muted playsinline preload="metadata"></video>
+        <div class="film-play-btn"><div class="film-play-icon"><i class="fas fa-play"></i></div></div>
+      </div>
+      <div class="film-info">
+        <div class="film-badge">Film</div>
+        <div class="film-title">STI Christmas Outreach Program 2024</div>
+        <div class="film-role"><i class="fas fa-video"></i> Videographer</div>
+      </div>
     </div>
-    <div class="masonry-card" data-src="TINTIN.jpg" data-caption="Tin Tin">
-      <img src="TINTIN.jpg" alt="Tin Tin">
-      <div class="masonry-info"><h4>Tin Tin</h4><span>Portrait</span></div>
-      <button class="masonry-zoom"><i class="fas fa-expand"></i></button>
+
+    <div class="film-card reveal reveal-delay-4">
+      <div class="film-thumb" onclick="openVideo('STILIPATOURISM.mp4', 'STI Lipa Lifesaving Skills Seminar for BSTM Students')">
+        <video src="STILIPATOURISM.mp4" muted playsinline preload="metadata"></video>
+        <div class="film-play-btn"><div class="film-play-icon"><i class="fas fa-play"></i></div></div>
+      </div>
+      <div class="film-info">
+        <div class="film-badge">Film</div>
+        <div class="film-title">STI Lipa Lifesaving Skills Seminar for BSTM Students</div>
+        <div class="film-role"><i class="fas fa-video"></i> Videographer &amp; Editor</div>
+      </div>
     </div>
-    <!-- ADD MORE PHOTOS HERE — just paste more masonry-card blocks -->
+
   </div>
 </section>
 
-<!-- 7. GRAPHICS — Horizontal Sticky Scroll -->
-<section id="graphics">
-  <div class="graphics-intro">
-    <div class="section-tag reveal">Design Work</div>
-    <h2 class="section-title reveal reveal-delay-1">Graphics <em>Portfolio</em></h2>
+<!-- 7. PHOTOGRAPHY -->
+<section id="photography">
+  <div class="section-tag reveal">Visual Stories</div>
+  <h2 class="section-title reveal reveal-delay-1">Photography <em>Portfolio</em></h2>
+  <div class="photo-events">
+
+    <!-- Sportsfest 2025 -->
+    <div class="event-block reveal">
+      <div class="event-header">
+        <div class="event-title">Sportsfest 2025</div>
+        <div class="event-tag">Official Photographer</div>
+        <div class="event-count">4 photos</div>
+      </div>
+      <div class="masonry-grid" data-gallery="sf2025">
+        <div class="masonry-card" data-src="ateno.2.jpg" data-caption="Sportsfest 2025"><img src="ateno.2.jpg" alt="Sportsfest 2025"><div class="masonry-info"><h4>Sportsfest 2025</h4><span>Portrait</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="MJ.jpg" data-caption="Sportsfest 2025"><img src="MJ.jpg" alt="Sportsfest 2025"><div class="masonry-info"><h4>Sportsfest 2025</h4><span>Portrait</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="SIATI.jpg" data-caption="Sportsfest 2025"><img src="SIATI.jpg" alt="Sportsfest 2025"><div class="masonry-info"><h4>Sportsfest 2025</h4><span>Portrait</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="TINTIN.jpg" data-caption="Sportsfest 2025"><img src="TINTIN.jpg" alt="Sportsfest 2025"><div class="masonry-info"><h4>Sportsfest 2025</h4><span>Portrait</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+      </div>
+    </div>
+
+    <!-- Sportsfest 2026 -->
+    <div class="event-block reveal">
+      <div class="event-header">
+        <div class="event-title">Sportsfest 2026</div>
+        <div class="event-tag">Official Photographer</div>
+        <div class="event-count">13 photos</div>
+      </div>
+      <div class="masonry-grid" data-gallery="sf2026">
+        <div class="masonry-card" data-src="SPORSFEST20261.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST20261.jpg" alt="Sportsfest 2026"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="SPORSFEST20262.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST20262.jpg" alt="Sportsfest 2026"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="SPORSFEST20263.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST20263.jpg" alt="Sportsfest 2026"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="SPORSFEST20264.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST20264.jpg" alt="Sportsfest 2026"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="SPORSFEST20265.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST20265.jpg" alt="Sportsfest 2026"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="SPORSFEST20266.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST20266.jpg" alt="Sportsfest 2026"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="SPORSFEST20267.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST20267.jpg" alt="Sportsfest 2026"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="SPORSFEST20268.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST20268.jpg" alt="Sportsfest 2026"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="SPORSFEST20269.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST20269.jpg" alt="Sportsfest 2026"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="SPORSFEST202610.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST202610.jpg" alt="Sportsfest 2026"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="SPORSFEST202611.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST202611.jpg" alt="Sportsfest 2026"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="SPORSFEST202612.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST202612.jpg" alt="Sportsfest 2026"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+    <div class="masonry-card" data-src="SPORSFEST202613.jpg" data-caption="Sportsfest 2026"><img src="SPORSFEST202613.jpg" alt="Sportsfest 2026"><div class="masonry-info"><h4>Sportsfest 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+      </div>
+    </div>
+
+    <!-- Tourism Expo 2025 -->
+    <div class="event-block reveal">
+      <div class="event-header"><div class="event-title">Tourism Expo 2025</div><div class="event-tag">Official Photographer</div><div class="event-count">4 photos</div></div>
+      <div class="masonry-grid" data-gallery="tourism2025">
+        <div class="masonry-card" data-src="TOURISM20251.jpg" data-caption="Tourism Expo 2025"><img src="TOURISM20251.jpg" alt="Tourism Expo 2025"><div class="masonry-info"><h4>Tourism Expo 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="TOURISM20252.jpg" data-caption="Tourism Expo 2025"><img src="TOURISM20252.jpg" alt="Tourism Expo 2025"><div class="masonry-info"><h4>Tourism Expo 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="TOURISM20253.jpg" data-caption="Tourism Expo 2025"><img src="TOURISM20253.jpg" alt="Tourism Expo 2025"><div class="masonry-info"><h4>Tourism Expo 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="TOURISM20254.jpg" data-caption="Tourism Expo 2025"><img src="TOURISM20254.jpg" alt="Tourism Expo 2025"><div class="masonry-info"><h4>Tourism Expo 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+      </div>
+    </div>
+
+    <!-- Tourism Expo 2024 -->
+    <div class="event-block reveal">
+      <div class="event-header"><div class="event-title">Tourism Expo 2024</div><div class="event-tag">Official Photographer</div><div class="event-count">5 photos</div></div>
+      <div class="masonry-grid" data-gallery="tourism2024">
+        <div class="masonry-card" data-src="TOURISM20241.jpg" data-caption="Tourism Expo 2024"><img src="TOURISM20241.jpg" alt="Tourism Expo 2024"><div class="masonry-info"><h4>Tourism Expo 2024</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="TOURISM20242.jpg" data-caption="Tourism Expo 2024"><img src="TOURISM20242.jpg" alt="Tourism Expo 2024"><div class="masonry-info"><h4>Tourism Expo 2024</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="TOURISM20243.jpg" data-caption="Tourism Expo 2024"><img src="TOURISM20243.jpg" alt="Tourism Expo 2024"><div class="masonry-info"><h4>Tourism Expo 2024</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="TOURISM20244.jpg" data-caption="Tourism Expo 2024"><img src="TOURISM20244.jpg" alt="Tourism Expo 2024"><div class="masonry-info"><h4>Tourism Expo 2024</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="TOURISM20245.jpg" data-caption="Tourism Expo 2024"><img src="TOURISM20245.jpg" alt="Tourism Expo 2024"><div class="masonry-info"><h4>Tourism Expo 2024</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+      </div>
+    </div>
+
+    <!-- Talent Search 2025 -->
+    <div class="event-block reveal">
+      <div class="event-header"><div class="event-title">Talent Search 2025</div><div class="event-tag">Official Photographer</div><div class="event-count">4 photos</div></div>
+      <div class="masonry-grid" data-gallery="talent2025">
+        <div class="masonry-card" data-src="TSEDIT1.jpg" data-caption="Talent Search 2025"><img src="TSEDIT1.jpg" alt="Talent Search 2025"><div class="masonry-info"><h4>Talent Search 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="TSEDIT2.jpg" data-caption="Talent Search 2025"><img src="TSEDIT2.jpg" alt="Talent Search 2025"><div class="masonry-info"><h4>Talent Search 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="TSEDIT3.jpg" data-caption="Talent Search 2025"><img src="TSEDIT3.jpg" alt="Talent Search 2025"><div class="masonry-info"><h4>Talent Search 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="TSEDIT4.jpg" data-caption="Talent Search 2025"><img src="TSEDIT4.jpg" alt="Talent Search 2025"><div class="masonry-info"><h4>Talent Search 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+      </div>
+    </div>
+
+    <!-- Valentines 2026 -->
+    <div class="event-block reveal">
+      <div class="event-header"><div class="event-title">Valentines 2026</div><div class="event-tag">Official Photographer</div><div class="event-count">8 photos</div></div>
+      <div class="masonry-grid" data-gallery="vday2026">
+        <div class="masonry-card" data-src="VDAY20261.jpg" data-caption="Valentines 2026"><img src="VDAY20261.jpg" alt="Valentines 2026"><div class="masonry-info"><h4>Valentines 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="VDAY20262.jpg" data-caption="Valentines 2026"><img src="VDAY20262.jpg" alt="Valentines 2026"><div class="masonry-info"><h4>Valentines 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="VDAY20263.jpg" data-caption="Valentines 2026"><img src="VDAY20263.jpg" alt="Valentines 2026"><div class="masonry-info"><h4>Valentines 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="VDAY20264.jpg" data-caption="Valentines 2026"><img src="VDAY20264.jpg" alt="Valentines 2026"><div class="masonry-info"><h4>Valentines 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="VDAY20265.jpg" data-caption="Valentines 2026"><img src="VDAY20265.jpg" alt="Valentines 2026"><div class="masonry-info"><h4>Valentines 2026</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="VDAY20266.jpg" data-caption="Valentines 2026"><img src="VDAY20266.jpg" alt="Valentines 20２６"><div class="masonry-info"><h4>Valentines ２６</h4><span>Event</span></div><button class("masonry-zoom").attr("href", "javascript:void(0);");
+      </div>
+    </div>
+
+    <!-- Valentines 2025 -->
+    <div class="event-block reveal">
+      <div class="event-header"><div class="event-title">Valentines 2025</div><div class="event-tag">Official Photographer</div><div class="event-count">3 photos</div></div>
+      <div class="masonry-grid" data-gallery="vday2025">
+        <div class="masonry-card" data-src="VDAY20241.jpg" data-caption="Valentines 2025"><img src="VDAY20241.jpg" alt="Valentines 2025"><div class="masonry-info"><h4>Valentines 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="VDAY20242.jpg" data-caption="Valentines 2025"><img src="VDAY20242.jpg" alt="Valentines 2025"><div class="masonry-info"><h4>Valentines 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="VDAY20243.jpg" data-caption="Valentines 2025"><img src="VDAY20243.jpg" alt="Valentines 2025"><div class="masonry-info"><h4>Valentines 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+      </div>
+    </div>
+
+    <!-- Valoshoot -->
+    <div class="event-block reveal">
+      <div class="event-header"><div class="event-title">Valoshoot</div><div class="event-tag">Photographer</div><div class="event-count">1 photo</div></div>
+      <div class="masonry-grid" data-gallery="valoshoot">
+        <div class="masonry-card" data-src="VALOSHOOT1.jpg" data-caption="Valoshoot"><img src="VALOSHOOT1.jpg" alt="Valoshoot"><div class="masonry-info"><h4>Valoshoot</h4><span>Portrait / Shoot</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+      </div>
+    </div>
+
+    <!-- Mass Dance 2025 -->
+    <div class="event-block reveal">
+      <div class="event-header"><div class="event-title">Mass Dance 2025</div><div class="event-tag">Official Photographer</div><div class="event-count">2 photos</div></div>
+      <div class="masonry-grid" data-gallery="massdance">
+        <div class="masonry-card" data-src="MASS1.jpg" data-caption="Mass Dance 2025"><img src="MASS1.jpg" alt="Mass Dance 2025"><div class="masonry-info"><h4>Mass Dance 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="MASS2.jpg" data-caption="Mass Dance 2025"><img src="MASS2.jpg" alt="Mass Dance 2025"><div class="masonry-info"><h4>Mass Dance 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+      </div>
+    </div>
+
+    <!-- CSID -->
+    <div class="event-block reveal">
+      <div class="event-header"><div class="event-title">Christmas Station ID 2025</div><div class="event-tag">BTS Photographer</div><div class="event-count">3 photos</div></div>
+      <div class="masonry-grid" data-gallery="csid">
+        <div class="masonry-card" data-src="CSID1.jpg" data-caption="Christmas Station ID 2025"><img src="CSID1.jpg" alt="CSID 2025"><div class="masonry-info"><h4>CSID 2025</h4><span>Behind the Scenes</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="CSID2.jpg" data-caption="Christmas Station ID 2025"><img src="CSID2.jpg" alt="CSID 2025"><div class="masonry-info"><h4>CSID 2025</h4><span>Behind the Scenes</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="CSID3.jpg" data-caption="Christmas Station ID 2025"><img src="CSID3.jpg" alt="CSID 2025"><div class="masonry-info"><h4>CSID 2025</h4><span>Behind the Scenes</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+      </div>
+    </div>
+
+    <!-- Graduation 2025 -->
+    <div class="event-block reveal">
+      <div class="event-header"><div class="event-title">Graduation 2025</div><div class="event-tag">Official Photographer</div><div class="event-count">9 photos</div></div>
+      <div class="masonry-grid" data-gallery="grad2025">
+        <div class="masonry-card" data-src="GRAD1.jpg" data-caption="Graduation 2025"><img src="GRAD1.jpg" alt="Graduation 2025"><div class="masonry-info"><h4>Graduation 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="GRAD2.jpg" data-caption="Graduation 2025"><img src="GRAD2.jpg" alt="Graduation 2025"><div class="masonry-info"><h4>Graduation 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="GRAD3.jpg" data-caption="Graduation 2025"><img src="GRAD3.jpg" alt="Graduation 2025"><div class="masonry-info"><h4>Graduation 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="GRAD4.jpg" data-caption="Graduation 2025"><img src="GRAD4.jpg" alt="Graduation 2025"><div class="masonry-info"><h4>Graduation 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="GRAD5.jpg" data-caption="Graduation 2025"><img src="GRAD5.jpg" alt="Graduation 2025"><div class="masonry-info"><h4>Graduation 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="GRAD6.jpg" data-caption="Graduation 2025"><img src="GRAD6.jpg" alt="Graduation 2025"><div class="masonry-info"><h4>Graduation 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="GRAD7.jpg" data-caption="Graduation 2025"><img src="GRAD7.jpg" alt="Graduation 2025"><div class="masonry-info"><h4>Graduation 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="GRAD8.jpg" data-caption="Graduation 2025"><img src="GRAD8.jpg" alt="Graduation 2025"><div class="masonry-info"><h4>Graduation 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="GRAD9.jpg" data-caption="Graduation 2025"><img src="GRAD9.jpg" alt="Graduation 2025"><div class="masonry-info"><h4>Graduation 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+      </div>
+    </div>
+
+    <!-- College Fair -->
+    <div class="event-block reveal">
+      <div class="event-header"><div class="event-title">College Fair</div><div class="event-tag">Official Photographer</div><div class="event-count">2 photos</div></div>
+      <div class="masonry-grid" data-gallery="collegefair">
+        <div class="masonry-card" data-src="COLLEGEFAIR1.jpg" data-caption="College Fair"><img src="COLLEGEFAIR1.jpg" alt="College Fair"><div class="masonry-info"><h4>College Fair</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="COLLEGEFAIR2.jpg" data-caption="College Fair"><img src="COLLEGEFAIR2.jpg" alt="College Fair"><div class="masonry-info"><h4>College Fair</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+      </div>
+    </div>
+
+    <!-- STI Exposition 2025 -->
+    <div class="event-block reveal">
+      <div class="event-header"><div class="event-title">STI Exposition 2025</div><div class="event-tag">Official Photographer</div><div class="event-count">2 photos</div></div>
+      <div class="masonry-grid" data-gallery="shsexpo">
+        <div class="masonry-card" data-src="SHSEXPO1.jpg" data-caption="STI Exposition 2025"><img src="SHSEXPO1.jpg" alt="STI Exposition 2025"><div class="masonry-info"><h4>STI Exposition 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="SHSEXPO2.jpg" data-caption="STI Exposition 2025"><img src="SHSEXPO2.jpg" alt="STI Exposition 2025"><div class="masonry-info"><h4>STI Exposition 2025</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+      </div>
+    </div>
+
+    <!-- Christmas Lighting -->
+    <div class="event-block reveal">
+      <div class="event-header"><div class="event-title">Christmas Lighting</div><div class="event-tag">Official Photographer</div><div class="event-count">6 photos</div></div>
+      <div class="masonry-grid" data-gallery="clight">
+        <div class="masonry-card" data-src="CLIGHT1.jpg" data-caption="Christmas Lighting"><img src="CLIGHT1.jpg" alt="Christmas Lighting"><div class="masonry-info"><h4>Christmas Lighting</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="CLIGHT2.jpg" data-caption="Christmas Lighting"><img src="CLIGHT2.jpg" alt="Christmas Lighting"><div class="masonry-info"><h4>Christmas Lighting</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="CLIGHT3.jpg" data-caption="Christmas Lighting"><img src="CLIGHT3.jpg" alt="Christmas Lighting"><div class="masonry-info"><h4>Christmas Lighting</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="CLIGHT4.jpg" data-caption="Christmas Lighting"><img src="CLIGHT4.jpg" alt="Christmas Lighting"><div class="masonry-info"><h4>Christmas Lighting</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="CLIGHT5.jpg" data-caption="Christmas Lighting"><img src="CLIGHT5.jpg" alt="Christmas Lighting"><div class="masonry-info"><h4>Christmas Lighting</h4><span>Event</span></div><button class="masonry-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="masonry-card" data-src="CLIGHT6.jpg" data-caption="Christmas Lighting"><img src="CLIGHT6.jpg" alt="Christmas Lighting"><div class="masonry-info"><h4>Christmas Lighting</h4><span>Event</span></div><button class="masonry-zoom"><i class("fas fa-expand"). </i></button></div>
+      </div>
+    </div>
+
   </div>
-  <div class="graphics-sticky-wrap" id="graphicsWrap">
-    <div class="graphics-sticky" id="graphicsSticky">
-      <div class="graphics-track" id="graphicsTrack">
-        <!-- ADD MORE GRAPHIC CARDS HERE -->
-        <div class="graphic-card" data-src="graphic1.png" data-caption="Graphic Design 01">
-          <img src="graphic1.png" alt="Graphic 1">
-          <div class="graphic-info"><h4>Design 01</h4><span>Graphic</span></div>
-          <button class="graphic-zoom"><i class="fas fa-expand"></i></button>
+</section>
+
+<!-- 8. GRAPHICS -->
+<section id="graphics">
+  <div class="section-tag reveal">Design Work</div>
+  <h2 class="section-title reveal reveal-delay-1">Graphic Design <em>Portfolio</em></h2>
+  <div class="graphics-groups">
+
+    <!-- SSC Works -->
+    <div class="reveal">
+      <div class="graphics-group-header">
+        <div class="graphics-group-title">Supreme Student Council</div>
+        <div class="graphics-tag">SSC · STI Lipa</div>
+      </div>
+      <div class="graphics-grid">
+        <div class="graphic-card" data-src="graphic1.png" data-caption="Ninoy Aquino's Day 2024 — SSC">
+          <img src="graphic1.png" alt="Ninoy Aquino's Day SSC"><div class="graphic-info"><h4>Ninoy Aquino's Day 2024</h4><span>SSC</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button>
         </div>
-        <div class="graphic-card" data-src="graphic2.png" data-caption="Graphic Design 02">
-          <img src="graphic2.png" alt="Graphic 2">
-          <div class="graphic-info"><h4>Design 02</h4><span>Graphic</span></div>
-          <button class="graphic-zoom"><i class="fas fa-expand"></i></button>
+        <div class="graphic-card" data-src="graphic2.png" data-caption="Stay Safe STIers 2024–2025 — SSC">
+          <img src="graphic2.png" alt="Stay Safe STIers"><div class="graphic-info"><h4>Stay Safe STIers 2024–2025</h4><span>SSC</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button>
         </div>
-        <div class="graphic-card" data-src="graphic3.png" data-caption="Graphic Design 03">
-          <img src="graphic3.png" alt="Graphic 3">
-          <div class="graphic-info"><h4>Design 03</h4><span>Graphic</span></div>
-          <button class="graphic-zoom"><i class="fas fa-expand"></i></button>
-        </div>
-        <div class="graphic-card" data-src="graphic4.png" data-caption="Graphic Design 04">
-          <img src="graphic4.png" alt="Graphic 4">
-          <div class="graphic-info"><h4>Design 04</h4><span>Graphic</span></div>
-          <button class="graphic-zoom"><i class="fas fa-expand"></i></button>
+        <div class="graphic-card" data-src="projecttulongbayanhian.png" data-caption="Project Tulong Bayanihan 2024 — SSC">
+          <img src="projecttulongbayanhian.png" alt="Project Tulong Bayanihan"><div class="graphic-info"><h4>Project Tulong Bayanihan 2024</h4><span>SSC</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button>
         </div>
       </div>
-      <div class="graphics-progress-bar"><div class="graphics-progress-fill" id="graphicsProgress"></div></div>
-      <div class="graphics-hint" id="graphicsHint"><i class="fas fa-arrow-right"></i> Scroll to explore</div>
     </div>
+
+    <!-- Ocularis Works -->
+    <div class="reveal">
+      <div class="graphics-group-header">
+        <div class="graphics-group-title">Ocularis Media Team</div>
+        <div class="graphics-tag">Ocularis · STI Lipa</div>
+      </div>
+      <div class="graphics-grid">
+        <div class="graphic-card" data-src="ninoyaquinoforocu.png" data-caption="Ninoy Aquino's Day 2024 — Ocularis">
+          <img src="ninoyaquinoforocu.png" alt="Ninoy Aquino Ocularis"><div class="graphic-info"><h4>Ninoy Aquino's Day 2024</h4><span>Ocularis</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button>
+        </div>
+        <div class="graphic-card" data-src="graduationfront.png" data-caption="Graduation 2024 Front Post — Ocularis">
+          <img src="graduationfront.png" alt="Graduation 2024 Ocularis"><div class="graphic-info"><h4>Graduation 2024 Front Post</h4><span>Ocularis</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Competition Works -->
+    <div class="reveal">
+      <div class="graphics-group-header">
+        <div class="graphics-group-title">Competition</div>
+        <div class="graphics-tag">STI Tagisan ng Sining · National</div>
+      </div>
+      <div class="graphics-grid">
+        <div class="graphic-card" data-src="unsungheroposter.png" data-caption="Unsung Hero Poster — Sanctum Studios · STI Tagisan ng Sining">
+          <img src="unsungheroposter.png" alt="Unsung Hero Poster"><div class="graphic-info"><h4>Unsung Hero Poster</h4><span>Sanctum Studios · National Competition</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Personal Works -->
+    <div class="reveal">
+      <div class="graphics-group-header">
+        <div class="graphics-group-title">Personal / Practice</div>
+        <div class="graphics-tag">Design Practice</div>
+      </div>
+      <div class="graphics-grid">
+        <div class="graphic-card" data-src="graphic3.png" data-caption="Air Jordan 4 University Blue">
+          <img src="graphic3.png" alt="Air Jordan 4 University Blue"><div class="graphic-info"><h4>Air Jordan 4 University Blue</h4><span>Personal</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button>
+        </div>
+        <div class="graphic-card" data-src="graphic4.png" data-caption="Air Jordan 4 Pine Green">
+          <img src="graphic4.png" alt="Air Jordan 4 Pine Green"><div class="graphic-info"><h4>Air Jordan 4 Pine Green</h4><span>Personal</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button>
+        </div>
+      </div>
+    </div>
+
   </div>
 </section>
 
-<!-- 8. CONTACT -->
+<!-- 9. CONTACT -->
 <section id="contact">
   <div class="section-tag reveal">Let's Talk</div>
   <h2 class="section-title reveal reveal-delay-1">Get In <em>Touch</em></h2>
@@ -689,7 +1042,7 @@
   /* ── Typewriter ── */
   (function(){
     const el=document.querySelector('.typewriter');
-    const titles=['Front End Developer','UI / UX Designer','Photographer','Graphic Designer','Technical Director'];
+    const titles=['Front End Developer','UI / UX Designer','Photographer','Graphic Designer','Technical Director','Videographer & Editor'];
     let ti=0,ci=0,del=false;
     function type(){
       const cur=titles[ti];
@@ -724,49 +1077,76 @@
   stBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
 
   /* ── Reveal ── */
-  const ro=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:.12});
+  const ro=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:.08});
   document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
 
   /* ── Stat Counters ── */
   const so=new IntersectionObserver(e=>{e.forEach(x=>{if(!x.isIntersecting)return;const el=x.target,t=parseInt(el.dataset.target),p=el.dataset.plus==='true',s=t/(1600/16);let c=0;const i=setInterval(()=>{c+=s;if(c>=t){el.textContent=t+(p?'+':'');clearInterval(i);}else el.textContent=Math.floor(c)+(p?'+':'');},16);so.unobserve(el);});},{threshold:.5});
   document.querySelectorAll('.stat-num[data-target]').forEach(el=>so.observe(el));
 
-  /* ── Lightbox ── */
+  /* ── Lightbox (photo + graphic) ── */
   const lb=document.getElementById('lightbox'),lbImg=document.getElementById('lightboxImg'),lbCap=document.getElementById('lightboxCaption');
-  const gallery=[...document.querySelectorAll('[data-src]')].map(el=>({src:el.dataset.src,cap:el.dataset.caption||''}));
-  let idx=0;
-  const openLB=i=>{idx=i;lbImg.src=gallery[i].src;lbCap.textContent=gallery[i].cap;lb.classList.add('active');document.body.style.overflow='hidden';};
-  const closeLB=()=>{lb.classList.remove('active');document.body.style.overflow='';};
-  const nextLB=()=>{idx=(idx+1)%gallery.length;lbImg.src=gallery[idx].src;lbCap.textContent=gallery[idx].cap;};
-  const prevLB=()=>{idx=(idx-1+gallery.length)%gallery.length;lbImg.src=gallery[idx].src;lbCap.textContent=gallery[idx].cap;};
-  document.querySelectorAll('[data-src]').forEach((el,i)=>el.addEventListener('click',()=>openLB(i)));
+  let lbGallery=[],lbIdx=0;
+
+  function buildGallery(clickedEl){
+    const grid=clickedEl.closest('.masonry-grid,.graphics-grid,.project-card');
+    if(grid){
+      const cards=grid.querySelectorAll('[data-src]');
+      lbGallery=[...cards].map(c=>({src:c.dataset.src||c.getAttribute('data-src'),cap:c.dataset.caption||''}));
+      lbIdx=[...cards].indexOf(clickedEl);
+    } else {
+      lbGallery=[{src:clickedEl.dataset.src,cap:clickedEl.dataset.caption||''}];
+      lbIdx=0;
+    }
+  }
+
+  function openLB(el){buildGallery(el);lbImg.src=lbGallery[lbIdx].src;lbCap.textContent=lbGallery[lbIdx].cap;lb.classList.add('active');document.body.style.overflow='hidden';}
+  function closeLB(){lb.classList.remove('active');document.body.style.overflow='';}
+  function nextLB(){lbIdx=(lbIdx+1)%lbGallery.length;lbImg.src=lbGallery[lbIdx].src;lbCap.textContent=lbGallery[lbIdx].cap;}
+  function prevLB(){lbIdx=(lbIdx-1+lbGallery.length)%lbGallery.length;lbImg.src=lbGallery[lbIdx].src;lbCap.textContent=lbGallery[lbIdx].cap;}
+
+  document.querySelectorAll('.masonry-card,.graphic-card').forEach(el=>el.addEventListener('click',()=>openLB(el)));
+  document.querySelectorAll('.project-screenshot').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();openLB(el);}));
   document.getElementById('lightboxClose').addEventListener('click',closeLB);
   document.getElementById('lbNext').addEventListener('click',e=>{e.stopPropagation();nextLB();});
   document.getElementById('lbPrev').addEventListener('click',e=>{e.stopPropagation();prevLB();});
   lb.addEventListener('click',e=>{if(e.target===lb)closeLB();});
-  document.addEventListener('keydown',e=>{if(!lb.classList.contains('active'))return;if(e.key==='Escape')closeLB();if(e.key==='ArrowRight')nextLB();if(e.key==='ArrowLeft')prevLB();});
-
-  /* ── Graphics Horizontal Scroll ── */
-  (function(){
-    const wrap=document.getElementById('graphicsWrap');
-    const track=document.getElementById('graphicsTrack');
-    const prog=document.getElementById('graphicsProgress');
-    const hint=document.getElementById('graphicsHint');
-    if(!wrap||!track||window.innerWidth<=900)return;
-    function update(){
-      const rect=wrap.getBoundingClientRect();
-      const total=wrap.offsetHeight-window.innerHeight;
-      const scrolled=-rect.top;
-      if(scrolled<0||scrolled>total)return;
-      const pct=scrolled/total;
-      const maxX=track.scrollWidth-window.innerWidth+120;
-      track.style.transform=`translateX(-${pct*maxX}px)`;
-      prog.style.width=(pct*100)+'%';
-      if(pct>0.05)hint.classList.add('hide');else hint.classList.remove('hide');
+  document.addEventListener('keydown',e=>{
+    if(lb.classList.contains('active')){
+      if(e.key==='Escape')closeLB();
+      if(e.key==='ArrowRight')nextLB();
+      if(e.key==='ArrowLeft')prevLB();
     }
-    window.addEventListener('scroll',update,{passive:true});
-    update();
-  })();
+  });
+
+  /* ── Video Modal ── */
+  const vm=document.getElementById('videoModal'),modalVid=document.getElementById('modalVideo'),muteIcon=document.getElementById('muteIcon'),muteLabel=document.getElementById('muteLabel'),vmTitle=document.getElementById('videoModalTitle');
+
+  function openVideo(src,title){
+    modalVid.src=src;modalVid.muted=true;modalVid.play();
+    vmTitle.textContent=title;
+    vm.classList.add('active');
+    document.body.style.overflow='hidden';
+    muteIcon.className='fas fa-volume-mute';muteLabel.textContent='Unmute';
+  }
+
+  document.getElementById('videoModalClose').addEventListener('click',()=>{
+    vm.classList.remove('active');modalVid.pause();modalVid.src='';document.body.style.overflow='';
+  });
+  vm.addEventListener('click',e=>{if(e.target===vm){vm.classList.remove('active');modalVid.pause();modalVid.src='';document.body.style.overflow='';}});
+
+  document.getElementById('unmuteBtn').addEventListener('click',()=>{
+    modalVid.muted=!modalVid.muted;
+    muteIcon.className=modalVid.muted?'fas fa-volume-mute':'fas fa-volume-up';
+    muteLabel.textContent=modalVid.muted?'Unmute':'Mute';
+  });
+
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&vm.classList.contains('active')){vm.classList.remove('active');modalVid.pause();modalVid.src='';document.body.style.overflow='';}});
+
+  /* ── Video thumbnails auto-seek to frame 1s ── */
+  document.querySelectorAll('.film-thumb video').forEach(v=>{
+    v.addEventListener('loadedmetadata',()=>{v.currentTime=1;});
+  });
 
   /* ── Contact Form ── */
   const form=document.getElementById('contactForm'),status=document.getElementById('formStatus'),submitBtn=document.getElementById('formSubmit');
