@@ -7,7 +7,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://ik.imagekit.io">
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+  <!-- Only preload the hero image (above the fold) -->
+  <link rel="preload" href="reden.jfif" as="image" fetchpriority="high">
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <!-- Font Awesome: async non-render-blocking -->
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
   <style>
@@ -17,7 +21,6 @@
       --grey-text:#888;--glass-border:rgba(255,255,255,0.08);
       --tr:0.32s cubic-bezier(0.4,0,0.2,1);
       --pad:clamp(1.2rem,5vw,4rem);
-      --ik:https://ik.imagekit.io/waa8112tr/;
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
@@ -27,14 +30,14 @@
     /* ── Cursor ── */
     .cursor-dot,.cursor-ring{display:none;position:fixed;top:0;left:0;pointer-events:none;transform:translate(-50%,-50%)}
     @media(pointer:fine){
-      .cursor-dot{display:block;width:8px;height:8px;background:var(--red);border-radius:50%;z-index:99999}
-      .cursor-ring{display:block;width:36px;height:36px;border:1.5px solid rgba(230,48,34,.5);border-radius:50%;z-index:99998;transition:width .2s,height .2s,border-color .2s}
+      .cursor-dot{display:block;width:8px;height:8px;background:var(--red);border-radius:50%;z-index:99999;will-change:transform}
+      .cursor-ring{display:block;width:36px;height:36px;border:1.5px solid rgba(230,48,34,.5);border-radius:50%;z-index:99998;transition:width .2s,height .2s,border-color .2s;will-change:transform}
       body:has(a:hover) .cursor-ring,body:has(button:hover) .cursor-ring{width:54px;height:54px;border-color:var(--red)}
     }
 
     /* ── Loader ── */
     .loader-wrapper{position:fixed;inset:0;background:var(--black);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:24px;transition:opacity .6s ease,visibility .6s ease}
-    .loader-wrapper.hide{opacity:0;visibility:hidden}
+    .loader-wrapper.hide{opacity:0;visibility:hidden;pointer-events:none}
     .loader-name{font-weight:800;font-size:clamp(2rem,6vw,4rem);letter-spacing:.3em;overflow:hidden}
     .loader-name span{display:inline-block;transform:translateY(100%);animation:slideUp .6s forwards}
     .loader-name span:nth-child(1){animation-delay:.00s}.loader-name span:nth-child(2){animation-delay:.08s}.loader-name span:nth-child(3){animation-delay:.16s}.loader-name span:nth-child(4){animation-delay:.24s}.loader-name span:nth-child(5){animation-delay:.32s}.loader-name span:nth-child(6){animation-delay:.40s}.loader-name span:nth-child(7){animation-delay:.48s}.loader-name span:nth-child(8){animation-delay:.56s}.loader-name span:nth-child(9){animation-delay:.64s}.loader-name span:nth-child(10){animation-delay:.72s}.loader-name span:nth-child(11){animation-delay:.80s}
@@ -43,7 +46,7 @@
     .loader-bar-fill{height:100%;background:var(--red);animation:loadFill 1.6s ease forwards}
     @keyframes loadFill{from{width:0}to{width:100%}}
 
-    /* ── Noise ── */
+    /* ── Noise (CSS only, no SVG filter cost) ── */
     body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.025;pointer-events:none;z-index:9997}
 
     /* ── Navbar ── */
@@ -101,8 +104,9 @@
     .section-tag::before{content:'';display:inline-block;width:30px;height:1px;background:var(--red)}
     .section-title{font-size:clamp(1.8rem,4vw,3.2rem);font-weight:800;letter-spacing:-.02em;line-height:1.1;margin-bottom:clamp(28px,5vw,48px)}
     .section-title em{font-style:normal;color:var(--red)}
-    .reveal{opacity:0;transform:translateY(28px);transition:opacity .65s cubic-bezier(.4,0,.2,1),transform .65s cubic-bezier(.4,0,.2,1)}
-    .reveal.visible{opacity:1;transform:none}
+    /* Reveal: use contain to avoid layout recalc during scroll */
+    .reveal{opacity:0;transform:translateY(28px);transition:opacity .65s cubic-bezier(.4,0,.2,1),transform .65s cubic-bezier(.4,0,.2,1);contain:layout style}
+    .reveal.visible{opacity:1;transform:none;contain:none}
     .reveal-delay-1{transition-delay:.08s}.reveal-delay-2{transition-delay:.16s}.reveal-delay-3{transition-delay:.24s}.reveal-delay-4{transition-delay:.32s}
 
     /* ── About ── */
@@ -166,22 +170,21 @@
 
     /* Project Carousel */
     .project-carousel{position:relative;overflow:hidden;border:1px solid var(--glass-border);background:var(--grey-dark)}
-    .project-carousel-track{display:flex;transition:transform .4s cubic-bezier(.4,0,.2,1)}
+    .project-carousel-track{display:flex;transition:transform .4s cubic-bezier(.4,0,.2,1);will-change:transform}
     .project-carousel-slide{flex-shrink:0;width:100%;aspect-ratio:16/9;overflow:hidden;cursor:pointer}
     .project-carousel-slide img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(15%);transition:filter .4s,transform .4s}
     .project-carousel-slide:hover img{filter:grayscale(0%);transform:scale(1.03)}
+    /* Lazy image placeholder */
+    .project-carousel-slide img[data-lazy]{background:var(--grey-light)}
     .carousel-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.15);color:var(--white);width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.65rem;transition:var(--tr);z-index:2}
     .carousel-btn:hover{background:var(--red);border-color:var(--red)}
-    .carousel-prev{left:6px}
-    .carousel-next{right:6px}
+    .carousel-prev{left:6px}.carousel-next{right:6px}
     .carousel-dots{display:flex;justify-content:center;gap:6px;padding:8px 0 4px}
     .carousel-dot{width:5px;height:5px;border-radius:50%;background:var(--grey-light);cursor:pointer;transition:background var(--tr),transform var(--tr)}
     .carousel-dot.active{background:var(--red);transform:scale(1.3)}
     .carousel-expand{position:absolute;top:6px;right:6px;width:26px;height:26px;background:rgba(0,0,0,.65);border:1px solid rgba(255,255,255,.15);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:.62rem;opacity:0;transition:opacity var(--tr),background var(--tr);cursor:pointer;z-index:3}
     .project-carousel:hover .carousel-expand{opacity:1}
     .carousel-expand:hover{background:var(--red);border-color:var(--red)}
-    .carousel-no-image{width:100%;aspect-ratio:16/9;background:var(--grey-dark);display:flex;align-items:center;justify-content:center;border:1px solid var(--glass-border)}
-    .carousel-no-image i{font-size:2rem;color:var(--grey-light)}
 
     .project-features{display:flex;flex-direction:column;gap:6px;padding-top:10px;border-top:1px solid var(--glass-border)}
     .project-feature{display:flex;align-items:flex-start;gap:8px;font-size:clamp(.73rem,1.1vw,.8rem);color:var(--grey-text);line-height:1.5}
@@ -196,7 +199,6 @@
 
     /* ── Timeline ── */
     #timeline{background:var(--black)}
-    /* Two-column timeline layout */
     .timeline-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,2vw,20px)}
     .timeline-card{background:var(--grey-mid);border:1px solid var(--glass-border);padding:clamp(18px,2.5vw,26px);position:relative;transition:border-color var(--tr),background var(--tr)}
     .timeline-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--red);opacity:.3;transition:opacity var(--tr)}
@@ -217,7 +219,6 @@
     .film-thumb:hover .film-play-btn{background:rgba(0,0,0,.6)}
     .film-play-icon{width:56px;height:56px;border:2px solid var(--white);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--white);transition:var(--tr);background:rgba(230,48,34,.2)}
     .film-thumb:hover .film-play-icon{background:var(--red);border-color:var(--red);transform:scale(1.1)}
-    /* Dark gradient overlay at bottom of thumb */
     .film-thumb::after{content:'';position:absolute;bottom:0;left:0;right:0;height:50%;background:linear-gradient(transparent,rgba(0,0,0,.7));pointer-events:none}
     .film-thumb-label{position:absolute;bottom:12px;left:14px;right:14px;z-index:2;display:flex;justify-content:space-between;align-items:flex-end}
     .film-thumb-title{font-size:clamp(.82rem,1.4vw,.95rem);font-weight:700;line-height:1.3;max-width:75%}
@@ -227,25 +228,21 @@
     .film-role-text{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--grey-text);display:flex;align-items:center;gap:6px}
     .film-role-text i{color:var(--red);font-size:.6rem}
 
-    /* ── Photography / Graphics shared event blocks ── */
+    /* ── Photography / Graphics ── */
     #photography{background:var(--black)}
     #graphics{background:var(--grey-dark)}
     .photo-events,.graphics-groups{display:flex;flex-direction:column;gap:clamp(40px,7vw,72px)}
-    .event-block{}
     .event-header{display:flex;align-items:baseline;gap:16px;margin-bottom:clamp(10px,2vw,18px);padding-bottom:14px;border-bottom:1px solid var(--glass-border);flex-wrap:wrap}
     .event-title{font-size:clamp(1rem,2.2vw,1.5rem);font-weight:800;letter-spacing:-.01em}
     .event-tag{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--red);border:1px solid rgba(230,48,34,.3);padding:3px 8px}
     .event-count{font-family:'Space Mono',monospace;font-size:.58rem;color:var(--grey-text);letter-spacing:.1em;margin-left:auto}
-    /* Event description */
     .event-desc{font-size:clamp(.78rem,1.3vw,.88rem);color:var(--grey-text);line-height:1.7;margin-bottom:clamp(12px,2vw,20px);max-width:680px}
 
     /* ── Photo Carousel ── */
     .photo-carousel{position:relative;overflow:hidden;background:var(--grey-mid)}
-    .photo-carousel-track{display:flex;transition:transform .45s cubic-bezier(.4,0,.2,1)}
-    .photo-carousel-slide{flex-shrink:0;width:100%;position:relative;cursor:pointer;overflow:hidden}
-    /* Show 4 per view via CSS trick */
-    .photo-carousel-slide{width:25%}
-    .photo-carousel-slide img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;filter:grayscale(20%);transition:filter .4s,transform .5s}
+    .photo-carousel-track{display:flex;transition:transform .45s cubic-bezier(.4,0,.2,1);will-change:transform}
+    .photo-carousel-slide{flex-shrink:0;width:25%;position:relative;cursor:pointer;overflow:hidden}
+    .photo-carousel-slide img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;filter:grayscale(20%);transition:filter .4s,transform .5s;background:var(--grey-light)}
     .photo-carousel-slide:hover img{filter:grayscale(0%);transform:scale(1.04)}
     .photo-slide-info{position:absolute;bottom:0;left:0;right:0;padding:28px 14px 12px;background:linear-gradient(transparent,rgba(0,0,0,.85));transform:translateY(100%);transition:transform .35s cubic-bezier(.4,0,.2,1)}
     .photo-carousel-slide:hover .photo-slide-info{transform:translateY(0)}
@@ -259,23 +256,15 @@
     .photo-nav-dot.active{background:var(--red);transform:scale(1.3)}
     .photo-counter{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--grey-text);letter-spacing:.1em}
 
-    /* ── Graphics Carousel (same 4-wide pattern) ── */
+    /* Graphics */
     .graphics-group-header{display:flex;align-items:baseline;gap:16px;margin-bottom:10px;padding-bottom:14px;border-bottom:1px solid var(--glass-border);flex-wrap:wrap}
     .graphics-group-title{font-size:clamp(1rem,2.2vw,1.5rem);font-weight:800;letter-spacing:-.01em}
     .graphics-tag{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--red);border:1px solid rgba(230,48,34,.3);padding:3px 8px}
     .graphics-desc{font-size:clamp(.78rem,1.3vw,.88rem);color:var(--grey-text);line-height:1.7;margin-bottom:clamp(12px,2vw,20px);max-width:680px}
-    .graphic-carousel-slide{width:25%}
-    .graphic-carousel-slide img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;filter:grayscale(15%);transition:filter .4s,transform .5s}
-    .graphic-carousel-slide:hover img{filter:grayscale(0%);transform:scale(1.04)}
-    .graphic-slide-info{position:absolute;bottom:0;left:0;right:0;padding:36px 14px 14px;background:linear-gradient(transparent,rgba(0,0,0,.88));transform:translateY(100%);transition:transform .35s cubic-bezier(.4,0,.2,1)}
-    .graphic-carousel-slide:hover .graphic-slide-info{transform:translateY(0)}
-    .graphic-slide-info h4{font-size:clamp(.78rem,1.2vw,.88rem);font-weight:700;margin-bottom:3px}
-    .graphic-slide-info span{font-family:'Space Mono',monospace;font-size:.58rem;color:var(--red);letter-spacing:.08em}
-    /* For single/few items — use grid fallback */
     .graphics-grid-static{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(8px,1.5vw,14px)}
     .graphic-card-static{position:relative;overflow:hidden;cursor:pointer;background:var(--grey-mid);border:1px solid var(--glass-border);aspect-ratio:3/4;transition:border-color var(--tr),transform var(--tr)}
     .graphic-card-static:hover{border-color:rgba(230,48,34,.4);transform:translateY(-3px)}
-    .graphic-card-static img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(15%);transition:transform .5s,filter .4s}
+    .graphic-card-static img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(15%);transition:transform .5s,filter .4s;background:var(--grey-light)}
     .graphic-card-static:hover img{transform:scale(1.04);filter:grayscale(0%)}
     .graphic-card-static .graphic-info{position:absolute;bottom:0;left:0;right:0;padding:36px 14px 14px;background:linear-gradient(transparent,rgba(0,0,0,.88));transform:translateY(100%);transition:transform .35s cubic-bezier(.4,0,.2,1)}
     .graphic-card-static:hover .graphic-info{transform:translateY(0)}
@@ -308,8 +297,7 @@
     .lightbox-caption{position:absolute;bottom:-36px;left:0;right:0;text-align:center;font-family:'Space Mono',monospace;font-size:.7rem;color:var(--grey-text);letter-spacing:.1em}
     .lightbox-nav{position:fixed;top:50%;transform:translateY(-50%);background:none;border:1px solid var(--glass-border);color:var(--white);font-size:.95rem;width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--tr);z-index:9991}
     .lightbox-nav:hover{background:var(--red);border-color:var(--red)}
-    .lightbox-prev{left:clamp(8px,2vw,20px)}
-    .lightbox-next{right:clamp(8px,2vw,20px)}
+    .lightbox-prev{left:clamp(8px,2vw,20px)}.lightbox-next{right:clamp(8px,2vw,20px)}
 
     /* ── Contact ── */
     #contact{background:var(--black)}
@@ -343,13 +331,10 @@
     .scroll-top.show{opacity:1;visibility:visible}
     .scroll-top:hover{background:var(--red-dim);transform:translateY(-3px)}
 
-    /* ── ImageKit helpers ── */
-    img[data-ik]{min-height:40px}
-
     /* ══ RESPONSIVE ══ */
     @media(max-width:1100px){
       .projects-grid{grid-template-columns:repeat(2,1fr)}
-      .photo-carousel-slide,.graphic-carousel-slide{width:33.333%}
+      .photo-carousel-slide{width:33.333%}
       .graphics-grid-static{grid-template-columns:repeat(3,1fr)}
     }
     @media(max-width:900px){
@@ -364,7 +349,7 @@
       .projects-grid{grid-template-columns:1fr}
       .films-grid{grid-template-columns:1fr}
       .timeline-grid{grid-template-columns:1fr}
-      .photo-carousel-slide,.graphic-carousel-slide{width:50%}
+      .photo-carousel-slide{width:50%}
       .graphics-grid-static{grid-template-columns:repeat(2,1fr)}
       footer{justify-content:center;text-align:center;flex-direction:column}
       .stats-row{grid-template-columns:repeat(3,1fr)}
@@ -372,7 +357,7 @@
     @media(max-width:600px){
       .stats-row{grid-template-columns:1fr}
       .lang-grid{grid-template-columns:repeat(4,1fr)}
-      .photo-carousel-slide,.graphic-carousel-slide{width:100%}
+      .photo-carousel-slide{width:100%}
       .graphics-grid-static{grid-template-columns:1fr 1fr}
       .hero-img-frame{width:min(240px,72vw)}
     }
@@ -454,6 +439,7 @@
   </div>
   <div class="hero-img-wrap">
     <div class="hero-img-frame">
+      <!-- Hero image: NOT lazy, high priority -->
       <img src="reden.jfif" alt="Reden Lopez" width="420" height="560" fetchpriority="high">
       <div class="hero-img-tag">STI Lipa · Ocularis</div>
     </div>
@@ -545,10 +531,10 @@
       <div class="project-role-row"><i class="fas fa-user-shield"></i><span>Lead Programmer · Group Leader · Lead Documenter</span></div>
       <div class="project-carousel" id="carousel-lipa">
         <div class="project-carousel-track" id="track-lipa">
-          <div class="project-carousel-slide" onclick="openLB(this)"><img src="https://ik.imagekit.io/waa8112tr/LIPA1.png?updatedAt=1775377813387" alt="LipaAlertHub 1" data-src="https://ik.imagekit.io/waa8112tr/LIPA1.png?updatedAt=1775377813387" data-caption="LipaAlertHub — Screen 1" loading="lazy" decoding="async"></div>
-          <div class="project-carousel-slide" onclick="openLB(this)"><img src="https://ik.imagekit.io/waa8112tr/LIPA2.png" alt="LipaAlertHub 2" data-src="https://ik.imagekit.io/waa8112tr/LIPA2.png" data-caption="LipaAlertHub — Screen 2" loading="lazy" decoding="async"></div>
-          <div class="project-carousel-slide" onclick="openLB(this)"><img src="https://ik.imagekit.io/waa8112tr/LIPA3.png" alt="LipaAlertHub 3" data-src="https://ik.imagekit.io/waa8112tr/LIPA3.png" data-caption="LipaAlertHub — Screen 3" loading="lazy" decoding="async"></div>
-          <div class="project-carousel-slide" onclick="openLB(this)"><img src="https://ik.imagekit.io/waa8112tr/LIPA4.png" alt="LipaAlertHub 4" data-src="https://ik.imagekit.io/waa8112tr/LIPA4.png" data-caption="LipaAlertHub — Screen 4" loading="lazy" decoding="async"></div>
+          <div class="project-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/LIPA1.png?updatedAt=1775377813387" data-caption="LipaAlertHub — Screen 1"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-800/LIPA1.png?updatedAt=1775377813387" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="LipaAlertHub 1" width="800" height="450" decoding="async"></div>
+          <div class="project-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/LIPA2.png" data-caption="LipaAlertHub — Screen 2"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-800/LIPA2.png" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="LipaAlertHub 2" width="800" height="450" decoding="async"></div>
+          <div class="project-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/LIPA3.png" data-caption="LipaAlertHub — Screen 3"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-800/LIPA3.png" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="LipaAlertHub 3" width="800" height="450" decoding="async"></div>
+          <div class="project-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/LIPA4.png" data-caption="LipaAlertHub — Screen 4"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-800/LIPA4.png" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="LipaAlertHub 4" width="800" height="450" decoding="async"></div>
         </div>
         <button class="carousel-btn carousel-prev" onclick="moveCarousel('lipa',-1)"><i class="fas fa-chevron-left"></i></button>
         <button class="carousel-btn carousel-next" onclick="moveCarousel('lipa',1)"><i class="fas fa-chevron-right"></i></button>
@@ -580,7 +566,7 @@
       <div class="project-role-row"><i class="fas fa-user-shield"></i><span>Developer</span></div>
       <div class="project-carousel" id="carousel-mint">
         <div class="project-carousel-track" id="track-mint">
-          <div class="project-carousel-slide" onclick="openLB(this)"><img src="https://ik.imagekit.io/waa8112tr/mint.png" alt="MINT app" data-src="https://ik.imagekit.io/waa8112tr/mint.png" data-caption="MINT — Personal Finance Tracker" loading="lazy" decoding="async"></div>
+          <div class="project-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/mint.png" data-caption="MINT — Personal Finance Tracker"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-800/mint.png" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="MINT app" width="800" height="450" decoding="async"></div>
         </div>
         <button class="carousel-expand" onclick="openLB(document.querySelector('#track-mint .project-carousel-slide'))"><i class="fas fa-expand"></i></button>
       </div>
@@ -606,9 +592,9 @@
       <div class="project-role-row"><i class="fas fa-user-shield"></i><span>Website Designer · UI/UX Mockup</span></div>
       <div class="project-carousel" id="carousel-koseki">
         <div class="project-carousel-track" id="track-koseki">
-          <div class="project-carousel-slide" onclick="openLB(this)"><img src="https://ik.imagekit.io/waa8112tr/KOSEKI1.png" alt="KosekiLink 1" data-src="https://ik.imagekit.io/waa8112tr/KOSEKI1.png" data-caption="KosekiLink — Screen 1" loading="lazy" decoding="async"></div>
-          <div class="project-carousel-slide" onclick="openLB(this)"><img src="https://ik.imagekit.io/waa8112tr/KOSEKI2.png" alt="KosekiLink 2" data-src="https://ik.imagekit.io/waa8112tr/KOSEKI2.png" data-caption="KosekiLink — Screen 2" loading="lazy" decoding="async"></div>
-          <div class="project-carousel-slide" onclick="openLB(this)"><img src="https://ik.imagekit.io/waa8112tr/KOSEKI3.png" alt="KosekiLink 3" data-src="https://ik.imagekit.io/waa8112tr/KOSEKI3.png" data-caption="KosekiLink — Screen 3" loading="lazy" decoding="async"></div>
+          <div class="project-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/KOSEKI1.png" data-caption="KosekiLink — Screen 1"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-800/KOSEKI1.png" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="KosekiLink 1" width="800" height="450" decoding="async"></div>
+          <div class="project-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/KOSEKI2.png" data-caption="KosekiLink — Screen 2"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-800/KOSEKI2.png" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="KosekiLink 2" width="800" height="450" decoding="async"></div>
+          <div class="project-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/KOSEKI3.png" data-caption="KosekiLink — Screen 3"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-800/KOSEKI3.png" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="KosekiLink 3" width="800" height="450" decoding="async"></div>
         </div>
         <button class="carousel-btn carousel-prev" onclick="moveCarousel('koseki',-1)"><i class="fas fa-chevron-left"></i></button>
         <button class="carousel-btn carousel-next" onclick="moveCarousel('koseki',1)"><i class="fas fa-chevron-right"></i></button>
@@ -635,7 +621,7 @@
       <div class="project-role-row"><i class="fas fa-user-shield"></i><span>UI/UX Designer · Frontend Developer</span></div>
       <div class="project-carousel" id="carousel-profiling">
         <div class="project-carousel-track" id="track-profiling">
-          <div class="project-carousel-slide" onclick="openLB(this)"><img src="https://ik.imagekit.io/waa8112tr/SAAD2.png" alt="SAAD Profiling" data-src="https://ik.imagekit.io/waa8112tr/SAAD2.png" data-caption="SAAD Profiling App" loading="lazy" decoding="async"></div>
+          <div class="project-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SAAD2.png" data-caption="SAAD Profiling App"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-800/SAAD2.png" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="SAAD Profiling" width="800" height="450" decoding="async"></div>
         </div>
         <button class="carousel-expand" onclick="openLB(document.querySelector('#track-profiling .project-carousel-slide'))"><i class="fas fa-expand"></i></button>
       </div>
@@ -660,7 +646,7 @@
       <div class="project-role-row"><i class="fas fa-user-shield"></i><span>UI/UX Designer · Frontend Developer</span></div>
       <div class="project-carousel" id="carousel-agri">
         <div class="project-carousel-track" id="track-agri">
-          <div class="project-carousel-slide" onclick="openLB(this)"><img src="https://ik.imagekit.io/waa8112tr/SAAD1.png" alt="AgriTrack" data-src="https://ik.imagekit.io/waa8112tr/SAAD1.png" data-caption="AgriTrack — DA SAAD Monitoring App" loading="lazy" decoding="async"></div>
+          <div class="project-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SAAD1.png" data-caption="AgriTrack — DA SAAD Monitoring App"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-800/SAAD1.png" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="AgriTrack" width="800" height="450" decoding="async"></div>
         </div>
         <button class="carousel-expand" onclick="openLB(document.querySelector('#track-agri .project-carousel-slide'))"><i class="fas fa-expand"></i></button>
       </div>
@@ -685,8 +671,8 @@
       <div class="project-role-row"><i class="fas fa-user-shield"></i><span>UI/UX Designer</span></div>
       <div class="project-carousel" id="carousel-electro">
         <div class="project-carousel-track" id="track-electro">
-          <div class="project-carousel-slide" onclick="openLB(this)"><img src="https://ik.imagekit.io/waa8112tr/ELECTRO1.png" alt="Electro Gadgets 1" data-src="https://ik.imagekit.io/waa8112tr/ELECTRO1.png" data-caption="Electro Gadgets — Screen 1" loading="lazy" decoding="async"></div>
-          <div class="project-carousel-slide" onclick="openLB(this)"><img src="https://ik.imagekit.io/waa8112tr/ELECTRO2.png" alt="Electro Gadgets 2" data-src="https://ik.imagekit.io/waa8112tr/ELECTRO2.png" data-caption="Electro Gadgets — Screen 2" loading="lazy" decoding="async"></div>
+          <div class="project-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/ELECTRO1.png" data-caption="Electro Gadgets — Screen 1"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-800/ELECTRO1.png" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Electro Gadgets 1" width="800" height="450" decoding="async"></div>
+          <div class="project-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/ELECTRO2.png" data-caption="Electro Gadgets — Screen 2"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-800/ELECTRO2.png" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Electro Gadgets 2" width="800" height="450" decoding="async"></div>
         </div>
         <button class="carousel-btn carousel-prev" onclick="moveCarousel('electro',-1)"><i class="fas fa-chevron-left"></i></button>
         <button class="carousel-btn carousel-next" onclick="moveCarousel('electro',1)"><i class="fas fa-chevron-right"></i></button>
@@ -705,7 +691,7 @@
   </div>
 </section>
 
-<!-- EXPERIENCE — 2-column grid -->
+<!-- EXPERIENCE -->
 <section id="timeline">
   <div class="section-tag reveal">My Journey</div>
   <h2 class="section-title reveal reveal-delay-1">Experience &amp; <em>Roles</em></h2>
@@ -743,7 +729,7 @@
   </div>
 </section>
 
-<!-- FILMS -->
+<!-- FILMS: thumbnails are static colored placeholders, video only loads on click -->
 <section id="films">
   <div class="section-tag reveal">Behind the Lens</div>
   <h2 class="section-title reveal reveal-delay-1">Films &amp; <em>Videos</em></h2>
@@ -753,265 +739,241 @@
         <div class="film-play-btn"><div class="film-play-icon"><i class="fas fa-play"></i></div></div>
         <div class="film-thumb-label"><div class="film-thumb-title">Sportsfest 2025 Teaser</div><div class="film-thumb-role">Videographer</div></div>
       </div>
-      <div class="film-info">
-        <div class="film-badge">Film</div>
-        <div class="film-role-text"><i class="fas fa-video"></i>Videographer</div>
-      </div>
+      <div class="film-info"><div class="film-badge">Film</div><div class="film-role-text"><i class="fas fa-video"></i>Videographer</div></div>
     </div>
     <div class="film-card reveal reveal-delay-2">
       <div class="film-thumb" data-video="SAMSUNGGALAXYS24.mp4" data-title="Samsung Galaxy S24">
         <div class="film-play-btn"><div class="film-play-icon"><i class="fas fa-play"></i></div></div>
         <div class="film-thumb-label"><div class="film-thumb-title">Samsung Galaxy S24</div><div class="film-thumb-role">Editor / Animator</div></div>
       </div>
-      <div class="film-info">
-        <div class="film-badge">Film</div>
-        <div class="film-role-text"><i class="fas fa-cut"></i>Editor / Animator</div>
-      </div>
+      <div class="film-info"><div class="film-badge">Film</div><div class="film-role-text"><i class="fas fa-cut"></i>Editor / Animator</div></div>
     </div>
     <div class="film-card reveal reveal-delay-3">
       <div class="film-thumb" data-video="OUTREACHPROGRAM.mp4" data-title="STI Christmas Outreach Program 2024">
         <div class="film-play-btn"><div class="film-play-icon"><i class="fas fa-play"></i></div></div>
         <div class="film-thumb-label"><div class="film-thumb-title">STI Christmas Outreach Program 2024</div><div class="film-thumb-role">Videographer</div></div>
       </div>
-      <div class="film-info">
-        <div class="film-badge">Film</div>
-        <div class="film-role-text"><i class="fas fa-video"></i>Videographer</div>
-      </div>
+      <div class="film-info"><div class="film-badge">Film</div><div class="film-role-text"><i class="fas fa-video"></i>Videographer</div></div>
     </div>
     <div class="film-card reveal reveal-delay-4">
       <div class="film-thumb" data-video="STILIPATOURISM.mp4" data-title="STI Lipa Lifesaving Skills Seminar for BSTM Students">
         <div class="film-play-btn"><div class="film-play-icon"><i class="fas fa-play"></i></div></div>
         <div class="film-thumb-label"><div class="film-thumb-title">Lifesaving Skills Seminar · BSTM</div><div class="film-thumb-role">Videographer &amp; Editor</div></div>
       </div>
-      <div class="film-info">
-        <div class="film-badge">Film</div>
-        <div class="film-role-text"><i class="fas fa-video"></i>Videographer &amp; Editor</div>
-      </div>
+      <div class="film-info"><div class="film-badge">Film</div><div class="film-role-text"><i class="fas fa-video"></i>Videographer &amp; Editor</div></div>
     </div>
   </div>
 </section>
 
-<!-- PHOTOGRAPHY — Carousels per event -->
+<!-- PHOTOGRAPHY -->
 <section id="photography">
   <div class="section-tag reveal">Visual Stories</div>
   <h2 class="section-title reveal reveal-delay-1">Photography <em>Portfolio</em></h2>
   <div class="photo-events">
 
-    <!-- Sportsfest 2025 -->
+    <!-- Each photo carousel uses data-lazy on imgs; JS loads them when carousel becomes visible -->
+
     <div class="event-block reveal">
       <div class="event-header"><div class="event-title">Sportsfest 2025</div><div class="event-tag">Official Photographer</div><div class="event-count">4 photos</div></div>
-      <p class="event-desc">Capturing the energy and spirit of STI Lipa's annual Sportsfest — athletes, action, and moments of pure competition on and off the court.</p>
+      <p class="event-desc">Capturing the energy and spirit of STI Lipa's annual Sportsfest.</p>
       <div class="photo-carousel" id="pc-sf2025">
         <div class="photo-carousel-track" id="pt-sf2025">
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="ateno.2.jpg" data-caption="Sportsfest 2025"><img src="ateno.2.jpg" alt="Sportsfest 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2025</h4><span>Portrait</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="MJ.jpg" data-caption="Sportsfest 2025"><img src="MJ.jpg" alt="Sportsfest 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2025</h4><span>Portrait</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="SIATI.jpg" data-caption="Sportsfest 2025"><img src="SIATI.jpg" alt="Sportsfest 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2025</h4><span>Portrait</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="TINTIN.jpg" data-caption="Sportsfest 2025"><img src="https://ik.imagekit.io/waa8112tr/TINTIN.jpg?updatedAt=1775377813719" alt="Sportsfest 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2025</h4><span>Portrait</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="ateno.2.jpg" data-caption="Sportsfest 2025"><img data-lazy="ateno.2.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Sportsfest 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2025</h4><span>Portrait</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="MJ.jpg" data-caption="Sportsfest 2025"><img data-lazy="MJ.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Sportsfest 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2025</h4><span>Portrait</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="SIATI.jpg" data-caption="Sportsfest 2025"><img data-lazy="SIATI.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Sportsfest 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2025</h4><span>Portrait</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/TINTIN.jpg?updatedAt=1775377813719" data-caption="Sportsfest 2025"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/TINTIN.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Sportsfest 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2025</h4><span>Portrait</span></div></div>
         </div>
       </div>
       <div class="photo-carousel-nav"><button class="photo-nav-btn" onclick="movePhotoCarousel('sf2025',-1)"><i class="fas fa-chevron-left"></i></button><div class="photo-nav-dots" id="pd-sf2025"></div><span class="photo-counter" id="pcount-sf2025">1 / 4</span><button class="photo-nav-btn" onclick="movePhotoCarousel('sf2025',1)"><i class="fas fa-chevron-right"></i></button></div>
     </div>
 
-    <!-- Sportsfest 2026 -->
     <div class="event-block reveal">
       <div class="event-header"><div class="event-title">Sportsfest 2026</div><div class="event-tag">Official Photographer</div><div class="event-count">13 photos</div></div>
-      <p class="event-desc">Another year, another Sportsfest — bigger and more intense. Documenting every highlight, every sweat, every champion moment across STI Lipa's biggest sporting event.</p>
+      <p class="event-desc">Another year, another Sportsfest — bigger and more intense.</p>
       <div class="photo-carousel" id="pc-sf2026">
         <div class="photo-carousel-track" id="pt-sf2026">
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SPORSFEST20261.jpg?updatedAt=1775377919848" data-caption="Sportsfest 2026"><img src="https://ik.imagekit.io/waa8112tr/SPORSFEST20261.jpg?updatedAt=1775377919848" alt="Sportsfest 2026" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2026</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SPORSFEST20262.jpg" data-caption="Sportsfest 2026"><img src="https://ik.imagekit.io/waa8112tr/SPORSFEST20262.jpg" alt="Sportsfest 2026" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2026</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SPORSFEST20263.jpg" data-caption="Sportsfest 2026"><img src="https://ik.imagekit.io/waa8112tr/SPORSFEST20263.jpg" alt="Sportsfest 2026" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2026</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SPORSFEST20264.jpg" data-caption="Sportsfest 2026"><img src="https://ik.imagekit.io/waa8112tr/SPORSFEST20264.jpg" alt="Sportsfest 2026" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2026</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SPORSFEST20265.jpg?updatedAt=1775377920621" data-caption="Sportsfest 2026"><img src="https://ik.imagekit.io/waa8112tr/SPORSFEST20265.jpg?updatedAt=1775377920621" alt="Sportsfest 2026" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2026</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SPORSFEST20266.jpg?updatedAt=1775377921241" data-caption="Sportsfest 2026"><img src="https://ik.imagekit.io/waa8112tr/SPORSFEST20266.jpg?updatedAt=1775377921241" alt="Sportsfest 2026" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2026</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SPORSFEST20267.jpg?updatedAt=1775377921299" data-caption="Sportsfest 2026"><img src="https://ik.imagekit.io/waa8112tr/SPORSFEST20267.jpg?updatedAt=1775377921299" alt="Sportsfest 2026" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2026</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SPORSFEST20268" data-caption="Sportsfest 2026"><img src="https://ik.imagekit.io/waa8112tr/SPORSFEST20268" alt="Sportsfest 2026" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2026</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SPORSFEST20269.jpg?updatedAt=1775377921057" data-caption="Sportsfest 2026"><img src="https://ik.imagekit.io/waa8112tr/SPORSFEST20269.jpg?updatedAt=1775377921057" alt="Sportsfest 2026" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2026</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SPORSFEST202610.jpg?updatedAt=1775377919421" data-caption="Sportsfest 2026"><img src="https://ik.imagekit.io/waa8112tr/SPORSFEST202610.jpg?updatedAt=1775377919421" alt="Sportsfest 2026" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2026</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SPORSFEST202611.jpg?updatedAt=1775377919768" data-caption="Sportsfest 2026"><img src="https://ik.imagekit.io/waa8112tr/SPORSFEST202611.jpg?updatedAt=1775377919768" alt="Sportsfest 2026" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2026</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SPORSFEST202612.jpg?updatedAt=1775377918453" data-caption="Sportsfest 2026"><img src="https://ik.imagekit.io/waa8112tr/SPORSFEST202612.jpg?updatedAt=1775377918453" alt="Sportsfest 2026" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2026</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SPORSFEST202613.jpg?updatedAt=1775377920523" data-caption="Sportsfest 2026"><img src="https://ik.imagekit.io/waa8112tr/SPORSFEST202613.jpg?updatedAt=1775377920523" alt="Sportsfest 2026" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2026</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SPORSFEST20261.jpg?updatedAt=1775377919848" data-caption="Sportsfest 2026"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/SPORSFEST20261.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Sportsfest 2026" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2026</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SPORSFEST20262.jpg" data-caption="Sportsfest 2026"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/SPORSFEST20262.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Sportsfest 2026" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2026</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SPORSFEST20263.jpg" data-caption="Sportsfest 2026"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/SPORSFEST20263.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Sportsfest 2026" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2026</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SPORSFEST20264.jpg" data-caption="Sportsfest 2026"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/SPORSFEST20264.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Sportsfest 2026" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2026</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SPORSFEST20265.jpg?updatedAt=1775377920621" data-caption="Sportsfest 2026"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/SPORSFEST20265.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Sportsfest 2026" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2026</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SPORSFEST20266.jpg?updatedAt=1775377921241" data-caption="Sportsfest 2026"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/SPORSFEST20266.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Sportsfest 2026" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2026</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SPORSFEST20267.jpg?updatedAt=1775377921299" data-caption="Sportsfest 2026"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/SPORSFEST20267.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Sportsfest 2026" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2026</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SPORSFEST20268" data-caption="Sportsfest 2026"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/SPORSFEST20268" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Sportsfest 2026" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2026</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SPORSFEST20269.jpg?updatedAt=1775377921057" data-caption="Sportsfest 2026"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/SPORSFEST20269.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Sportsfest 2026" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2026</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SPORSFEST202610.jpg?updatedAt=1775377919421" data-caption="Sportsfest 2026"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/SPORSFEST202610.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Sportsfest 2026" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2026</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SPORSFEST202611.jpg?updatedAt=1775377919768" data-caption="Sportsfest 2026"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/SPORSFEST202611.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Sportsfest 2026" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2026</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SPORSFEST202612.jpg?updatedAt=1775377918453" data-caption="Sportsfest 2026"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/SPORSFEST202612.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Sportsfest 2026" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2026</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SPORSFEST202613.jpg?updatedAt=1775377920523" data-caption="Sportsfest 2026"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/SPORSFEST202613.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Sportsfest 2026" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Sportsfest 2026</h4><span>Event</span></div></div>
         </div>
       </div>
       <div class="photo-carousel-nav"><button class="photo-nav-btn" onclick="movePhotoCarousel('sf2026',-1)"><i class="fas fa-chevron-left"></i></button><div class="photo-nav-dots" id="pd-sf2026"></div><span class="photo-counter" id="pcount-sf2026">1 / 13</span><button class="photo-nav-btn" onclick="movePhotoCarousel('sf2026',1)"><i class="fas fa-chevron-right"></i></button></div>
     </div>
 
-    <!-- Tourism Expo 2025 -->
     <div class="event-block reveal">
       <div class="event-header"><div class="event-title">Tourism Expo 2025</div><div class="event-tag">Official Photographer</div><div class="event-count">4 photos</div></div>
-      <p class="event-desc">Documenting STI Lipa's Tourism Expo — showcasing student projects, local destinations, and the creative talent of the BSTM program.</p>
+      <p class="event-desc">Documenting STI Lipa's Tourism Expo — showcasing student projects and the creative talent of the BSTM program.</p>
       <div class="photo-carousel" id="pc-tourism2025">
         <div class="photo-carousel-track" id="pt-tourism2025">
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/TOURISM20251.jpg" data-caption="Tourism Expo 2025"><img src="https://ik.imagekit.io/waa8112tr/TOURISM20251.jpg" alt="Tourism Expo 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Tourism Expo 2025</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/TOURISM20252.jpg" data-caption="Tourism Expo 2025"><img src="https://ik.imagekit.io/waa8112tr/TOURISM20252.jpg" alt="Tourism Expo 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Tourism Expo 2025</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/TOURISM20253.jpg?updatedAt=1775377918284" data-caption="Tourism Expo 2025"><img src="https://ik.imagekit.io/waa8112tr/TOURISM20253.jpg?updatedAt=1775377918284" alt="Tourism Expo 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Tourism Expo 2025</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/TOURISM20254.jpg?updatedAt=1775377918441" data-caption="Tourism Expo 2025"><img src="https://ik.imagekit.io/waa8112tr/TOURISM20254.jpg?updatedAt=1775377918441" alt="Tourism Expo 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Tourism Expo 2025</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/TOURISM20251.jpg" data-caption="Tourism Expo 2025"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/TOURISM20251.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Tourism Expo 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Tourism Expo 2025</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/TOURISM20252.jpg" data-caption="Tourism Expo 2025"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/TOURISM20252.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Tourism Expo 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Tourism Expo 2025</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/TOURISM20253.jpg?updatedAt=1775377918284" data-caption="Tourism Expo 2025"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/TOURISM20253.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Tourism Expo 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Tourism Expo 2025</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/TOURISM20254.jpg?updatedAt=1775377918441" data-caption="Tourism Expo 2025"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/TOURISM20254.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Tourism Expo 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Tourism Expo 2025</h4><span>Event</span></div></div>
         </div>
       </div>
       <div class="photo-carousel-nav"><button class="photo-nav-btn" onclick="movePhotoCarousel('tourism2025',-1)"><i class="fas fa-chevron-left"></i></button><div class="photo-nav-dots" id="pd-tourism2025"></div><span class="photo-counter" id="pcount-tourism2025">1 / 4</span><button class="photo-nav-btn" onclick="movePhotoCarousel('tourism2025',1)"><i class="fas fa-chevron-right"></i></button></div>
     </div>
 
-    <!-- Tourism Expo 2024 -->
     <div class="event-block reveal">
       <div class="event-header"><div class="event-title">Tourism Expo 2024</div><div class="event-tag">Official Photographer</div><div class="event-count">5 photos</div></div>
-      <p class="event-desc">Coverage of the 2024 Tourism Expo — an immersive showcase of STI Lipa's tourism and hospitality students' hard work and creativity.</p>
+      <p class="event-desc">Coverage of the 2024 Tourism Expo — an immersive showcase of STI Lipa's tourism and hospitality students' work.</p>
       <div class="photo-carousel" id="pc-tourism2024">
         <div class="photo-carousel-track" id="pt-tourism2024">
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/TOURISM20241.jpg" data-caption="Tourism Expo 2024"><img src="https://ik.imagekit.io/waa8112tr/TOURISM20241.jpg" alt="Tourism Expo 2024" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Tourism Expo 2024</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/TOURISM20242.jpg" data-caption="Tourism Expo 2024"><img src="https://ik.imagekit.io/waa8112tr/TOURISM20242.jpg" alt="Tourism Expo 2024" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Tourism Expo 2024</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/TOURISM20243.jpg" data-caption="Tourism Expo 2024"><img src="https://ik.imagekit.io/waa8112tr/TOURISM20243.jpg" alt="Tourism Expo 2024" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Tourism Expo 2024</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/TOURISM20244.jpg?updatedAt=1775377924376" data-caption="Tourism Expo 2024"><img src="https://ik.imagekit.io/waa8112tr/TOURISM20244.jpg?updatedAt=1775377924376" alt="Tourism Expo 2024" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Tourism Expo 2024</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/TOURISM20245.jpg?updatedAt=1775377923024" data-caption="Tourism Expo 2024"><img src="https://ik.imagekit.io/waa8112tr/TOURISM20245.jpg?updatedAt=1775377923024" alt="Tourism Expo 2024" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Tourism Expo 2024</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/TOURISM20241.jpg" data-caption="Tourism Expo 2024"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/TOURISM20241.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Tourism Expo 2024" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Tourism Expo 2024</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/TOURISM20242.jpg" data-caption="Tourism Expo 2024"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/TOURISM20242.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Tourism Expo 2024" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Tourism Expo 2024</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/TOURISM20243.jpg" data-caption="Tourism Expo 2024"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/TOURISM20243.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Tourism Expo 2024" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Tourism Expo 2024</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/TOURISM20244.jpg?updatedAt=1775377924376" data-caption="Tourism Expo 2024"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/TOURISM20244.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Tourism Expo 2024" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Tourism Expo 2024</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/TOURISM20245.jpg?updatedAt=1775377923024" data-caption="Tourism Expo 2024"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/TOURISM20245.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Tourism Expo 2024" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Tourism Expo 2024</h4><span>Event</span></div></div>
         </div>
       </div>
       <div class="photo-carousel-nav"><button class="photo-nav-btn" onclick="movePhotoCarousel('tourism2024',-1)"><i class="fas fa-chevron-left"></i></button><div class="photo-nav-dots" id="pd-tourism2024"></div><span class="photo-counter" id="pcount-tourism2024">1 / 5</span><button class="photo-nav-btn" onclick="movePhotoCarousel('tourism2024',1)"><i class="fas fa-chevron-right"></i></button></div>
     </div>
 
-    <!-- Talent Search 2025 -->
     <div class="event-block reveal">
       <div class="event-header"><div class="event-title">Talent Search 2025</div><div class="event-tag">Official Photographer</div><div class="event-count">4 photos</div></div>
-      <p class="event-desc">Behind the spotlight of STI Lipa's Talent Search — capturing the performances, contestants, and unforgettable moments of one of the school's most anticipated events.</p>
+      <p class="event-desc">Behind the spotlight of STI Lipa's Talent Search — capturing performances and unforgettable moments.</p>
       <div class="photo-carousel" id="pc-talent2025">
         <div class="photo-carousel-track" id="pt-talent2025">
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/TSEDIT1.jpg" data-caption="Talent Search 2025"><img src="https://ik.imagekit.io/waa8112tr/TSEDIT1.jpg" alt="Talent Search 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Talent Search 2025</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/TSEDIT2.jpg?updatedAt=1775377874402" data-caption="Talent Search 2025"><img src="https://ik.imagekit.io/waa8112tr/TSEDIT2.jpg?updatedAt=1775377874402" alt="Talent Search 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Talent Search 2025</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/TSEDIT3.jpg" data-caption="Talent Search 2025"><img src="https://ik.imagekit.io/waa8112tr/TSEDIT3.jpg" alt="Talent Search 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Talent Search 2025</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/TSEDIT4.jpg" data-caption="Talent Search 2025"><img src="https://ik.imagekit.io/waa8112tr/TSEDIT4.jpg" alt="Talent Search 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Talent Search 2025</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/TSEDIT1.jpg" data-caption="Talent Search 2025"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/TSEDIT1.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Talent Search 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Talent Search 2025</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/TSEDIT2.jpg?updatedAt=1775377874402" data-caption="Talent Search 2025"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/TSEDIT2.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Talent Search 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Talent Search 2025</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/TSEDIT3.jpg" data-caption="Talent Search 2025"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/TSEDIT3.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Talent Search 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Talent Search 2025</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/TSEDIT4.jpg" data-caption="Talent Search 2025"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/TSEDIT4.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Talent Search 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Talent Search 2025</h4><span>Event</span></div></div>
         </div>
       </div>
       <div class="photo-carousel-nav"><button class="photo-nav-btn" onclick="movePhotoCarousel('talent2025',-1)"><i class="fas fa-chevron-left"></i></button><div class="photo-nav-dots" id="pd-talent2025"></div><span class="photo-counter" id="pcount-talent2025">1 / 4</span><button class="photo-nav-btn" onclick="movePhotoCarousel('talent2025',1)"><i class="fas fa-chevron-right"></i></button></div>
     </div>
 
-    <!-- Valentines 2026 -->
     <div class="event-block reveal">
       <div class="event-header"><div class="event-title">Valentines 2026</div><div class="event-tag">Official Photographer</div><div class="event-count">8 photos</div></div>
-      <p class="event-desc">Heartfelt moments, laughter, and love — capturing the warmth and joy of STI Lipa's Valentines celebration through candid shots and styled portraits.</p>
+      <p class="event-desc">Heartfelt moments, laughter, and love — capturing the warmth of STI Lipa's Valentines celebration.</p>
       <div class="photo-carousel" id="pc-vday2026">
         <div class="photo-carousel-track" id="pt-vday2026">
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/VDAY20261.jpg?updatedAt=1775377924879" data-caption="Valentines 2026"><img src="https://ik.imagekit.io/waa8112tr/VDAY20261.jpg?updatedAt=1775377924879" alt="Valentines 2026" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Valentines 2026</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/VDAY20262.jpg?updatedAt=1775377926165" data-caption="Valentines 2026"><img src="https://ik.imagekit.io/waa8112tr/VDAY20262.jpg?updatedAt=1775377926165" alt="Valentines 2026" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Valentines 2026</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/VDAY20263.jpg?updatedAt=1775377925516" data-caption="Valentines 2026"><img src="https://ik.imagekit.io/waa8112tr/VDAY20263.jpg?updatedAt=1775377925516" alt="Valentines 2026" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Valentines 2026</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/VDAY20264.jpg?updatedAt=1775377925499" data-caption="Valentines 2026"><img src="https://ik.imagekit.io/waa8112tr/VDAY20264.jpg?updatedAt=1775377925499" alt="Valentines 2026" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Valentines 2026</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/VDAY20265.jpg?updatedAt=1775377911822" data-caption="Valentines 2026"><img src="https://ik.imagekit.io/waa8112tr/VDAY20265.jpg?updatedAt=1775377911822" alt="Valentines 2026" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Valentines 2026</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/VDAY20266.jpg?updatedAt=1775377923034" data-caption="Valentines 2026"><img src="https://ik.imagekit.io/waa8112tr/VDAY20266.jpg?updatedAt=1775377923034" alt="Valentines 2026" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Valentines 2026</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/VDAY20267.jpg?updatedAt=1775377926393" data-caption="Valentines 2026"><img src="https://ik.imagekit.io/waa8112tr/VDAY20267.jpg?updatedAt=1775377926393" alt="Valentines 2026" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Valentines 2026</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/VDAY20268.jpg?updatedAt=1775377924275" data-caption="Valentines 2026"><img src="https://ik.imagekit.io/waa8112tr/VDAY20268.jpg?updatedAt=1775377924275" alt="Valentines 2026" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Valentines 2026</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/VDAY20261.jpg?updatedAt=1775377924879" data-caption="Valentines 2026"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/VDAY20261.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Valentines 2026" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Valentines 2026</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/VDAY20262.jpg?updatedAt=1775377926165" data-caption="Valentines 2026"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/VDAY20262.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Valentines 2026" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Valentines 2026</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/VDAY20263.jpg?updatedAt=1775377925516" data-caption="Valentines 2026"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/VDAY20263.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Valentines 2026" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Valentines 2026</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/VDAY20264.jpg?updatedAt=1775377925499" data-caption="Valentines 2026"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/VDAY20264.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Valentines 2026" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Valentines 2026</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/VDAY20265.jpg?updatedAt=1775377911822" data-caption="Valentines 2026"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/VDAY20265.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Valentines 2026" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Valentines 2026</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/VDAY20266.jpg?updatedAt=1775377923034" data-caption="Valentines 2026"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/VDAY20266.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Valentines 2026" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Valentines 2026</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/VDAY20267.jpg?updatedAt=1775377926393" data-caption="Valentines 2026"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/VDAY20267.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Valentines 2026" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Valentines 2026</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/VDAY20268.jpg?updatedAt=1775377924275" data-caption="Valentines 2026"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/VDAY20268.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Valentines 2026" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Valentines 2026</h4><span>Event</span></div></div>
         </div>
       </div>
       <div class="photo-carousel-nav"><button class="photo-nav-btn" onclick="movePhotoCarousel('vday2026',-1)"><i class="fas fa-chevron-left"></i></button><div class="photo-nav-dots" id="pd-vday2026"></div><span class="photo-counter" id="pcount-vday2026">1 / 8</span><button class="photo-nav-btn" onclick="movePhotoCarousel('vday2026',1)"><i class="fas fa-chevron-right"></i></button></div>
     </div>
 
-    <!-- Valentines 2025 -->
     <div class="event-block reveal">
       <div class="event-header"><div class="event-title">Valentines 2025</div><div class="event-tag">Official Photographer</div><div class="event-count">3 photos</div></div>
       <p class="event-desc">Sweet moments and genuine smiles — photographing the 2025 Valentines celebration at STI Lipa.</p>
       <div class="photo-carousel" id="pc-vday2025">
         <div class="photo-carousel-track" id="pt-vday2025">
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/VDAY20241.jpg" data-caption="Valentines 2025"><img src="https://ik.imagekit.io/waa8112tr/VDAY20241.jpg" alt="Valentines 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Valentines 2025</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/VDAY20242.jpg" data-caption="Valentines 2025"><img src="https://ik.imagekit.io/waa8112tr/VDAY20242.jpg" alt="Valentines 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Valentines 2025</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/VDAY20243.jpg" data-caption="Valentines 2025"><img src="https://ik.imagekit.io/waa8112tr/VDAY20243.jpg" alt="Valentines 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Valentines 2025</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/VDAY20241.jpg" data-caption="Valentines 2025"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/VDAY20241.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Valentines 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Valentines 2025</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/VDAY20242.jpg" data-caption="Valentines 2025"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/VDAY20242.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Valentines 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Valentines 2025</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/VDAY20243.jpg" data-caption="Valentines 2025"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/VDAY20243.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Valentines 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Valentines 2025</h4><span>Event</span></div></div>
         </div>
       </div>
       <div class="photo-carousel-nav"><button class="photo-nav-btn" onclick="movePhotoCarousel('vday2025',-1)"><i class="fas fa-chevron-left"></i></button><div class="photo-nav-dots" id="pd-vday2025"></div><span class="photo-counter" id="pcount-vday2025">1 / 3</span><button class="photo-nav-btn" onclick="movePhotoCarousel('vday2025',1)"><i class="fas fa-chevron-right"></i></button></div>
     </div>
 
-    <!-- Valoshoot -->
     <div class="event-block reveal">
       <div class="event-header"><div class="event-title">Valoshoot</div><div class="event-tag">Photographer</div><div class="event-count">1 photo</div></div>
       <p class="event-desc">A dedicated Valentine's portrait shoot — styled, intimate, and cinematic.</p>
       <div class="photo-carousel" id="pc-valoshoot">
         <div class="photo-carousel-track" id="pt-valoshoot">
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/VALOSHOOT1.jpg" data-caption="Valoshoot"><img src="https://ik.imagekit.io/waa8112tr/VALOSHOOT1.jpg" alt="Valoshoot" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Valoshoot</h4><span>Portrait</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/VALOSHOOT1.jpg" data-caption="Valoshoot"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/VALOSHOOT1.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Valoshoot" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Valoshoot</h4><span>Portrait</span></div></div>
         </div>
       </div>
       <div class="photo-carousel-nav"><button class="photo-nav-btn" onclick="movePhotoCarousel('valoshoot',-1)"><i class="fas fa-chevron-left"></i></button><div class="photo-nav-dots" id="pd-valoshoot"></div><span class="photo-counter" id="pcount-valoshoot">1 / 1</span><button class="photo-nav-btn" onclick="movePhotoCarousel('valoshoot',1)"><i class="fas fa-chevron-right"></i></button></div>
     </div>
 
-    <!-- Mass Dance 2025 -->
     <div class="event-block reveal">
       <div class="event-header"><div class="event-title">Mass Dance 2025</div><div class="event-tag">Official Photographer</div><div class="event-count">2 photos</div></div>
-      <p class="event-desc">Hundreds of students moving in sync — Mass Dance is one of STI Lipa's most energetic traditions and I was there to freeze every beat.</p>
+      <p class="event-desc">Hundreds of students moving in sync — freezing every beat of Mass Dance.</p>
       <div class="photo-carousel" id="pc-massdance">
         <div class="photo-carousel-track" id="pt-massdance">
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/MASS1.jpg" data-caption="Mass Dance 2025"><img src="https://ik.imagekit.io/waa8112tr/MASS1.jpg" alt="Mass Dance 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Mass Dance 2025</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/MASS2.jpg?updatedAt=1775377919724" data-caption="Mass Dance 2025"><img src="https://ik.imagekit.io/waa8112tr/MASS2.jpg?updatedAt=1775377919724" alt="Mass Dance 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Mass Dance 2025</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/MASS1.jpg" data-caption="Mass Dance 2025"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/MASS1.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Mass Dance 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Mass Dance 2025</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/MASS2.jpg?updatedAt=1775377919724" data-caption="Mass Dance 2025"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/MASS2.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Mass Dance 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Mass Dance 2025</h4><span>Event</span></div></div>
         </div>
       </div>
       <div class="photo-carousel-nav"><button class="photo-nav-btn" onclick="movePhotoCarousel('massdance',-1)"><i class="fas fa-chevron-left"></i></button><div class="photo-nav-dots" id="pd-massdance"></div><span class="photo-counter" id="pcount-massdance">1 / 2</span><button class="photo-nav-btn" onclick="movePhotoCarousel('massdance',1)"><i class="fas fa-chevron-right"></i></button></div>
     </div>
 
-    <!-- CSID -->
     <div class="event-block reveal">
       <div class="event-header"><div class="event-title">Christmas Station ID 2025</div><div class="event-tag">BTS Photographer</div><div class="event-count">3 photos</div></div>
-      <p class="event-desc">Behind-the-scenes coverage of the production of STI Lipa's Christmas Station ID — lights, cameras, and the creative process that made it happen.</p>
+      <p class="event-desc">Behind-the-scenes coverage of the production of STI Lipa's Christmas Station ID.</p>
       <div class="photo-carousel" id="pc-csid">
         <div class="photo-carousel-track" id="pt-csid">
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/CSID1.jpg" data-caption="Christmas Station ID 2025"><img src="https://ik.imagekit.io/waa8112tr/CSID1.jpg" alt="CSID 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>CSID 2025</h4><span>Behind the Scenes</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/CSID2.jpg" data-caption="Christmas Station ID 2025"><img src="https://ik.imagekit.io/waa8112tr/CSID2.jpg" alt="CSID 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>CSID 2025</h4><span>Behind the Scenes</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/CSID3.jpg?updatedAt=1775377876021" data-caption="Christmas Station ID 2025"><img src="https://ik.imagekit.io/waa8112tr/CSID3.jpg?updatedAt=1775377876021" alt="CSID 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>CSID 2025</h4><span>Behind the Scenes</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/CSID1.jpg" data-caption="Christmas Station ID 2025"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/CSID1.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="CSID 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>CSID 2025</h4><span>Behind the Scenes</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/CSID2.jpg" data-caption="Christmas Station ID 2025"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/CSID2.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="CSID 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>CSID 2025</h4><span>Behind the Scenes</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/CSID3.jpg?updatedAt=1775377876021" data-caption="Christmas Station ID 2025"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/CSID3.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="CSID 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>CSID 2025</h4><span>Behind the Scenes</span></div></div>
         </div>
       </div>
       <div class="photo-carousel-nav"><button class="photo-nav-btn" onclick="movePhotoCarousel('csid',-1)"><i class="fas fa-chevron-left"></i></button><div class="photo-nav-dots" id="pd-csid"></div><span class="photo-counter" id="pcount-csid">1 / 3</span><button class="photo-nav-btn" onclick="movePhotoCarousel('csid',1)"><i class="fas fa-chevron-right"></i></button></div>
     </div>
 
-    <!-- Graduation 2025 -->
     <div class="event-block reveal">
       <div class="event-header"><div class="event-title">Graduation 2025</div><div class="event-tag">Official Photographer</div><div class="event-count">9 photos</div></div>
-      <p class="event-desc">One of the most emotional events of the year — capturing the pride, tears, and joy of STI Lipa's graduating class of 2025 as they step into the next chapter.</p>
+      <p class="event-desc">Capturing the pride, tears, and joy of STI Lipa's graduating class of 2025.</p>
       <div class="photo-carousel" id="pc-grad2025">
         <div class="photo-carousel-track" id="pt-grad2025">
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/GRAD1.jpg" data-caption="Graduation 2025"><img src="https://ik.imagekit.io/waa8112tr/GRAD1.jpg" alt="Graduation 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Graduation 2025</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/GRAD2.jpg" data-caption="Graduation 2025"><img src="https://ik.imagekit.io/waa8112tr/GRAD2.jpg" alt="Graduation 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Graduation 2025</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/GRAD3.jpg" data-caption="Graduation 2025"><img src="https://ik.imagekit.io/waa8112tr/GRAD3.jpg" alt="Graduation 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Graduation 2025</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/GRAD4.jpg" data-caption="Graduation 2025"><img src="https://ik.imagekit.io/waa8112tr/GRAD4.jpg" alt="Graduation 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Graduation 2025</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/GRAD5.jpg" data-caption="Graduation 2025"><img src="https://ik.imagekit.io/waa8112tr/GRAD5.jpg" alt="Graduation 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Graduation 2025</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/GRAD6.jpg" data-caption="Graduation 2025"><img src="https://ik.imagekit.io/waa8112tr/GRAD6.jpg" alt="Graduation 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Graduation 2025</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/GRAD7.jpg" data-caption="Graduation 2025"><img src="https://ik.imagekit.io/waa8112tr/GRAD7.jpg" alt="Graduation 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Graduation 2025</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/GRAD8.jpg" data-caption="Graduation 2025"><img src="https://ik.imagekit.io/waa8112tr/GRAD8.jpg" alt="Graduation 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Graduation 2025</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/GRAD9.jpg" data-caption="Graduation 2025"><img src="https://ik.imagekit.io/waa8112tr/GRAD9.jpg" alt="Graduation 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Graduation 2025</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/GRAD1.jpg" data-caption="Graduation 2025"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/GRAD1.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Graduation 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Graduation 2025</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/GRAD2.jpg" data-caption="Graduation 2025"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/GRAD2.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Graduation 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Graduation 2025</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/GRAD3.jpg" data-caption="Graduation 2025"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/GRAD3.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Graduation 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Graduation 2025</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/GRAD4.jpg" data-caption="Graduation 2025"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/GRAD4.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Graduation 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Graduation 2025</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/GRAD5.jpg" data-caption="Graduation 2025"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/GRAD5.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Graduation 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Graduation 2025</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/GRAD6.jpg" data-caption="Graduation 2025"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/GRAD6.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Graduation 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Graduation 2025</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/GRAD7.jpg" data-caption="Graduation 2025"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/GRAD7.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Graduation 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Graduation 2025</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/GRAD8.jpg" data-caption="Graduation 2025"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/GRAD8.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Graduation 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Graduation 2025</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/GRAD9.jpg" data-caption="Graduation 2025"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/GRAD9.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Graduation 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Graduation 2025</h4><span>Event</span></div></div>
         </div>
       </div>
       <div class="photo-carousel-nav"><button class="photo-nav-btn" onclick="movePhotoCarousel('grad2025',-1)"><i class="fas fa-chevron-left"></i></button><div class="photo-nav-dots" id="pd-grad2025"></div><span class="photo-counter" id="pcount-grad2025">1 / 9</span><button class="photo-nav-btn" onclick="movePhotoCarousel('grad2025',1)"><i class="fas fa-chevron-right"></i></button></div>
     </div>
 
-    <!-- College Fair -->
     <div class="event-block reveal">
       <div class="event-header"><div class="event-title">College Fair</div><div class="event-tag">Official Photographer</div><div class="event-count">2 photos</div></div>
-      <p class="event-desc">Documenting the excitement and opportunities at STI Lipa's College Fair — students exploring their futures, one booth at a time.</p>
+      <p class="event-desc">Documenting the excitement and opportunities at STI Lipa's College Fair.</p>
       <div class="photo-carousel" id="pc-collegefair">
         <div class="photo-carousel-track" id="pt-collegefair">
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/COLLEGEFAIR1.jpg" data-caption="College Fair"><img src="https://ik.imagekit.io/waa8112tr/COLLEGEFAIR1.jpg" alt="College Fair" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>College Fair</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/COLLEGEFAIR2.jpg" data-caption="College Fair"><img src="https://ik.imagekit.io/waa8112tr/COLLEGEFAIR2.jpg" alt="College Fair" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>College Fair</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/COLLEGEFAIR1.jpg" data-caption="College Fair"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/COLLEGEFAIR1.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="College Fair" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>College Fair</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/COLLEGEFAIR2.jpg" data-caption="College Fair"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/COLLEGEFAIR2.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="College Fair" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>College Fair</h4><span>Event</span></div></div>
         </div>
       </div>
       <div class="photo-carousel-nav"><button class="photo-nav-btn" onclick="movePhotoCarousel('collegefair',-1)"><i class="fas fa-chevron-left"></i></button><div class="photo-nav-dots" id="pd-collegefair"></div><span class="photo-counter" id="pcount-collegefair">1 / 2</span><button class="photo-nav-btn" onclick="movePhotoCarousel('collegefair',1)"><i class="fas fa-chevron-right"></i></button></div>
     </div>
 
-    <!-- STI Exposition 2025 -->
     <div class="event-block reveal">
       <div class="event-header"><div class="event-title">STI Exposition 2025</div><div class="event-tag">Official Photographer</div><div class="event-count">2 photos</div></div>
-      <p class="event-desc">STI Lipa's senior high students showcasing their capstone projects and academic work — innovation meets creativity at the annual Exposition.</p>
+      <p class="event-desc">STI Lipa's senior high students showcasing their capstone projects at the annual Exposition.</p>
       <div class="photo-carousel" id="pc-shsexpo">
         <div class="photo-carousel-track" id="pt-shsexpo">
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SHSEXPO1.jpg" data-caption="STI Exposition 2025"><img src="https://ik.imagekit.io/waa8112tr/SHSEXPO1.jpg" alt="STI Exposition 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>STI Exposition 2025</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SHSEXPO2.jpg" data-caption="STI Exposition 2025"><img src="https://ik.imagekit.io/waa8112tr/SHSEXPO2.jpg" alt="STI Exposition 2025" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>STI Exposition 2025</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SHSEXPO1.jpg" data-caption="STI Exposition 2025"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/SHSEXPO1.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="STI Exposition 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>STI Exposition 2025</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/SHSEXPO2.jpg" data-caption="STI Exposition 2025"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/SHSEXPO2.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="STI Exposition 2025" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>STI Exposition 2025</h4><span>Event</span></div></div>
         </div>
       </div>
       <div class="photo-carousel-nav"><button class="photo-nav-btn" onclick="movePhotoCarousel('shsexpo',-1)"><i class="fas fa-chevron-left"></i></button><div class="photo-nav-dots" id="pd-shsexpo"></div><span class="photo-counter" id="pcount-shsexpo">1 / 2</span><button class="photo-nav-btn" onclick="movePhotoCarousel('shsexpo',1)"><i class="fas fa-chevron-right"></i></button></div>
     </div>
 
-    <!-- Christmas Lighting -->
     <div class="event-block reveal">
       <div class="event-header"><div class="event-title">Christmas Lighting</div><div class="event-tag">Official Photographer</div><div class="event-count">6 photos</div></div>
-      <p class="event-desc">The magic of the holiday season at STI Lipa — lights, decorations, and the festive atmosphere of the Christmas Lighting ceremony.</p>
+      <p class="event-desc">The magic of the holiday season at STI Lipa's Christmas Lighting ceremony.</p>
       <div class="photo-carousel" id="pc-clight">
         <div class="photo-carousel-track" id="pt-clight">
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/CLIGHT1.jpg" data-caption="Christmas Lighting"><img src="https://ik.imagekit.io/waa8112tr/CLIGHT1.jpg" alt="Christmas Lighting" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Christmas Lighting</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/CLIGHT2.jpg" data-caption="Christmas Lighting"><img src="https://ik.imagekit.io/waa8112tr/CLIGHT2.jpg" alt="Christmas Lighting" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Christmas Lighting</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/CLIGHT3.jpg" data-caption="Christmas Lighting"><img src="https://ik.imagekit.io/waa8112tr/CLIGHT3.jpg" alt="Christmas Lighting" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Christmas Lighting</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/CLIGHT4.jpg" data-caption="Christmas Lighting"><img src="https://ik.imagekit.io/waa8112tr/CLIGHT4.jpg" alt="Christmas Lighting" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Christmas Lighting</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/CLIGHT5.jpg" data-caption="Christmas Lighting"><img src="https://ik.imagekit.io/waa8112tr/CLIGHT5.jpg" alt="Christmas Lighting" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Christmas Lighting</h4><span>Event</span></div></div>
-          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/CLIGHT6.jpg" data-caption="Christmas Lighting"><img src="https://ik.imagekit.io/waa8112tr/CLIGHT6.jpg" alt="Christmas Lighting" loading="lazy" decoding="async"><div class="photo-slide-info"><h4>Christmas Lighting</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/CLIGHT1.jpg" data-caption="Christmas Lighting"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/CLIGHT1.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Christmas Lighting" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Christmas Lighting</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/CLIGHT2.jpg" data-caption="Christmas Lighting"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/CLIGHT2.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Christmas Lighting" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Christmas Lighting</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/CLIGHT3.jpg" data-caption="Christmas Lighting"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/CLIGHT3.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Christmas Lighting" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Christmas Lighting</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/CLIGHT4.jpg" data-caption="Christmas Lighting"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/CLIGHT4.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Christmas Lighting" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Christmas Lighting</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/CLIGHT5.jpg" data-caption="Christmas Lighting"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/CLIGHT5.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Christmas Lighting" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Christmas Lighting</h4><span>Event</span></div></div>
+          <div class="photo-carousel-slide" onclick="openLB(this)" data-src="https://ik.imagekit.io/waa8112tr/CLIGHT6.jpg" data-caption="Christmas Lighting"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-600/CLIGHT6.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Christmas Lighting" width="400" height="300" decoding="async"><div class="photo-slide-info"><h4>Christmas Lighting</h4><span>Event</span></div></div>
         </div>
       </div>
       <div class="photo-carousel-nav"><button class="photo-nav-btn" onclick="movePhotoCarousel('clight',-1)"><i class="fas fa-chevron-left"></i></button><div class="photo-nav-dots" id="pd-clight"></div><span class="photo-counter" id="pcount-clight">1 / 6</span><button class="photo-nav-btn" onclick="movePhotoCarousel('clight',1)"><i class="fas fa-chevron-right"></i></button></div>
@@ -1028,37 +990,37 @@
 
     <div class="reveal">
       <div class="graphics-group-header"><div class="graphics-group-title">Supreme Student Council</div><div class="graphics-tag">SSC · STI Lipa</div></div>
-      <p class="graphics-desc">Official graphic design work for the Supreme Student Council of STI College Lipa — event posters, awareness campaigns, and advocacy materials.</p>
+      <p class="graphics-desc">Official graphic design work for the Supreme Student Council of STI College Lipa.</p>
       <div class="graphics-grid-static">
-        <div class="graphic-card-static" data-src="https://ik.imagekit.io/waa8112tr/graphic1.png" data-caption="Ninoy Aquino's Day 2024 — SSC"><img src="https://ik.imagekit.io/waa8112tr/graphic1.png" alt="Ninoy Aquino's Day SSC" loading="lazy" decoding="async"><div class="graphic-info"><h4>Ninoy Aquino's Day 2024</h4><span>SSC</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="graphic-card-static" data-src="https://ik.imagekit.io/waa8112tr/graphic2.png?updatedAt=1775377920635" data-caption="Stay Safe STIers 2024–2025 — SSC"><img src="https://ik.imagekit.io/waa8112tr/graphic2.png?updatedAt=1775377920635" alt="Stay Safe STIers" loading="lazy" decoding="async"><div class="graphic-info"><h4>Stay Safe STIers 2024–2025</h4><span>SSC</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="graphic-card-static" data-src="projecttulongbayanihan.png" data-caption="Project Tulong Bayanihan 2024 — SSC"><img src="projecttulongbayanihan.png" alt="Project Tulong Bayanihan" loading="lazy" decoding="async"><div class="graphic-info"><h4>Project Tulong Bayanihan 2024</h4><span>SSC</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="graphic-card-static" data-src="https://ik.imagekit.io/waa8112tr/graphic1.png" data-caption="Ninoy Aquino's Day 2024 — SSC"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-400/graphic1.png" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Ninoy Aquino's Day SSC" width="400" height="533" decoding="async"><div class="graphic-info"><h4>Ninoy Aquino's Day 2024</h4><span>SSC</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="graphic-card-static" data-src="https://ik.imagekit.io/waa8112tr/graphic2.png?updatedAt=1775377920635" data-caption="Stay Safe STIers 2024–2025 — SSC"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-400/graphic2.png" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Stay Safe STIers" width="400" height="533" decoding="async"><div class="graphic-info"><h4>Stay Safe STIers 2024–2025</h4><span>SSC</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="graphic-card-static" data-src="projecttulongbayanihan.png" data-caption="Project Tulong Bayanihan 2024 — SSC"><img data-lazy="projecttulongbayanihan.png" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Project Tulong Bayanihan" width="400" height="533" decoding="async"><div class="graphic-info"><h4>Project Tulong Bayanihan 2024</h4><span>SSC</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
       </div>
     </div>
 
     <div class="reveal">
       <div class="graphics-group-header"><div class="graphics-group-title">Ocularis Media Team</div><div class="graphics-tag">Ocularis · STI Lipa</div></div>
-      <p class="graphics-desc">Design work for Ocularis, the official media team of STI College Lipa — digital posts, event coverage graphics, and the team's social media visual identity.</p>
+      <p class="graphics-desc">Design work for Ocularis, the official media team of STI College Lipa.</p>
       <div class="graphics-grid-static">
-        <div class="graphic-card-static" data-src="https://ik.imagekit.io/waa8112tr/ninoyaquinoforocu.png" data-caption="Ninoy Aquino's Day 2024 — Ocularis"><img src="https://ik.imagekit.io/waa8112tr/ninoyaquinoforocu.png" alt="Ninoy Aquino Ocularis" loading="lazy" decoding="async"><div class="graphic-info"><h4>Ninoy Aquino's Day 2024</h4><span>Ocularis</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="graphic-card-static" data-src="https://ik.imagekit.io/waa8112tr/graduationfront.png" data-caption="Graduation 2024 Front Post — Ocularis"><img src="https://ik.imagekit.io/waa8112tr/graduationfront.png" alt="Graduation 2024 Ocularis" loading="lazy" decoding="async"><div class="graphic-info"><h4>Graduation 2024 Front Post</h4><span>Ocularis</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="graphic-card-static" data-src="https://ik.imagekit.io/waa8112tr/ninoyaquinoforocu.png" data-caption="Ninoy Aquino's Day 2024 — Ocularis"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-400/ninoyaquinoforocu.png" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Ninoy Aquino Ocularis" width="400" height="533" decoding="async"><div class="graphic-info"><h4>Ninoy Aquino's Day 2024</h4><span>Ocularis</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="graphic-card-static" data-src="https://ik.imagekit.io/waa8112tr/graduationfront.png" data-caption="Graduation 2024 Front Post — Ocularis"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-400/graduationfront.png" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Graduation 2024 Ocularis" width="400" height="533" decoding="async"><div class="graphic-info"><h4>Graduation 2024 Front Post</h4><span>Ocularis</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
       </div>
     </div>
 
     <div class="reveal">
       <div class="graphics-group-header"><div class="graphics-group-title">Competition</div><div class="graphics-tag">STI Tagisan ng Sining · National</div></div>
-      <p class="graphics-desc">Official graphic designer for Sanctum Studios at the STI Tagisan ng Sining National Competition — competing at the highest level of student creative design.</p>
+      <p class="graphics-desc">Official graphic designer for Sanctum Studios at the STI Tagisan ng Sining National Competition.</p>
       <div class="graphics-grid-static">
-        <div class="graphic-card-static" data-src="https://ik.imagekit.io/waa8112tr/unsungheroposter.png" data-caption="Unsung Hero Poster — Sanctum Studios · STI Tagisan ng Sining"><img src="https://ik.imagekit.io/waa8112tr/unsungheroposter.png" alt="Unsung Hero Poster" loading="lazy" decoding="async"><div class="graphic-info"><h4>Unsung Hero Poster</h4><span>Sanctum Studios · National Competition</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="graphic-card-static" data-src="https://ik.imagekit.io/waa8112tr/unsungheroposter.png" data-caption="Unsung Hero Poster — Sanctum Studios · STI Tagisan ng Sining"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-400/unsungheroposter.png" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Unsung Hero Poster" width="400" height="533" decoding="async"><div class="graphic-info"><h4>Unsung Hero Poster</h4><span>Sanctum Studios · National Competition</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
       </div>
     </div>
 
     <div class="reveal">
       <div class="graphics-group-header"><div class="graphics-group-title">Personal / Practice</div><div class="graphics-tag">Design Practice</div></div>
-      <p class="graphics-desc">Personal design projects created for practice and passion — exploring aesthetics, branding, and typography outside of formal work.</p>
+      <p class="graphics-desc">Personal design projects created for practice and passion — exploring aesthetics and typography.</p>
       <div class="graphics-grid-static">
-        <div class="graphic-card-static" data-src="graphic3.png" data-caption="Air Jordan 4 University Blue"><img src="graphic3.png" alt="Air Jordan 4 University Blue" loading="lazy" decoding="async"><div class="graphic-info"><h4>Air Jordan 4 University Blue</h4><span>Personal</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
-        <div class="graphic-card-static" data-src="graphic4.png" data-caption="Air Jordan 4 Pine Green"><img src="graphic4.png" alt="Air Jordan 4 Pine Green" loading="lazy" decoding="async"><div class="graphic-info"><h4>Air Jordan 4 Pine Green</h4><span>Personal</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="graphic-card-static" data-src="graphic3.png" data-caption="Air Jordan 4 University Blue"><img data-lazy="graphic3.png" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Air Jordan 4 University Blue" width="400" height="533" decoding="async"><div class="graphic-info"><h4>Air Jordan 4 University Blue</h4><span>Personal</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
+        <div class="graphic-card-static" data-src="graphic4.png" data-caption="Air Jordan 4 Pine Green"><img data-lazy="graphic4.png" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Air Jordan 4 Pine Green" width="400" height="533" decoding="async"><div class="graphic-info"><h4>Air Jordan 4 Pine Green</h4><span>Personal</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
       </div>
     </div>
 
@@ -1071,7 +1033,7 @@
   <h2 class="section-title reveal reveal-delay-1">Get In <em>Touch</em></h2>
   <div class="contact-grid">
     <div class="contact-info reveal reveal-delay-2">
-      <p>Have a project in mind, want to collaborate, or just want to say hello? I'd love to hear from you. Fill out the form or reach me directly through any of the channels below.</p>
+      <p>Have a project in mind, want to collaborate, or just want to say hello? I'd love to hear from you.</p>
       <div class="contact-links">
         <a href="mailto:redenlopez17@gmail.com" class="contact-link"><i class="fas fa-envelope"></i>redenlopez17@gmail.com</a>
         <a href="tel:+639692001758" class="contact-link"><i class="fas fa-phone"></i>+63 969 200 1758</a>
@@ -1108,227 +1070,337 @@
 <button class="scroll-top" id="scrollTop"><i class="fas fa-arrow-up"></i></button>
 
 <script>
-/* ─── Typewriter ─── */
-(function(){
-  const el=document.querySelector('.typewriter');
-  if(!el)return;
-  const titles=['Front End Developer','UI / UX Designer','Photographer','Graphic Designer','Technical Director','Videographer & Editor'];
-  let ti=0,ci=0,del=false;
-  function type(){
-    const cur=titles[ti];
-    if(!del){el.textContent=cur.slice(0,++ci);if(ci===cur.length){del=true;setTimeout(type,1800);return;}}
-    else{el.textContent=cur.slice(0,--ci);if(ci===0){del=false;ti=(ti+1)%titles.length;}}
-    setTimeout(type,del?45:78);
+/* ═══════════════════════════════════════════════════
+   PERFORMANCE: Lazy image loader via IntersectionObserver
+   Loads images only when their container enters viewport (300px margin)
+   ═══════════════════════════════════════════════════ */
+const lazyIO = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const img = entry.target;
+    const src = img.dataset.lazy;
+    if (src) {
+      img.src = src;
+      img.removeAttribute('data-lazy');
+    }
+    lazyIO.unobserve(img);
+  });
+}, { rootMargin: '300px 0px', threshold: 0 });
+
+// Observe all lazy images after DOM ready
+document.querySelectorAll('img[data-lazy]').forEach(img => lazyIO.observe(img));
+
+/* ═══════════════════════════════════════════════════
+   PERFORMANCE: Lightbox — load full-res only on open
+   ═══════════════════════════════════════════════════ */
+const lb = document.getElementById('lightbox');
+const lbImg = document.getElementById('lightboxImg');
+const lbCap = document.getElementById('lightboxCaption');
+let lbGallery = [], lbIdx = 0;
+
+function openLB(el) {
+  const grid = el.closest('.photo-carousel-track,.project-carousel-track,.graphics-grid-static');
+  if (grid) {
+    const cards = grid.querySelectorAll('[data-src]');
+    lbGallery = [...cards].map(c => ({ src: c.dataset.src || '', cap: c.dataset.caption || '' }));
+    lbIdx = [...cards].indexOf(el);
+    if (lbIdx < 0) lbIdx = 0;
+  } else {
+    const src = el.dataset.src || (el.querySelector('img') ? el.querySelector('img').src : '');
+    lbGallery = [{ src, cap: el.dataset.caption || '' }];
+    lbIdx = 0;
   }
-  setTimeout(type,1800);
+  showLB();
+}
+function showLB() {
+  if (!lbGallery.length) return;
+  // Load full-res only now (data-src = full-res URL)
+  lbImg.src = lbGallery[lbIdx].src;
+  lbCap.textContent = lbGallery[lbIdx].cap;
+  lb.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeLB() { lb.classList.remove('active'); document.body.style.overflow = ''; }
+function nextLB() { lbIdx = (lbIdx + 1) % lbGallery.length; showLB(); }
+function prevLB() { lbIdx = (lbIdx - 1 + lbGallery.length) % lbGallery.length; showLB(); }
+
+document.querySelectorAll('.graphic-card-static').forEach(el => el.addEventListener('click', () => openLB(el)));
+document.getElementById('lightboxClose').addEventListener('click', closeLB);
+document.getElementById('lbNext').addEventListener('click', e => { e.stopPropagation(); nextLB(); });
+document.getElementById('lbPrev').addEventListener('click', e => { e.stopPropagation(); prevLB(); });
+lb.addEventListener('click', e => { if (e.target === lb) closeLB(); });
+document.addEventListener('keydown', e => {
+  if (!lb.classList.contains('active')) return;
+  if (e.key === 'Escape') closeLB();
+  if (e.key === 'ArrowRight') nextLB();
+  if (e.key === 'ArrowLeft') prevLB();
+});
+
+/* ═══════════════════════════════════════════════════
+   Typewriter
+   ═══════════════════════════════════════════════════ */
+(function () {
+  const el = document.querySelector('.typewriter');
+  if (!el) return;
+  const titles = ['Front End Developer', 'UI / UX Designer', 'Photographer', 'Graphic Designer', 'Technical Director', 'Videographer & Editor'];
+  let ti = 0, ci = 0, del = false;
+  function type() {
+    const cur = titles[ti];
+    if (!del) { el.textContent = cur.slice(0, ++ci); if (ci === cur.length) { del = true; setTimeout(type, 1800); return; } }
+    else { el.textContent = cur.slice(0, --ci); if (ci === 0) { del = false; ti = (ti + 1) % titles.length; } }
+    setTimeout(type, del ? 45 : 78);
+  }
+  setTimeout(type, 1800);
 })();
 
-/* ─── Cursor ─── */
-const dot=document.getElementById('cursorDot'),ring=document.getElementById('cursorRing');
-let mx=0,my=0,rx=0,ry=0;
-if(dot&&ring){
-  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;},{passive:true});
-  (function a(){dot.style.left=mx+'px';dot.style.top=my+'px';rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(a);})();
+/* ═══════════════════════════════════════════════════
+   Cursor (pointer devices only — uses RAF, not mousemove resize)
+   ═══════════════════════════════════════════════════ */
+const dot = document.getElementById('cursorDot'), ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+if (dot && ring && window.matchMedia('(pointer:fine)').matches) {
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; }, { passive: true });
+  (function a() {
+    dot.style.transform = `translate(calc(${mx}px - 50%), calc(${my}px - 50%))`;
+    rx += (mx - rx) * .12; ry += (my - ry) * .12;
+    ring.style.transform = `translate(calc(${rx}px - 50%), calc(${ry}px - 50%))`;
+    requestAnimationFrame(a);
+  })();
 }
 
-/* ─── Loader ─── */
-window.addEventListener('load',()=>setTimeout(()=>document.getElementById('loader').classList.add('hide'),1600));
+/* ═══════════════════════════════════════════════════
+   Loader
+   ═══════════════════════════════════════════════════ */
+window.addEventListener('load', () => setTimeout(() => document.getElementById('loader').classList.add('hide'), 1600));
 
-/* ─── Navbar + Scroll Top ─── */
-const navbar=document.getElementById('navbar'),stBtn=document.getElementById('scrollTop');
-window.addEventListener('scroll',()=>{
-  navbar.classList.toggle('scrolled',scrollY>40);
-  stBtn.classList.toggle('show',scrollY>400);
-},{passive:true});
-stBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+/* ═══════════════════════════════════════════════════
+   Navbar + Scroll Top — passive listener, throttled
+   ═══════════════════════════════════════════════════ */
+const navbar = document.getElementById('navbar'), stBtn = document.getElementById('scrollTop');
+let ticking = false;
+window.addEventListener('scroll', () => {
+  if (ticking) return;
+  ticking = true;
+  requestAnimationFrame(() => {
+    navbar.classList.toggle('scrolled', scrollY > 40);
+    stBtn.classList.toggle('show', scrollY > 400);
+    ticking = false;
+  });
+}, { passive: true });
+stBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-/* ─── Hamburger ─── */
-const ham=document.getElementById('hamburger'),drawer=document.getElementById('navDrawer');
-ham.addEventListener('click',()=>{ham.classList.toggle('open');drawer.classList.toggle('open');document.body.style.overflow=drawer.classList.contains('open')?'hidden':'';});
-drawer.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{ham.classList.remove('open');drawer.classList.remove('open');document.body.style.overflow='';}));
+/* ═══════════════════════════════════════════════════
+   Hamburger
+   ═══════════════════════════════════════════════════ */
+const ham = document.getElementById('hamburger'), drawer = document.getElementById('navDrawer');
+ham.addEventListener('click', () => {
+  ham.classList.toggle('open');
+  drawer.classList.toggle('open');
+  document.body.style.overflow = drawer.classList.contains('open') ? 'hidden' : '';
+});
+drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  ham.classList.remove('open'); drawer.classList.remove('open'); document.body.style.overflow = '';
+}));
 
-/* ─── Reveal ─── */
-const ro=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('visible');ro.unobserve(x.target);}}),{threshold:.07,rootMargin:'0px 0px -30px 0px'});
-document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+/* ═══════════════════════════════════════════════════
+   Reveal — single observer, no transition-delay jank
+   ═══════════════════════════════════════════════════ */
+const ro = new IntersectionObserver(e => e.forEach(x => {
+  if (x.isIntersecting) { x.target.classList.add('visible'); ro.unobserve(x.target); }
+}), { threshold: .07, rootMargin: '0px 0px -30px 0px' });
+document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
 
-/* ─── Stat Counters ─── */
-const so=new IntersectionObserver(e=>{e.forEach(x=>{
-  if(!x.isIntersecting)return;
-  const el=x.target,t=parseInt(el.dataset.target),p=el.dataset.plus==='true',step=t/(1500/16);
-  let c=0;const i=setInterval(()=>{c+=step;if(c>=t){el.textContent=t+(p?'+':'');clearInterval(i);}else el.textContent=Math.floor(c)+(p?'+':'');},16);
-  so.unobserve(el);
-});},{threshold:.5});
-document.querySelectorAll('.stat-num[data-target]').forEach(el=>so.observe(el));
+/* ═══════════════════════════════════════════════════
+   Stat Counters
+   ═══════════════════════════════════════════════════ */
+const so = new IntersectionObserver(e => {
+  e.forEach(x => {
+    if (!x.isIntersecting) return;
+    const el = x.target, t = parseInt(el.dataset.target), p = el.dataset.plus === 'true', step = t / (1500 / 16);
+    let c = 0;
+    const i = setInterval(() => { c += step; if (c >= t) { el.textContent = t + (p ? '+' : ''); clearInterval(i); } else el.textContent = Math.floor(c) + (p ? '+' : ''); }, 16);
+    so.unobserve(el);
+  });
+}, { threshold: .5 });
+document.querySelectorAll('.stat-num[data-target]').forEach(el => so.observe(el));
 
-/* ─── Project Carousels ─── */
-const projCarousels={};
-function initProjectCarousel(id){
-  const track=document.getElementById('track-'+id);
-  if(!track)return;
-  const slides=track.querySelectorAll('.project-carousel-slide');
-  const dotsEl=document.getElementById('dots-'+id);
-  if(!slides.length)return;
-  projCarousels[id]={idx:0,total:slides.length};
-  if(dotsEl&&slides.length>1){
-    slides.forEach((_,i)=>{
-      const d=document.createElement('span');
-      d.className='carousel-dot'+(i===0?' active':'');
-      d.onclick=()=>{projCarousels[id].idx=i;updateProjectCarousel(id);};
+/* ═══════════════════════════════════════════════════
+   Project Carousels
+   ═══════════════════════════════════════════════════ */
+const projCarousels = {};
+function initProjectCarousel(id) {
+  const track = document.getElementById('track-' + id);
+  if (!track) return;
+  const slides = track.querySelectorAll('.project-carousel-slide');
+  const dotsEl = document.getElementById('dots-' + id);
+  if (!slides.length) return;
+  projCarousels[id] = { idx: 0, total: slides.length };
+  if (dotsEl && slides.length > 1) {
+    slides.forEach((_, i) => {
+      const d = document.createElement('span');
+      d.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+      d.onclick = () => { projCarousels[id].idx = i; updateProjectCarousel(id); };
       dotsEl.appendChild(d);
     });
   }
 }
-function moveCarousel(id,dir){
-  const c=projCarousels[id];if(!c)return;
-  c.idx=(c.idx+dir+c.total)%c.total;
+function moveCarousel(id, dir) {
+  const c = projCarousels[id]; if (!c) return;
+  c.idx = (c.idx + dir + c.total) % c.total;
   updateProjectCarousel(id);
 }
-function updateProjectCarousel(id){
-  const c=projCarousels[id];if(!c)return;
-  const track=document.getElementById('track-'+id);
-  if(!track)return;
-  track.style.transform=`translateX(-${c.idx*100}%)`;
-  const dotsEl=document.getElementById('dots-'+id);
-  if(dotsEl)dotsEl.querySelectorAll('.carousel-dot').forEach((d,i)=>d.classList.toggle('active',i===c.idx));
+function updateProjectCarousel(id) {
+  const c = projCarousels[id]; if (!c) return;
+  const track = document.getElementById('track-' + id);
+  if (!track) return;
+  track.style.transform = `translateX(-${c.idx * 100}%)`;
+  const dotsEl = document.getElementById('dots-' + id);
+  if (dotsEl) dotsEl.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i === c.idx));
+  // Load the current + next slide images on demand
+  loadCarouselSlide(track, c.idx);
+  loadCarouselSlide(track, c.idx + 1);
 }
-['lipa','mint','koseki','profiling','agri','electro'].forEach(initProjectCarousel);
+function loadCarouselSlide(track, idx) {
+  const slides = track.querySelectorAll('.project-carousel-slide');
+  if (idx < 0 || idx >= slides.length) return;
+  const img = slides[idx].querySelector('img[data-lazy]');
+  if (img) { img.src = img.dataset.lazy; img.removeAttribute('data-lazy'); }
+}
+['lipa', 'mint', 'koseki', 'profiling', 'agri', 'electro'].forEach(id => {
+  initProjectCarousel(id);
+  // Load first slide immediately when carousel is visible
+  const carousel = document.getElementById('carousel-' + id);
+  if (carousel) {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const track = document.getElementById('track-' + id);
+          if (track) { loadCarouselSlide(track, 0); loadCarouselSlide(track, 1); }
+          io.disconnect();
+        }
+      });
+    }, { rootMargin: '200px' });
+    io.observe(carousel);
+  }
+});
 
-/* ─── Photo Carousels ─── */
-const photoCarousels={};
-const perView=()=>window.innerWidth<=600?1:window.innerWidth<=900?2:window.innerWidth<=1100?3:4;
+/* ═══════════════════════════════════════════════════
+   Photo Carousels
+   ═══════════════════════════════════════════════════ */
+const photoCarousels = {};
+const perView = () => window.innerWidth <= 600 ? 1 : window.innerWidth <= 900 ? 2 : window.innerWidth <= 1100 ? 3 : 4;
 
-function initPhotoCarousel(id){
-  const track=document.getElementById('pt-'+id);
-  if(!track)return;
-  const slides=track.querySelectorAll('.photo-carousel-slide');
-  const dotsEl=document.getElementById('pd-'+id);
-  const countEl=document.getElementById('pcount-'+id);
-  const n=slides.length;
-  const pv=perView();
-  const pages=Math.ceil(n/pv);
-  photoCarousels[id]={idx:0,total:n,pages};
-  if(dotsEl){
-    dotsEl.innerHTML='';
-    for(let i=0;i<pages;i++){
-      const d=document.createElement('span');
-      d.className='photo-nav-dot'+(i===0?' active':'');
-      d.onclick=()=>{photoCarousels[id].idx=i*pv;updatePhotoCarousel(id);};
+function initPhotoCarousel(id) {
+  const track = document.getElementById('pt-' + id);
+  if (!track) return;
+  const slides = track.querySelectorAll('.photo-carousel-slide');
+  const dotsEl = document.getElementById('pd-' + id);
+  const countEl = document.getElementById('pcount-' + id);
+  const n = slides.length, pv = perView(), pages = Math.ceil(n / pv);
+  photoCarousels[id] = { idx: 0, total: n, pages };
+  if (dotsEl) {
+    dotsEl.innerHTML = '';
+    for (let i = 0; i < pages; i++) {
+      const d = document.createElement('span');
+      d.className = 'photo-nav-dot' + (i === 0 ? ' active' : '');
+      d.onclick = () => { photoCarousels[id].idx = i * pv; updatePhotoCarousel(id); };
       dotsEl.appendChild(d);
     }
   }
-  if(countEl)countEl.textContent=`1 / ${n}`;
+  if (countEl) countEl.textContent = `1 / ${n}`;
 }
-function movePhotoCarousel(id,dir){
-  const c=photoCarousels[id];if(!c)return;
-  const pv=perView();
-  c.idx=Math.max(0,Math.min(c.idx+dir*pv,c.total-pv));
+function movePhotoCarousel(id, dir) {
+  const c = photoCarousels[id]; if (!c) return;
+  const pv = perView();
+  c.idx = Math.max(0, Math.min(c.idx + dir * pv, c.total - pv));
   updatePhotoCarousel(id);
 }
-function updatePhotoCarousel(id){
-  const c=photoCarousels[id];if(!c)return;
-  const track=document.getElementById('pt-'+id);
-  const dotsEl=document.getElementById('pd-'+id);
-  const countEl=document.getElementById('pcount-'+id);
-  const pv=perView();
-  const pct=(c.idx/(c.total))*100;
-  if(track)track.style.transform=`translateX(-${pct}%)`;
-  if(dotsEl){
-    const page=Math.floor(c.idx/pv);
-    dotsEl.querySelectorAll('.photo-nav-dot').forEach((d,i)=>d.classList.toggle('active',i===page));
+function updatePhotoCarousel(id) {
+  const c = photoCarousels[id]; if (!c) return;
+  const track = document.getElementById('pt-' + id);
+  const dotsEl = document.getElementById('pd-' + id);
+  const countEl = document.getElementById('pcount-' + id);
+  const pv = perView();
+  if (track) {
+    track.style.transform = `translateX(-${(c.idx / c.total) * 100}%)`;
+    // Load visible + 1 ahead
+    for (let i = c.idx; i < Math.min(c.idx + pv + 1, c.total); i++) {
+      const slide = track.querySelectorAll('.photo-carousel-slide')[i];
+      if (slide) { const img = slide.querySelector('img[data-lazy]'); if (img) { img.src = img.dataset.lazy; img.removeAttribute('data-lazy'); } }
+    }
   }
-  if(countEl)countEl.textContent=`${c.idx+1} / ${c.total}`;
+  if (dotsEl) { const page = Math.floor(c.idx / pv); dotsEl.querySelectorAll('.photo-nav-dot').forEach((d, i) => d.classList.toggle('active', i === page)); }
+  if (countEl) countEl.textContent = `${c.idx + 1} / ${c.total}`;
 }
 
-const photoIds=['sf2025','sf2026','tourism2025','tourism2024','talent2025','vday2026','vday2025','valoshoot','massdance','csid','grad2025','collegefair','shsexpo','clight'];
-photoIds.forEach(initPhotoCarousel);
-window.addEventListener('resize',()=>photoIds.forEach(id=>{if(photoCarousels[id])photoCarousels[id].idx=0;updatePhotoCarousel(id);}),{passive:true});
-
-/* ─── Lightbox ─── */
-const lb=document.getElementById('lightbox'),lbImg=document.getElementById('lightboxImg'),lbCap=document.getElementById('lightboxCaption');
-let lbGallery=[],lbIdx=0;
-
-function openLB(el){
-  // Build gallery from parent container
-  const grid=el.closest('.photo-carousel-track,.project-carousel-track,.graphics-grid-static,.graphics-grid');
-  if(grid){
-    const cards=grid.querySelectorAll('[data-src],[data-caption]');
-    lbGallery=[...cards].map(c=>({src:c.dataset.src||(c.querySelector('img')?c.querySelector('img').src:''),cap:c.dataset.caption||''}));
-    lbIdx=[...cards].indexOf(el);
-    if(lbIdx<0)lbIdx=0;
-  }else{
-    const src=el.dataset.src||(el.querySelector('img')?el.querySelector('img').src:'');
-    lbGallery=[{src,cap:el.dataset.caption||''}];lbIdx=0;
+const photoIds = ['sf2025', 'sf2026', 'tourism2025', 'tourism2024', 'talent2025', 'vday2026', 'vday2025', 'valoshoot', 'massdance', 'csid', 'grad2025', 'collegefair', 'shsexpo', 'clight'];
+photoIds.forEach(id => {
+  initPhotoCarousel(id);
+  // Load first page of each carousel when it scrolls into view
+  const carousel = document.getElementById('pc-' + id);
+  if (carousel) {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          updatePhotoCarousel(id); // triggers load of first visible images
+          io.disconnect();
+        }
+      });
+    }, { rootMargin: '200px' });
+    io.observe(carousel);
   }
-  showLB();
-}
-function showLB(){
-  if(!lbGallery.length)return;
-  lbImg.src=lbGallery[lbIdx].src;
-  lbCap.textContent=lbGallery[lbIdx].cap;
-  lb.classList.add('active');
-  document.body.style.overflow='hidden';
-}
-function closeLB(){lb.classList.remove('active');document.body.style.overflow='';}
-function nextLB(){lbIdx=(lbIdx+1)%lbGallery.length;showLB();}
-function prevLB(){lbIdx=(lbIdx-1+lbGallery.length)%lbGallery.length;showLB();}
-
-document.querySelectorAll('.graphic-card-static').forEach(el=>el.addEventListener('click',()=>openLB(el)));
-document.getElementById('lightboxClose').addEventListener('click',closeLB);
-document.getElementById('lbNext').addEventListener('click',e=>{e.stopPropagation();nextLB();});
-document.getElementById('lbPrev').addEventListener('click',e=>{e.stopPropagation();prevLB();});
-lb.addEventListener('click',e=>{if(e.target===lb)closeLB();});
-document.addEventListener('keydown',e=>{
-  if(!lb.classList.contains('active'))return;
-  if(e.key==='Escape')closeLB();
-  if(e.key==='ArrowRight')nextLB();
-  if(e.key==='ArrowLeft')prevLB();
 });
+window.addEventListener('resize', () => { photoIds.forEach(id => { if (photoCarousels[id]) photoCarousels[id].idx = 0; updatePhotoCarousel(id); }); }, { passive: true });
 
-/* ─── Video Modal ─── */
-const vm=document.getElementById('videoModal'),vmInner=document.getElementById('videoModalInner'),vmTitle=document.getElementById('videoModalTitle');
-const unmuteBtn=document.getElementById('unmuteBtn'),muteIcon=document.getElementById('muteIcon'),muteLabel=document.getElementById('muteLabel');
-let activeVideo=null;
+/* ═══════════════════════════════════════════════════
+   Video Modal — video only created on click, destroyed on close
+   ═══════════════════════════════════════════════════ */
+const vm = document.getElementById('videoModal'), vmInner = document.getElementById('videoModalInner'), vmTitle = document.getElementById('videoModalTitle');
+const unmuteBtn = document.getElementById('unmuteBtn'), muteIcon = document.getElementById('muteIcon'), muteLabel = document.getElementById('muteLabel');
+let activeVideo = null;
 
-function openVideo(src,title){
-  if(activeVideo){activeVideo.pause();activeVideo.src='';activeVideo.remove();activeVideo=null;}
-  const v=document.createElement('video');
-  v.src=src;v.autoplay=true;v.loop=true;v.muted=true;v.playsInline=true;
-  v.style.cssText='width:100%;display:block;aspect-ratio:16/9;background:#000;';
-  vmInner.insertBefore(v,vmInner.firstChild);
-  vmTitle.textContent=title;
-  activeVideo=v;
-  muteIcon.className='fas fa-volume-mute';muteLabel.textContent='Unmute';
-  vm.classList.add('active');document.body.style.overflow='hidden';
+function openVideo(src, title) {
+  if (activeVideo) { activeVideo.pause(); activeVideo.src = ''; activeVideo.remove(); activeVideo = null; }
+  const v = document.createElement('video');
+  v.src = src; v.autoplay = true; v.loop = true; v.muted = true; v.playsInline = true;
+  v.style.cssText = 'width:100%;display:block;aspect-ratio:16/9;background:#000;';
+  vmInner.insertBefore(v, vmInner.firstChild);
+  vmTitle.textContent = title; activeVideo = v;
+  muteIcon.className = 'fas fa-volume-mute'; muteLabel.textContent = 'Unmute';
+  vm.classList.add('active'); document.body.style.overflow = 'hidden';
 }
-function closeVideo(){
+function closeVideo() {
   vm.classList.remove('active');
-  if(activeVideo){activeVideo.pause();activeVideo.src='';activeVideo.remove();activeVideo=null;}
-  document.body.style.overflow='';
+  if (activeVideo) { activeVideo.pause(); activeVideo.src = ''; activeVideo.remove(); activeVideo = null; }
+  document.body.style.overflow = '';
 }
-unmuteBtn.addEventListener('click',()=>{
-  if(!activeVideo)return;
-  activeVideo.muted=!activeVideo.muted;
-  muteIcon.className=activeVideo.muted?'fas fa-volume-mute':'fas fa-volume-up';
-  muteLabel.textContent=activeVideo.muted?'Unmute':'Mute';
+unmuteBtn.addEventListener('click', () => {
+  if (!activeVideo) return;
+  activeVideo.muted = !activeVideo.muted;
+  muteIcon.className = activeVideo.muted ? 'fas fa-volume-mute' : 'fas fa-volume-up';
+  muteLabel.textContent = activeVideo.muted ? 'Unmute' : 'Mute';
 });
-document.querySelectorAll('.film-thumb[data-video]').forEach(thumb=>{
-  thumb.addEventListener('click',()=>openVideo(thumb.dataset.video,thumb.dataset.title));
+document.querySelectorAll('.film-thumb[data-video]').forEach(thumb => {
+  thumb.addEventListener('click', () => openVideo(thumb.dataset.video, thumb.dataset.title));
 });
-document.getElementById('videoModalClose').addEventListener('click',closeVideo);
-vm.addEventListener('click',e=>{if(e.target===vm)closeVideo();});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&vm.classList.contains('active'))closeVideo();});
+document.getElementById('videoModalClose').addEventListener('click', closeVideo);
+vm.addEventListener('click', e => { if (e.target === vm) closeVideo(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && vm.classList.contains('active')) closeVideo(); });
 
-/* ─── Contact Form ─── */
-const form=document.getElementById('contactForm'),fStatus=document.getElementById('formStatus'),fBtn=document.getElementById('formSubmit');
-form.addEventListener('submit',async e=>{
-  e.preventDefault();fBtn.textContent='Sending...';fBtn.disabled=true;fStatus.className='form-status';fStatus.textContent='';
-  try{
-    const res=await fetch(form.action,{method:'POST',body:new FormData(form),headers:{'Accept':'application/json'}});
-    if(res.ok){fStatus.className='form-status success';fStatus.textContent='✓ Message sent! I\'ll get back to you soon.';form.reset();}
+/* ═══════════════════════════════════════════════════
+   Contact Form
+   ═══════════════════════════════════════════════════ */
+const form = document.getElementById('contactForm'), fStatus = document.getElementById('formStatus'), fBtn = document.getElementById('formSubmit');
+form.addEventListener('submit', async e => {
+  e.preventDefault(); fBtn.textContent = 'Sending...'; fBtn.disabled = true;
+  fStatus.className = 'form-status'; fStatus.textContent = '';
+  try {
+    const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' } });
+    if (res.ok) { fStatus.className = 'form-status success'; fStatus.textContent = "✓ Message sent! I'll get back to you soon."; form.reset(); }
     else throw new Error();
-  }catch{fStatus.className='form-status error';fStatus.textContent='⚠ Something went wrong. Email me at redenlopez17@gmail.com';}
-  fBtn.textContent='Send Message';fBtn.disabled=false;
-  setTimeout(()=>{fStatus.textContent='';fStatus.className='form-status';},7000);
+  } catch { fStatus.className = 'form-status error'; fStatus.textContent = '⚠ Something went wrong. Email me at redenlopez17@gmail.com'; }
+  fBtn.textContent = 'Send Message'; fBtn.disabled = false;
+  setTimeout(() => { fStatus.textContent = ''; fStatus.className = 'form-status'; }, 7000);
 });
 </script>
 </body>
