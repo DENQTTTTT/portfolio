@@ -1,4 +1,4 @@
-      <!DOCTYPE html>
+<!DOCTYPE html>
       <html lang="en">
       <head>
         <meta charset="UTF-8"/>
@@ -8,10 +8,8 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link rel="preconnect" href="https://ik.imagekit.io">
         <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
-        <!-- Only preload the hero image (above the fold) -->
         <link rel="preload" href="reden.jfif" as="image" fetchpriority="high">
         <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
-        <!-- Font Awesome: async non-render-blocking -->
         <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
         <style>
@@ -27,7 +25,6 @@
           body{background:var(--black);color:var(--white);font-family:'Syne',sans-serif;overflow-x:hidden}
           @media(pointer:fine){body{cursor:none}}
       
-          /* ── Cursor ── */
           .cursor-dot,.cursor-ring{display:none;position:fixed;top:0;left:0;pointer-events:none;transform:translate(-50%,-50%)}
           @media(pointer:fine){
             .cursor-dot{display:block;width:8px;height:8px;background:var(--red);border-radius:50%;z-index:99999;will-change:transform}
@@ -35,7 +32,6 @@
             body:has(a:hover) .cursor-ring,body:has(button:hover) .cursor-ring{width:54px;height:54px;border-color:var(--red)}
           }
       
-          /* ── Loader ── */
           .loader-wrapper{position:fixed;inset:0;background:var(--black);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:24px;transition:opacity .6s ease,visibility .6s ease}
           .loader-wrapper.hide{opacity:0;visibility:hidden;pointer-events:none}
           .loader-name{font-weight:800;font-size:clamp(2rem,6vw,4rem);letter-spacing:.3em;overflow:hidden}
@@ -46,10 +42,8 @@
           .loader-bar-fill{height:100%;background:var(--red);animation:loadFill 1.6s ease forwards}
           @keyframes loadFill{from{width:0}to{width:100%}}
       
-          /* ── Noise (CSS only, no SVG filter cost) ── */
           body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.025;pointer-events:none;z-index:9997}
       
-          /* ── Navbar ── */
           nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:1.5rem var(--pad);display:flex;align-items:center;justify-content:space-between;transition:padding var(--tr),background var(--tr)}
           nav.scrolled{padding:1rem var(--pad);background:rgba(10,10,10,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border)}
           .nav-logo{font-weight:800;font-size:clamp(.95rem,2.5vw,1.1rem);letter-spacing:.15em;text-decoration:none;color:var(--white);z-index:1001}
@@ -67,13 +61,11 @@
           .nav-drawer a{color:var(--grey-text);text-decoration:none;font-family:'Space Mono',monospace;font-size:clamp(1rem,4vw,1.3rem);letter-spacing:.2em;text-transform:uppercase;transition:color var(--tr)}
           .nav-drawer a:hover{color:var(--white)}
       
-          /* ── Social Bar ── */
           .social-bar{position:fixed;left:28px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:20px;z-index:100}
           .social-bar a{color:var(--grey-text);font-size:.9rem;text-decoration:none;transition:color var(--tr),transform var(--tr);display:block}
           .social-bar a:hover{color:var(--red);transform:translateX(4px)}
           .social-bar::after{content:'';display:block;width:1px;height:60px;background:var(--grey-light);margin:8px auto 0}
       
-          /* ── Hero ── */
           #home{min-height:100svh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:clamp(100px,14vw,130px) var(--pad) clamp(60px,8vw,80px);gap:clamp(2rem,5vw,4rem);position:relative;overflow:hidden}
           .hero-bg-text{position:absolute;bottom:-60px;right:-20px;font-size:clamp(80px,16vw,200px);font-weight:800;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.04);pointer-events:none;user-select:none;line-height:1;white-space:nowrap}
           .hero-label{font-family:'Space Mono',monospace;font-size:clamp(.62rem,1.5vw,.75rem);letter-spacing:.2em;color:var(--red);text-transform:uppercase;margin-bottom:1.5rem;display:flex;align-items:center;gap:12px}
@@ -98,18 +90,15 @@
           .hero-img-frame:hover::before{top:-24px;left:-24px}
           .hero-img-tag{position:absolute;bottom:-20px;left:-20px;background:var(--red);padding:12px 20px;font-family:'Space Mono',monospace;font-size:clamp(.6rem,1.2vw,.7rem);letter-spacing:.1em;white-space:nowrap}
       
-          /* ── Section Base ── */
           section{padding:clamp(50px,8vw,100px) var(--pad)}
           .section-tag{font-family:'Space Mono',monospace;font-size:clamp(.62rem,1.5vw,.7rem);color:var(--red);letter-spacing:.25em;text-transform:uppercase;display:flex;align-items:center;gap:12px;margin-bottom:.8rem}
           .section-tag::before{content:'';display:inline-block;width:30px;height:1px;background:var(--red)}
           .section-title{font-size:clamp(1.8rem,4vw,3.2rem);font-weight:800;letter-spacing:-.02em;line-height:1.1;margin-bottom:clamp(28px,5vw,48px)}
           .section-title em{font-style:normal;color:var(--red)}
-          /* Reveal: use contain to avoid layout recalc during scroll */
           .reveal{opacity:0;transform:translateY(28px);transition:opacity .65s cubic-bezier(.4,0,.2,1),transform .65s cubic-bezier(.4,0,.2,1);contain:layout style}
           .reveal.visible{opacity:1;transform:none;contain:none}
           .reveal-delay-1{transition-delay:.08s}.reveal-delay-2{transition-delay:.16s}.reveal-delay-3{transition-delay:.24s}.reveal-delay-4{transition-delay:.32s}
       
-          /* ── About ── */
           #about{background:var(--grey-dark)}
           .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,6vw,72px);align-items:start}
           .about-text p{color:var(--grey-text);line-height:1.9;font-size:clamp(.875rem,1.5vw,1rem);margin-bottom:1.1rem}
@@ -127,7 +116,6 @@
           .detail-text h4{font-size:clamp(.52rem,.9vw,.62rem);letter-spacing:.15em;text-transform:uppercase;font-family:'Space Mono',monospace;color:var(--grey-text);margin-bottom:3px}
           .detail-text p{font-size:clamp(.75rem,1.2vw,.85rem);font-weight:600;color:var(--white);line-height:1.35}
       
-          /* ── Skills ── */
           #skills{background:var(--black)}
           .skills-wrap{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,6vw,72px);align-items:start}
           .skill-list{display:flex;flex-direction:column;border:1px solid var(--glass-border)}
@@ -152,7 +140,6 @@
           .lang-card span{font-size:clamp(.52rem,.9vw,.62rem);letter-spacing:.12em;text-transform:uppercase;font-family:'Space Mono',monospace;color:var(--grey-text);transition:color var(--tr)}
           .lang-card:hover span{color:var(--white)}
       
-          /* ── Projects ── */
           #projects{background:var(--grey-dark)}
           .projects-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,2vw,20px)}
           .project-card{background:var(--grey-mid);border:1px solid var(--glass-border);padding:clamp(20px,2.5vw,28px);display:flex;flex-direction:column;gap:12px;transition:border-color var(--tr),background var(--tr),transform var(--tr);position:relative;overflow:hidden}
@@ -168,13 +155,11 @@
           .project-role-row i{color:var(--red);font-size:.72rem;flex-shrink:0}
           .project-role-row span{font-family:'Space Mono',monospace;font-size:.64rem;letter-spacing:.07em;color:var(--white)}
       
-          /* Project Carousel */
           .project-carousel{position:relative;overflow:hidden;border:1px solid var(--glass-border);background:var(--grey-dark)}
           .project-carousel-track{display:flex;transition:transform .4s cubic-bezier(.4,0,.2,1);will-change:transform}
           .project-carousel-slide{flex-shrink:0;width:100%;aspect-ratio:16/9;overflow:hidden;cursor:pointer}
           .project-carousel-slide img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(15%);transition:filter .4s,transform .4s}
           .project-carousel-slide:hover img{filter:grayscale(0%);transform:scale(1.03)}
-          /* Lazy image placeholder */
           .project-carousel-slide img[data-lazy]{background:var(--grey-light)}
           .carousel-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.15);color:var(--white);width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.65rem;transition:var(--tr);z-index:2}
           .carousel-btn:hover{background:var(--red);border-color:var(--red)}
@@ -197,7 +182,6 @@
           .project-tag{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-text);border:1px solid var(--glass-border);padding:3px 8px;transition:var(--tr)}
           .project-card:hover .project-tag{border-color:rgba(230,48,34,.2);color:var(--white)}
       
-          /* ── Timeline ── */
           #timeline{background:var(--black)}
           .timeline-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,2vw,20px)}
           .timeline-card{background:var(--grey-mid);border:1px solid var(--glass-border);padding:clamp(18px,2.5vw,26px);position:relative;transition:border-color var(--tr),background var(--tr)}
@@ -209,7 +193,6 @@
           .timeline-org{font-size:clamp(.68rem,1.1vw,.76rem);color:var(--grey-text);font-family:'Space Mono',monospace;margin-bottom:10px}
           .timeline-desc{color:var(--grey-text);font-size:clamp(.78rem,1.2vw,.85rem);line-height:1.65}
       
-          /* ── Films ── */
           #films{background:var(--grey-dark)}
           .films-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(14px,2.5vw,24px)}
           .film-card{background:var(--grey-mid);border:1px solid var(--glass-border);overflow:hidden;transition:border-color var(--tr),transform var(--tr)}
@@ -228,7 +211,6 @@
           .film-role-text{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--grey-text);display:flex;align-items:center;gap:6px}
           .film-role-text i{color:var(--red);font-size:.6rem}
       
-          /* ── Photography / Graphics ── */
           #photography{background:var(--black)}
           #graphics{background:var(--grey-dark)}
           .photo-events,.graphics-groups{display:flex;flex-direction:column;gap:clamp(40px,7vw,72px)}
@@ -238,7 +220,6 @@
           .event-count{font-family:'Space Mono',monospace;font-size:.58rem;color:var(--grey-text);letter-spacing:.1em;margin-left:auto}
           .event-desc{font-size:clamp(.78rem,1.3vw,.88rem);color:var(--grey-text);line-height:1.7;margin-bottom:clamp(12px,2vw,20px);max-width:680px}
       
-          /* ── Photo Carousel ── */
           .photo-carousel{position:relative;overflow:hidden;background:var(--grey-mid)}
           .photo-carousel-track{display:flex;transition:transform .45s cubic-bezier(.4,0,.2,1);will-change:transform}
           .photo-carousel-slide{flex-shrink:0;width:25%;position:relative;cursor:pointer;overflow:hidden}
@@ -256,7 +237,6 @@
           .photo-nav-dot.active{background:var(--red);transform:scale(1.3)}
           .photo-counter{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--grey-text);letter-spacing:.1em}
       
-          /* Graphics */
           .graphics-group-header{display:flex;align-items:baseline;gap:16px;margin-bottom:10px;padding-bottom:14px;border-bottom:1px solid var(--glass-border);flex-wrap:wrap}
           .graphics-group-title{font-size:clamp(1rem,2.2vw,1.5rem);font-weight:800;letter-spacing:-.01em}
           .graphics-tag{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--red);border:1px solid rgba(230,48,34,.3);padding:3px 8px}
@@ -274,7 +254,6 @@
           .graphic-card-static:hover .graphic-zoom{opacity:1}
           .graphic-zoom:hover{background:var(--red);border-color:var(--red)}
       
-          /* ── Video Modal ── */
           .video-modal{position:fixed;inset:0;background:rgba(0,0,0,.96);z-index:9990;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .4s,visibility .4s;backdrop-filter:blur(12px)}
           .video-modal.active{opacity:1;visibility:visible}
           .video-modal-inner{width:min(920px,92vw);position:relative}
@@ -286,7 +265,6 @@
           .video-modal-unmute{background:rgba(255,255,255,.08);border:1px solid var(--glass-border);color:var(--white);font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.1em;padding:6px 14px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:var(--tr)}
           .video-modal-unmute:hover{background:var(--red);border-color:var(--red)}
       
-          /* ── Lightbox ── */
           .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.96);z-index:9990;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .4s,visibility .4s;backdrop-filter:blur(10px)}
           .lightbox.active{opacity:1;visibility:visible}
           .lightbox-inner{max-width:92vw;max-height:90vh;position:relative}
@@ -299,7 +277,6 @@
           .lightbox-nav:hover{background:var(--red);border-color:var(--red)}
           .lightbox-prev{left:clamp(8px,2vw,20px)}.lightbox-next{right:clamp(8px,2vw,20px)}
       
-          /* ── Contact ── */
           #contact{background:var(--black)}
           .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,6vw,72px);align-items:start}
           .contact-info p{color:var(--grey-text);line-height:1.9;font-size:clamp(.82rem,1.3vw,.92rem);margin-bottom:1.8rem}
@@ -317,7 +294,6 @@
           .form-status.error{color:var(--red)}
           .form-status.success{color:#4ade80}
       
-          /* ── Footer ── */
           footer{background:var(--grey-dark);padding:clamp(28px,5vw,52px) var(--pad) clamp(20px,3.5vw,36px);border-top:1px solid var(--glass-border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
           .footer-logo{font-size:clamp(1.1rem,2.2vw,1.4rem);font-weight:800;letter-spacing:.1em}
           .footer-logo span{color:var(--red)}
@@ -326,12 +302,10 @@
           .footer-socials a{color:var(--grey-text);text-decoration:none;font-size:.95rem;transition:color var(--tr)}
           .footer-socials a:hover{color:var(--red)}
       
-          /* ── Scroll Top ── */
-          .scroll-top{position:fixed;bottom:28px;right:28px;width:40px;height:40px;background:var(--red);color:var(--white);border:none;display:flex;align-items:center;justify-content:center;font-size:.85rem;cursor:pointer;opacity:0;visibility:hidden;transition:var(--tr);z-index:100;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))}
+          .scroll-top{position:fixed;bottom:28px;right:28px;width:40px;height:40px;background:var(--red);color:var(--white);border:none;display:flex;align-items:center;justify-content:center;font-size:.85rem;cursor:pointer;opacity:0;visibility:hidden;transition:var(--tr);z-index:100;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 12px))}
           .scroll-top.show{opacity:1;visibility:visible}
           .scroll-top:hover{background:var(--red-dim);transform:translateY(-3px)}
       
-          /* ══ RESPONSIVE ══ */
           @media(max-width:1100px){
             .projects-grid{grid-template-columns:repeat(2,1fr)}
             .photo-carousel-slide{width:33.333%}
@@ -378,7 +352,6 @@
         <div class="loader-bar"><div class="loader-bar-fill"></div></div>
       </div>
       
-      <!-- Lightbox -->
       <div class="lightbox" id="lightbox">
         <button class="lightbox-nav lightbox-prev" id="lbPrev"><i class="fas fa-chevron-left"></i></button>
         <div class="lightbox-inner"><img src="" id="lightboxImg" alt="" decoding="async"><div class="lightbox-caption" id="lightboxCaption"></div></div>
@@ -386,7 +359,6 @@
         <button class="lightbox-close" id="lightboxClose"><i class="fas fa-times"></i></button>
       </div>
       
-      <!-- Video Modal -->
       <div class="video-modal" id="videoModal">
         <div class="video-modal-inner" id="videoModalInner">
           <div class="video-modal-footer">
@@ -422,7 +394,6 @@
         <a href="#graphics">Graphics</a><a href="#contact">Contact</a>
       </div>
       
-      <!-- HOME -->
       <section id="home">
         <div>
           <div class="hero-label">Available for projects</div>
@@ -439,7 +410,6 @@
         </div>
         <div class="hero-img-wrap">
           <div class="hero-img-frame">
-            <!-- Hero image: NOT lazy, high priority -->
             <img src="reden.jfif" alt="Reden Lopez" width="420" height="560" fetchpriority="high">
             <div class="hero-img-tag">STI Lipa · Ocularis</div>
           </div>
@@ -447,7 +417,6 @@
         <div class="hero-bg-text">REDEN</div>
       </section>
       
-      <!-- ABOUT -->
       <section id="about">
         <div class="section-tag reveal">About Me</div>
         <h2 class="section-title reveal reveal-delay-1">Who I <em>Am</em></h2>
@@ -472,7 +441,6 @@
         </div>
       </section>
       
-      <!-- SKILLS -->
       <section id="skills">
         <div class="section-tag reveal">What I Do</div>
         <h2 class="section-title reveal reveal-delay-1">Skills &amp; <em>Tech Stack</em></h2>
@@ -514,13 +482,11 @@
         </div>
       </section>
       
-      <!-- PROJECTS -->
       <section id="projects">
         <div class="section-tag reveal">What I've Built</div>
         <h2 class="section-title reveal reveal-delay-1">Programming &amp; Design <em>Projects</em></h2>
         <div class="projects-grid">
       
-          <!-- LipaAlertHub -->
           <div class="project-card reveal reveal-delay-1">
             <div style="display:flex;align-items:center;gap:12px">
               <div class="project-icon"><i class="fas fa-bell"></i></div>
@@ -555,7 +521,6 @@
             </div>
           </div>
       
-          <!-- MINT -->
           <div class="project-card reveal reveal-delay-2">
             <div style="display:flex;align-items:center;gap:12px">
               <div class="project-icon"><i class="fas fa-wallet"></i></div>
@@ -581,7 +546,6 @@
             </div>
           </div>
       
-          <!-- KosekiLink -->
           <div class="project-card reveal reveal-delay-3">
             <div style="display:flex;align-items:center;gap:12px">
               <div class="project-icon"><i class="fas fa-globe"></i></div>
@@ -610,7 +574,6 @@
             </div>
           </div>
       
-          <!-- SAAD Profiling -->
           <div class="project-card reveal reveal-delay-1">
             <div style="display:flex;align-items:center;gap:12px">
               <div class="project-icon"><i class="fas fa-id-card"></i></div>
@@ -635,7 +598,6 @@
             </div>
           </div>
       
-          <!-- AgriTrack -->
           <div class="project-card reveal reveal-delay-2">
             <div style="display:flex;align-items:center;gap:12px">
               <div class="project-icon"><i class="fas fa-seedling"></i></div>
@@ -660,7 +622,6 @@
             </div>
           </div>
       
-          <!-- Electro Gadgets -->
           <div class="project-card reveal reveal-delay-3">
             <div style="display:flex;align-items:center;gap:12px">
               <div class="project-icon"><i class="fas fa-laptop"></i></div>
@@ -691,7 +652,6 @@
         </div>
       </section>
       
-      <!-- EXPERIENCE -->
       <section id="timeline">
         <div class="section-tag reveal">My Journey</div>
         <h2 class="section-title reveal reveal-delay-1">Experience &amp; <em>Roles</em></h2>
@@ -729,7 +689,6 @@
         </div>
       </section>
       
-      <!-- FILMS: thumbnails are static colored placeholders, video only loads on click -->
       <section id="films">
         <div class="section-tag reveal">Behind the Lens</div>
         <h2 class="section-title reveal reveal-delay-1">Films &amp; <em>Videos</em></h2>
@@ -765,13 +724,10 @@
         </div>
       </section>
       
-      <!-- PHOTOGRAPHY -->
       <section id="photography">
         <div class="section-tag reveal">Visual Stories</div>
         <h2 class="section-title reveal reveal-delay-1">Photography <em>Portfolio</em></h2>
         <div class="photo-events">
-      
-          <!-- Each photo carousel uses data-lazy on imgs; JS loads them when carousel becomes visible -->
       
           <div class="event-block reveal">
             <div class="event-header"><div class="event-title">Sportsfest 2025</div><div class="event-tag">Official Photographer</div><div class="event-count">4 photos</div></div>
@@ -979,9 +935,6 @@
             <div class="photo-carousel-nav"><button class="photo-nav-btn" onclick="movePhotoCarousel('clight',-1)"><i class="fas fa-chevron-left"></i></button><div class="photo-nav-dots" id="pd-clight"></div><span class="photo-counter" id="pcount-clight">1 / 6</span><button class="photo-nav-btn" onclick="movePhotoCarousel('clight',1)"><i class="fas fa-chevron-right"></i></button></div>
           </div>
       
-      
-            
-        
         </div>
       </section>
       
@@ -1018,17 +971,29 @@
             </div>
           </div>
       
+          <!-- NEW: DA SAAD Internship -->
+          <div class="reveal">
+            <div class="graphics-group-header"><div class="graphics-group-title">Department of Agriculture Internship</div><div class="graphics-tag">DA SAAD · CALABARZON</div></div>
+            <p class="graphics-desc">Graphic design work produced during my internship at the Department of Agriculture SAAD CALABARZON — official materials for outreach, advocacy, and program communications.</p>
+            <div class="graphics-grid-static">
+              <div class="graphic-card-static" data-src="https://ik.imagekit.io/waa8112tr/685701595_948686251480301_1254360577527468987_n.jpg" data-caption="DA SAAD CALABARZON — Internship Graphic"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-400/685701595_948686251480301_1254360577527468987_n.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="DA SAAD Internship Graphic 1" width="400" height="533" decoding="async"><div class="graphic-info"><h4>SAAD CALABARZON</h4><span>DA Internship</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
+              <div class="graphic-card-static" data-src="https://ik.imagekit.io/waa8112tr/2026%20Farmer%20Testimonial%20-%20Copy.jpg" data-caption="2026 Farmer Testimonial — DA SAAD CALABARZON"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-400/2026%20Farmer%20Testimonial%20-%20Copy.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="2026 Farmer Testimonial" width="400" height="533" decoding="async"><div class="graphic-info"><h4>2026 Farmer Testimonial</h4><span>DA SAAD CALABARZON</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
+              <div class="graphic-card-static" data-src="https://ik.imagekit.io/waa8112tr/SAADVISORYELNINO2026.jpg" data-caption="SAAD Advisory — El Niño 2026 · DA SAAD CALABARZON"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-400/SAADVISORYELNINO2026.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="SAAD Advisory El Nino 2026" width="400" height="533" decoding="async"><div class="graphic-info"><h4>SAAD Advisory — El Niño 2026</h4><span>DA SAAD CALABARZON</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
+            </div>
+          </div>
+      
+          <!-- Personal Projects -->
           <div class="reveal">
             <div class="graphics-group-header"><div class="graphics-group-title">Personal Projects</div><div class="graphics-tag">Design Practice</div></div>
             <p class="graphics-desc">Personal design projects created for practice and passion — exploring aesthetics and typography.</p>
             <div class="graphics-grid-static">
+              <div class="graphic-card-static" data-src="https://ik.imagekit.io/waa8112tr/jes%20copy.jpg" data-caption="JES — Personal Project"><img data-lazy="https://ik.imagekit.io/waa8112tr/tr:w-400/jes%20copy.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="JES Personal Project" width="400" height="533" decoding="async"><div class="graphic-info"><h4>JES</h4><span>Personal</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
               <div class="graphic-card-static" data-src="graphic3.png" data-caption="Air Jordan 4 University Blue"><img data-lazy="graphic3.png" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Air Jordan 4 University Blue" width="400" height="533" decoding="async"><div class="graphic-info"><h4>Air Jordan 4 University Blue</h4><span>Personal</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
               <div class="graphic-card-static" data-src="graphic4.png" data-caption="Air Jordan 4 Pine Green"><img data-lazy="graphic4.png" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Air Jordan 4 Pine Green" width="400" height="533" decoding="async"><div class="graphic-info"><h4>Air Jordan 4 Pine Green</h4><span>Personal</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
-               <div class="graphic-card-static" data-src="https://ik.imagekit.io/waa8112tr/Bieberchellav2.jpg" data-caption="Bieberchella - Coachella Poster for Justin Bieber"><img data-lazy="https://ik.imagekit.io/waa8112tr/Bieberchellav2.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Bieberchella - Coachella Poster for Justin Bieber" width="400" height="533" decoding="async"><div class="graphic-info"><h4>Bieberchella - Coachella Poster for Justine Bieber</h4></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
-            </div>
+              <div class="graphic-card-static" data-src="https://ik.imagekit.io/waa8112tr/Bieberchellav2.jpg" data-caption="Bieberchella - Coachella Poster for Justin Bieber"><img data-lazy="https://ik.imagekit.io/waa8112tr/Bieberchellav2.jpg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Bieberchella" width="400" height="533" decoding="async"><div class="graphic-info"><h4>Bieberchella</h4><span>Personal</span></div><button class="graphic-zoom"><i class="fas fa-expand"></i></button></div>
             </div>
           </div>
-
+      
         </div>
       </section>
       
@@ -1075,29 +1040,17 @@
       <button class="scroll-top" id="scrollTop"><i class="fas fa-arrow-up"></i></button>
       
       <script>
-      /* ═══════════════════════════════════════════════════
-         PERFORMANCE: Lazy image loader via IntersectionObserver
-         Loads images only when their container enters viewport (300px margin)
-         ═══════════════════════════════════════════════════ */
       const lazyIO = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (!entry.isIntersecting) return;
           const img = entry.target;
           const src = img.dataset.lazy;
-          if (src) {
-            img.src = src;
-            img.removeAttribute('data-lazy');
-          }
+          if (src) { img.src = src; img.removeAttribute('data-lazy'); }
           lazyIO.unobserve(img);
         });
       }, { rootMargin: '300px 0px', threshold: 0 });
-      
-      // Observe all lazy images after DOM ready
       document.querySelectorAll('img[data-lazy]').forEach(img => lazyIO.observe(img));
       
-      /* ═══════════════════════════════════════════════════
-         PERFORMANCE: Lightbox — load full-res only on open
-         ═══════════════════════════════════════════════════ */
       const lb = document.getElementById('lightbox');
       const lbImg = document.getElementById('lightboxImg');
       const lbCap = document.getElementById('lightboxCaption');
@@ -1119,7 +1072,6 @@
       }
       function showLB() {
         if (!lbGallery.length) return;
-        // Load full-res only now (data-src = full-res URL)
         lbImg.src = lbGallery[lbIdx].src;
         lbCap.textContent = lbGallery[lbIdx].cap;
         lb.classList.add('active');
@@ -1141,9 +1093,6 @@
         if (e.key === 'ArrowLeft') prevLB();
       });
       
-      /* ═══════════════════════════════════════════════════
-         Typewriter
-         ═══════════════════════════════════════════════════ */
       (function () {
         const el = document.querySelector('.typewriter');
         if (!el) return;
@@ -1158,9 +1107,6 @@
         setTimeout(type, 1800);
       })();
       
-      /* ═══════════════════════════════════════════════════
-         Cursor (pointer devices only — uses RAF, not mousemove resize)
-         ═══════════════════════════════════════════════════ */
       const dot = document.getElementById('cursorDot'), ring = document.getElementById('cursorRing');
       let mx = 0, my = 0, rx = 0, ry = 0;
       if (dot && ring && window.matchMedia('(pointer:fine)').matches) {
@@ -1173,14 +1119,8 @@
         })();
       }
       
-      /* ═══════════════════════════════════════════════════
-         Loader
-         ═══════════════════════════════════════════════════ */
       window.addEventListener('load', () => setTimeout(() => document.getElementById('loader').classList.add('hide'), 1600));
       
-      /* ═══════════════════════════════════════════════════
-         Navbar + Scroll Top — passive listener, throttled
-         ═══════════════════════════════════════════════════ */
       const navbar = document.getElementById('navbar'), stBtn = document.getElementById('scrollTop');
       let ticking = false;
       window.addEventListener('scroll', () => {
@@ -1194,9 +1134,6 @@
       }, { passive: true });
       stBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
       
-      /* ═══════════════════════════════════════════════════
-         Hamburger
-         ═══════════════════════════════════════════════════ */
       const ham = document.getElementById('hamburger'), drawer = document.getElementById('navDrawer');
       ham.addEventListener('click', () => {
         ham.classList.toggle('open');
@@ -1207,17 +1144,11 @@
         ham.classList.remove('open'); drawer.classList.remove('open'); document.body.style.overflow = '';
       }));
       
-      /* ═══════════════════════════════════════════════════
-         Reveal — single observer, no transition-delay jank
-         ═══════════════════════════════════════════════════ */
       const ro = new IntersectionObserver(e => e.forEach(x => {
         if (x.isIntersecting) { x.target.classList.add('visible'); ro.unobserve(x.target); }
       }), { threshold: .07, rootMargin: '0px 0px -30px 0px' });
       document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
       
-      /* ═══════════════════════════════════════════════════
-         Stat Counters
-         ═══════════════════════════════════════════════════ */
       const so = new IntersectionObserver(e => {
         e.forEach(x => {
           if (!x.isIntersecting) return;
@@ -1229,9 +1160,6 @@
       }, { threshold: .5 });
       document.querySelectorAll('.stat-num[data-target]').forEach(el => so.observe(el));
       
-      /* ═══════════════════════════════════════════════════
-         Project Carousels
-         ═══════════════════════════════════════════════════ */
       const projCarousels = {};
       function initProjectCarousel(id) {
         const track = document.getElementById('track-' + id);
@@ -1261,7 +1189,6 @@
         track.style.transform = `translateX(-${c.idx * 100}%)`;
         const dotsEl = document.getElementById('dots-' + id);
         if (dotsEl) dotsEl.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i === c.idx));
-        // Load the current + next slide images on demand
         loadCarouselSlide(track, c.idx);
         loadCarouselSlide(track, c.idx + 1);
       }
@@ -1273,7 +1200,6 @@
       }
       ['lipa', 'mint', 'koseki', 'profiling', 'agri', 'electro'].forEach(id => {
         initProjectCarousel(id);
-        // Load first slide immediately when carousel is visible
         const carousel = document.getElementById('carousel-' + id);
         if (carousel) {
           const io = new IntersectionObserver(entries => {
@@ -1289,9 +1215,6 @@
         }
       });
       
-      /* ═══════════════════════════════════════════════════
-         Photo Carousels
-         ═══════════════════════════════════════════════════ */
       const photoCarousels = {};
       const perView = () => window.innerWidth <= 600 ? 1 : window.innerWidth <= 900 ? 2 : window.innerWidth <= 1100 ? 3 : 4;
       
@@ -1328,7 +1251,6 @@
         const pv = perView();
         if (track) {
           track.style.transform = `translateX(-${(c.idx / c.total) * 100}%)`;
-          // Load visible + 1 ahead
           for (let i = c.idx; i < Math.min(c.idx + pv + 1, c.total); i++) {
             const slide = track.querySelectorAll('.photo-carousel-slide')[i];
             if (slide) { const img = slide.querySelector('img[data-lazy]'); if (img) { img.src = img.dataset.lazy; img.removeAttribute('data-lazy'); } }
@@ -1341,15 +1263,11 @@
       const photoIds = ['sf2025', 'sf2026', 'tourism2025', 'tourism2024', 'talent2025', 'vday2026', 'vday2025', 'valoshoot', 'massdance', 'csid', 'grad2025', 'collegefair', 'shsexpo', 'clight'];
       photoIds.forEach(id => {
         initPhotoCarousel(id);
-        // Load first page of each carousel when it scrolls into view
         const carousel = document.getElementById('pc-' + id);
         if (carousel) {
           const io = new IntersectionObserver(entries => {
             entries.forEach(entry => {
-              if (entry.isIntersecting) {
-                updatePhotoCarousel(id); // triggers load of first visible images
-                io.disconnect();
-              }
+              if (entry.isIntersecting) { updatePhotoCarousel(id); io.disconnect(); }
             });
           }, { rootMargin: '200px' });
           io.observe(carousel);
@@ -1357,9 +1275,6 @@
       });
       window.addEventListener('resize', () => { photoIds.forEach(id => { if (photoCarousels[id]) photoCarousels[id].idx = 0; updatePhotoCarousel(id); }); }, { passive: true });
       
-      /* ═══════════════════════════════════════════════════
-         Video Modal — video only created on click, destroyed on close
-         ═══════════════════════════════════════════════════ */
       const vm = document.getElementById('videoModal'), vmInner = document.getElementById('videoModalInner'), vmTitle = document.getElementById('videoModalTitle');
       const unmuteBtn = document.getElementById('unmuteBtn'), muteIcon = document.getElementById('muteIcon'), muteLabel = document.getElementById('muteLabel');
       let activeVideo = null;
@@ -1392,9 +1307,6 @@
       vm.addEventListener('click', e => { if (e.target === vm) closeVideo(); });
       document.addEventListener('keydown', e => { if (e.key === 'Escape' && vm.classList.contains('active')) closeVideo(); });
       
-      /* ═══════════════════════════════════════════════════
-         Contact Form
-         ═══════════════════════════════════════════════════ */
       const form = document.getElementById('contactForm'), fStatus = document.getElementById('formStatus'), fBtn = document.getElementById('formSubmit');
       form.addEventListener('submit', async e => {
         e.preventDefault(); fBtn.textContent = 'Sending...'; fBtn.disabled = true;
