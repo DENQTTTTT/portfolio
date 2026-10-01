@@ -1229,7 +1229,7 @@ const d = document.createElement('span');
 d.className = 'photo-nav-dot' + (i === 0 ? ' active' : '');
 d.onclick = () => {
 const cur = perView();
-photoCarousels[id].idx = Math.max(0, Math.min(i * cur, photoCarousels[id].total - cur));
+photoCarousels[id].idx = Math.min(i * cur, photoCarousels[id].total - 1);
 updatePhotoCarousel(id);
 };
 dotsEl.appendChild(d);
@@ -1240,7 +1240,7 @@ if (countEl) countEl.textContent = `1 / ${n}`;
 function movePhotoCarousel(id, dir) {
 const c = photoCarousels[id]; if (!c) return;
 const pv = perView();
-c.idx = Math.max(0, Math.min(c.idx + dir * pv, c.total - pv));
+c.idx = Math.max(0, Math.min(c.idx + dir * pv, c.total - 1));
 updatePhotoCarousel(id);
 }
 function updatePhotoCarousel(id) {
@@ -1250,8 +1250,12 @@ const dotsEl = document.getElementById('pd-' + id);
 const countEl = document.getElementById('pcount-' + id);
 const pv = perView();
 if (track) {
-track.style.transform = `translateX(-${c.idx * (100 / pv)}%)`;
-for (let i = c.idx; i < Math.min(c.idx + pv + 1, c.total); i++) {
+const slidesAll = track.querySelectorAll('.photo-carousel-slide');
+const car = document.getElementById('pc-' + id);
+const maxShift = Math.max(0, track.scrollWidth - car.clientWidth);
+const shift = Math.min(slidesAll[c.idx] ? slidesAll[c.idx].offsetLeft : 0, maxShift);
+track.style.transform = `translateX(-${shift}px)`;
+for (let i = Math.max(0, c.idx - pv); i < Math.min(c.idx + pv + 1, c.total); i++) {
 const slide = track.querySelectorAll('.photo-carousel-slide')[i];
 if (slide) { const img = slide.querySelector('img[data-lazy]'); if (img) { img.src = img.dataset.lazy; img.removeAttribute('data-lazy'); } }
 }
